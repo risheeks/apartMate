@@ -1,0 +1,4 @@
+#Sat Sep 22 21:40:15 EDT 2018
+base.0=/Users/SiD/Desktop/ApartMate/ApartMate/ApartMate/platforms/android/app/build/intermediates/transforms/dexMerger/debug/0
+path.0=classes.dex
+renamed.0=classes.dex
