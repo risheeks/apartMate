@@ -27,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-       // login();
+        login();
         register();
 
     }
@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     private void register() {
         email = (EditText)findViewById(R.id.et_email);
         password = (EditText)findViewById(R.id.et_password);
-        login = (Button)findViewById(R.id.bt_register);
+        register = (Button)findViewById(R.id.bt_register);
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
