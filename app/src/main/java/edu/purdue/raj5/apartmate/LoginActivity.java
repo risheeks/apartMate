@@ -1,4 +1,4 @@
-package edu.purdue.raj5.apartmate;
+package main.java.edu.purdue.raj5.apartmate;
 
 
 
@@ -8,11 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
@@ -27,7 +22,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-       // login();
+        login();
         register();
 
     }
@@ -35,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private void register() {
         email = (EditText)findViewById(R.id.et_email);
         password = (EditText)findViewById(R.id.et_password);
-        login = (Button)findViewById(R.id.bt_register);
+        register = (Button)findViewById(R.id.bt_register);
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
