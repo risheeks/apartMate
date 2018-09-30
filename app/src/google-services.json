@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "803263384768",
+    "firebase_url": "https://apartmate-3.firebaseio.com",
+    "project_id": "apartmate-3",
+    "storage_bucket": "apartmate-3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803263384768:android:c7f8ee4a2ed2bab4",
+        "android_client_info": {
+          "package_name": "edu.purdue.raj5.apartmate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "803263384768-bvvdd4ghkfamqb5c4c9fh13f39gmu6b0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQmSiHLMCKYL-jfJFogbV0bOk14OJD5ao"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
