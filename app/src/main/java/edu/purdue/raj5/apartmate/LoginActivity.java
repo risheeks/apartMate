@@ -3,7 +3,10 @@ package edu.purdue.raj5.apartmate;
 
 
 import android.os.Bundle;
+import android.os.Build;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,12 +29,73 @@ public class LoginActivity extends AppCompatActivity {
     Button register;
     Button exit;;
 
-    final Client sock = new Client("10.186.38.238", 9980);
+    final Client sock = new Client("10.186.35.205", 9900);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if(Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy =
+                    new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        init();
+
+        initSocketCallback();
+
+        sock.connect();
+
+    }
+
+    private void initSocketCallback() {
+        sock.setClientCallback(new Client.ClientCallback () {
+            @Override
+            public void onMessage(String message) {
+                sock.send("Back to you " + message);
+            }
+
+            @Override
+            public void onConnect(Socket socket)  {
+                sock.send("Connected");
+                //sock.disconnect();
+            }
+
+            @Override
+            public void onDisconnect(Socket socket, String message)  {
+                sock.send("Disconnecting");
+
+                try{socket.close();}catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onConnectError(Socket socket, String message) {
+            }
+        });
+    }
+
+    private void init() {
+        /*
+        * Disconnect button
+        */
+        disconnect();
+
+        /*
+             Register button
+         */
+        register();
+        /*
+             Login button
+         */
+        login();
+
+    }
+
+    private void disconnect() {
         exit  = (Button)findViewById(R.id.close);
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,53 +107,8 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-       // register();
-        sock.setClientCallback(new Client.ClientCallback () {
-            @Override
-            public void onMessage(String message) {
-                sock.send(message);
-            }
-
-            @Override
-            public void onConnect(Socket socket)  {
-                sock.send("Logging in");
-                //sock.disconnect();
-            }
-
-            @Override
-            public void onDisconnect(Socket socket, String message)  {
-                sock.send("Disconnecting");
-                try {
-                    socket.getOutputStream().write("k".getBytes());
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
-                try{socket.close();}catch (Exception e){
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void onConnectError(Socket socket, String message) {
-            }
-        });
-
-        sock.connect();
-        email = (EditText)findViewById(R.id.et_email);
-        password = (EditText)findViewById(R.id.et_password);
-        login = (Button)findViewById(R.id.bt_login);
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getApplicationContext(),email.getText()+" "+password.getText(),Toast.LENGTH_SHORT).show();
-                sock.send("YOLO");
-            }
-
-        });
-
-//        login();
     }
+
 
     private void register() {
         email = (EditText)findViewById(R.id.et_email);
@@ -99,6 +118,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getApplicationContext(),email.getText()+" "+password.getText(),Toast.LENGTH_SHORT).show();
+                sock.send("REGISTER "+email.getText()+" "+password.getText());
             }
         });
     }
@@ -112,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getApplicationContext(),email.getText()+" "+password.getText(),Toast.LENGTH_SHORT).show();
-                sock.send("YOLO");
+                sock.send("LOGIN "+email.getText()+" "+password.getText());
             }
 
         });

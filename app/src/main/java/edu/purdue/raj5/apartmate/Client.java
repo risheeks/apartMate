@@ -58,7 +58,7 @@ public class Client{
     public void disconnect() throws IOException {
         try
         {
-            listener.onDisconnect(socket, "Disconncting");
+            listener.onDisconnect(socket, "Disconnecting");
          //   socket.close();
         }
         catch (Exception e){
@@ -71,9 +71,9 @@ public class Client{
     public void send(String message){
         try{
             Log.e("Checking: ", message);
-            socketOutput.write("aaaaa".getBytes());
             socketOutput.write(message.getBytes());
         }catch(Exception e) {
+            Log.e("OOPS","ah");
             e.printStackTrace();
         }
     }
