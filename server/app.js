@@ -8,6 +8,7 @@ var svr = net.createServer(function(sock) {
     sock.write('Welcome to the server!\n');
 
     sock.on('data', function(data) {
+        console.log("received: " + data.toString())
         for (var i=0; i<sockets.length ; i++) {
             if (sockets[i] != sock) {
                 if (sockets[i]) {
@@ -26,4 +27,8 @@ var svr = net.createServer(function(sock) {
     });
 });
 
+var svraddr = '10.186.38.238';
+var svrport = 9980;
 
+svr.listen(svrport, svraddr);
+console.log('Server Created at ' + svraddr + ':' + svrport + '\n');
