@@ -30,7 +30,9 @@ public class RegisterActivity extends AppCompatActivity {
         registration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(),firstName.getText()+" "+lastName.getText()+" "+email.getText()+" "+password.getText()+" "+confirmPassword.getText(),Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(),firstName.getText()+" "+lastName.getText()+" "+email.getText()+" "+password.getText()+" "+confirmPassword.getText(),Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(RegisterActivity.this, MenuActivity.class);
+                startActivity(i);
             }
         });
     }
