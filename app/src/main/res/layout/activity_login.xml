@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.risheek.apartmate.LoginActivity">
+    tools:context=".LoginActivity">
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,14 +16,16 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/et_email"
+            android:id="@+id/et_login_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="14"
+            android:maxLines="1"
+            android:inputType="textEmailAddress"
             android:hint="@string/prompt_email" />
 
         <EditText
-            android:id="@+id/et_password"
+            android:id="@+id/et_login_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
