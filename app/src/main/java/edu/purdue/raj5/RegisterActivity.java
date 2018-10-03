@@ -19,6 +19,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        registerAccount();
     }
     private void registerAccount(){
         firstName = (EditText)findViewById(R.id.et_reg_firstName);
@@ -28,12 +29,27 @@ public class RegisterActivity extends AppCompatActivity {
         confirmPassword= (EditText)findViewById(R.id.et_reg_confirmPass);
         registration = (Button)findViewById(R.id.bt_register_action);
         registration.setOnClickListener(new View.OnClickListener() {
+              registration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Toast.makeText(getApplicationContext(),firstName.getText()+" "+lastName.getText()+" "+email.getText()+" "+password.getText()+" "+confirmPassword.getText(),Toast.LENGTH_SHORT).show();
+                if (!isValidEmailAddress(String.valueOf(email.getText()))){
+                    Toast.makeText(getApplicationContext(),"Please enter a valid email",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(!password.getText().equals(confirmPassword.getText())){
+                    Toast.makeText(getApplicationContext(),"Passwords do not match",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Intent i = new Intent(RegisterActivity.this, MenuActivity.class);
                 startActivity(i);
             }
         });
+    }
+    public final static boolean isValidEmailAddress(String emailAddress){
+        if((emailAddress != null)){
+            return android.util.Patterns.EMAIL_ADDRESS.matcher(emailAddress).matches();
+        }
+        return false;
     }
 }
