@@ -42,7 +42,6 @@ public class Client{
                     socketOutput = socket.getOutputStream();
                     socketInput = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     new ReceiveThread().start();
-
                     if(listener!=null)
                     {
                         listener.onConnect(socket);
@@ -56,6 +55,7 @@ public class Client{
     }
 
     public void disconnect() throws IOException {
+
         try
         {
             listener.onDisconnect(socket, "Disconnecting");

@@ -29,31 +29,27 @@ public class LoginActivity extends AppCompatActivity {
     Button register;
     Button exit;;
 
-    final Client sock = new Client("10.186.35.205", 9900);
+    final static Client sock = new Client("10.186.41.164", 9900);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         if(Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy =
                     new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
 
         init();
 
-        initSocketCallback();
-
-        sock.connect();
-
-    }
-
-    private void initSocketCallback() {
         sock.setClientCallback(new Client.ClientCallback () {
             @Override
             public void onMessage(String message) {
-                sock.send("Back to you " + message);
+                processResponse(message);
             }
 
             @Override
@@ -64,11 +60,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onDisconnect(Socket socket, String message)  {
-                sock.send("Disconnecting");
 
-                try{socket.close();}catch (Exception e){
-                    e.printStackTrace();
-                }
 
             }
 
@@ -76,13 +68,22 @@ public class LoginActivity extends AppCompatActivity {
             public void onConnectError(Socket socket, String message) {
             }
         });
+
+        sock.connect();
+
+    }
+
+
+
+    private void processResponse(String message) {
+        Log.e("MESSAGE RECEIVED: ",message);
     }
 
     private void init() {
         /*
         * Disconnect button
         */
-        disconnect();
+        //disconnect();
 
         /*
              Register button
