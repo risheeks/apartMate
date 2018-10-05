@@ -24,6 +24,7 @@ public class MenuActivity extends AppCompatActivity {
     private ArrayList<String> mImages = new ArrayList<>();
     ImageView iv_chatSearch;
     TextView tv_chatSearch;
+    TextView tv_message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class MenuActivity extends AppCompatActivity {
         initializeRecyclerView();
         initializeOptions();
         initializeChatSearchComponents();
+        initializeErrorMessage();
     }
     private void initializeChatSearchComponents(){
         iv_chatSearch = (ImageView)findViewById(R.id.iv_menuChatSearch);
@@ -87,6 +89,9 @@ public class MenuActivity extends AppCompatActivity {
                 popup.show(); //s
             }
         });
+    }
+    private void initializeErrorMessage(){
+        tv_message = (TextView) findViewById(R.id.tv_menuMessage);
     }
 
 
