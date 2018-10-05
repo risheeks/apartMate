@@ -1,3 +1,7 @@
+/*
+*   Initializing variables with libraries and dependencies for the server side
+*
+ */
 var net = require('net');
 var firebase = require('firebase'); //for database
 var sockets = [];
@@ -6,6 +10,10 @@ var app = firebase.initializeApp(    {databaseURL: "https://apartmate-3.firebase
 );
 var socketMap = new Map();
 var nodemailer = require('nodemailer')
+
+/*
+Transporter for the email client initialized with auth info
+ */
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -13,9 +21,14 @@ var transporter = nodemailer.createTransport({
         pass: 'adrian@123SOL'
     }
 });
+/*
+Cryptr library for encrypt and decrypt
+ */
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr('apartmate');
-
+/*
+Initialize loginMap with existing users
+ */
 const dbLoginRef = firebase.database().ref("Login").orderByKey();
 dbLoginRef.once("value")
     .then(function (snapshot) {
@@ -25,6 +38,10 @@ dbLoginRef.once("value")
         })
     });
 
+
+/*
+*Function to process user login with password encryption
+ */
 var processLogin = function (data,sock) {
     var email = data.toString().split(" ")[1];
     var password = data.toString().split(" ")[2];
@@ -50,6 +67,7 @@ var processLogin = function (data,sock) {
 };
 /*==================================================================================================================
                                       Register Function
+                                that deals with incoming requests
  ===================================================================================================================*/
 var processRegister = function (data,sock) {
     var email = data.toString().split(" ")[1];
@@ -62,10 +80,10 @@ var processRegister = function (data,sock) {
         console.log(key)
        if(value.Email == email) {
             check = true;
-           sock.write('REGISTER ACCOUNT_EXISTS\n');
+           sock.write('REGISTER ACCOUNT_EXISTS\n');         //Communicate with client
        }
     });
-
+    //Refresh the login map with newly updated data from Firebase
     const dbLoginRef = firebase.database().ref("Login").orderByKey();
     dbLoginRef.once("value")
         .then(function (snapshot) {
@@ -119,7 +137,7 @@ var processRegister = function (data,sock) {
 };
 
 /*======================================================================================================================
-                    Reset Password
+                    Reset Password function to update teh database with the new password
  =======================================================================================================================*/
 var resetPassword = function (data,sock) {
     var email = data.toString().split(" ")[1];
@@ -136,7 +154,10 @@ var resetPassword = function (data,sock) {
             })
         });
 }
-
+/*
+*   Checks if a user exists in the database
+*
+ */
 var checkUser = function (data,sock) {
     var email = data.toString().split(" ")[1];
     var check = false;
@@ -157,6 +178,11 @@ var checkUser = function (data,sock) {
     },400);
 }
 
+/*
+*   Send message to the client for chatting
+*
+*/
+
 var sendMessage = function (data,sock) {
     var senderEmail = data.toString().split(" ")[1];
     var receiverEmail =  data.toString().split(" ")[2];
@@ -172,7 +198,10 @@ var sendMessage = function (data,sock) {
 
 
 }
-
+/*
+*
+* checks password against the actual password
+ */
 var checkPassword = function (data,sock) {
     var email = data.toString().split(" ")[1];
     var password = data.toString().split(" ")[2];
@@ -195,7 +224,10 @@ var checkPassword = function (data,sock) {
         }
     },580)
 }
-
+/*
+*
+* function to send an email with a randomly generated password and updates the database
+ */
 var forgotPassword = function (data,sock) {
     var email = data.toString().split(" ")[1];
     var tempPass = Math.random().toString(36).substring(2, 15);
@@ -235,7 +267,11 @@ var forgotPassword = function (data,sock) {
         }
 
 }
-
+/*
+*
+*   Function to edit profile given input from the client. Updates fields in the database
+*
+ */
 var editProfile = function (data,sock) {
     var email = data.toString().split(";")[1];
     var firstName = data.toString().split(";")[2];
@@ -252,7 +288,10 @@ var editProfile = function (data,sock) {
     var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/GreatestAchievement");
     ref.set(greatestA);
 }
-
+/*
+*
+* Returns profile to the client with First Name, Last Name, Email, Latest Achievement, and Greatest Achievement
+ */
 var getProfile = function (data, sock) {
     var firstName;
     var lastName;
@@ -292,6 +331,10 @@ var getProfile = function (data, sock) {
     },850)
 
 }
+
+/*
+*  Starts the server with sockets listening for different input commands
+ */
 var svr = net.createServer(function(sock) {
     function processRequest(data,sock){
         var command = data.toString().split(" ")[0];
