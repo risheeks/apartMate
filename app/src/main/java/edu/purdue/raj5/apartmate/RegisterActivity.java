@@ -23,6 +23,7 @@ public class RegisterActivity extends AppCompatActivity {
     Button registration;
     TextView message;
 
+	
     final static Client socket = LoginActivity.sock;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,10 @@ public class RegisterActivity extends AppCompatActivity {
         registerAccount();
     }
 
+	/*Collects the text for registering an account. Checks validity 
+		contraints such as matching password and valid email. 
+		Sends the message to the server to add a new account and collects
+		the response.*/
     private void registerAccount() {
         firstName = (EditText) findViewById(R.id.et_reg_firstName);
         lastName = (EditText) findViewById(R.id.et_reg_lastName);
@@ -53,6 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
                     startActivity(i);
                 }else if(message.equals("REGISTER ACCOUNT_EXISTS")){
                   //  Toast.makeText(getBaseContext(),"Account Exists", Toast.LENGTH_SHORT).show();
+				  message.setText("Account is already registered.");
                 }else if(message.contains("LOGIN SUCCESS"))
                 {
                     Log.e("h","h");
@@ -99,6 +105,9 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
+	/*Pattern matcher for valid email addresses. Returns
+		True if the email is valid, false if not valid, and false 
+		if there is no email provided.*/
     public final static boolean isValidEmailAddress(String emailAddress){
         if((emailAddress != null)){
             return android.util.Patterns.EMAIL_ADDRESS.matcher(emailAddress).matches();

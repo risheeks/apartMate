@@ -47,7 +47,7 @@ class HwAdapter extends BaseAdapter {
     public ArrayList<HomeCollection>  date_collection_arr;
     private String gridvalue;
     private ListView listTeachers;
-    private ArrayList<Dialogpojo> alCustom=new ArrayList<Dialogpojo>();
+    private ArrayList<Dialogpojo> alCustom=new ArrayList<Dialogpojo>(); //ArrayList for the dialog
 
     public HwAdapter(Activity context, GregorianCalendar monthCalendar,ArrayList<HomeCollection> date_collection_arr) {
         this.date_collection_arr=date_collection_arr;
@@ -179,7 +179,9 @@ class HwAdapter extends BaseAdapter {
 
 
 
-
+/*
+* Set the view for the events on the calender
+*/
     public void setEventView(View v,int pos,TextView txt){
 
         int len=HomeCollection.date_collection_arr.size();

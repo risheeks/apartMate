@@ -39,6 +39,9 @@ import java.util.Scanner;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+/*
+*   The Java class that supports the chat component
+*/
 public class ChatActivity extends AppCompatActivity {
 
     private ListView listView;
@@ -142,19 +145,7 @@ public class ChatActivity extends AppCompatActivity {
         File directory = getFilesDir();
         File[] files = directory.listFiles();
         new File(friendName).delete();
-//        try {
-//            FileOutputStream fos = openFileOutput(friendName, Context.MODE_APPEND);
-//            fos.write((friendName + " Hello!\n").getBytes());
-//            fos.flush();
-//            fos.close();
-////            FileInputStream fis = openFileInput(friendName);
-////            Scanner scanner = new Scanner(fis);
-////            String sender = scanner.next();
-////            scanner.close();
-////            Toast.makeText(ChatActivity.this, sender, Toast.LENGTH_SHORT).show();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+
         ChatBubbles.add(new ChatBubble(friendName, sdefault));
         adapter.notifyDataSetChanged();
         //event for button SEND
