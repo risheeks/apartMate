@@ -5,6 +5,16 @@ var loginMap = new Map();
 var app = firebase.initializeApp(    {databaseURL: "https://apartmate-3.firebaseio.com",}
 );
 var socketMap = new Map();
+var nodemailer = require('nodemailer')
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'apartmate123@gmail.com',
+        pass: 'adrian@123SOL'
+    }
+});
+const Cryptr = require('cryptr');
+const cryptr = new Cryptr('apartmate');
 
 const dbLoginRef = firebase.database().ref("Login").orderByKey();
 dbLoginRef.once("value")
@@ -22,7 +32,8 @@ var processLogin = function (data,sock) {
     loginMap.forEach(function (value,key) {
         console.log(value.Email)
         if(value.Email == email) {
-            if(value.Password == password) {
+
+            if(cryptr.decrypt(value.Password) == password) {
                 c = false;
             }
         }
@@ -35,12 +46,17 @@ var processLogin = function (data,sock) {
             socketMap.set(data.toString().split(" ")[1], sock);
             sock.write('LOGIN SUCCESS\n');
         }
-    },580)
+    },700)
 };
-
+/*==================================================================================================================
+                                      Register Function
+ ===================================================================================================================*/
 var processRegister = function (data,sock) {
     var email = data.toString().split(" ")[1];
     var password = data.toString().split(" ")[2];
+    var firstName = data.toString().split(" ")[3];
+    var lastName = data.toString().split(" ")[4];
+
     var check = false;
     loginMap.forEach(function (value,key) {
         console.log(key)
@@ -50,12 +66,6 @@ var processRegister = function (data,sock) {
        }
     });
 
-    var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Email");
-
-    ref.set(email);
-    var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Password");
-
-    ref.set(password);
     const dbLoginRef = firebase.database().ref("Login").orderByKey();
     dbLoginRef.once("value")
         .then(function (snapshot) {
@@ -63,15 +73,59 @@ var processRegister = function (data,sock) {
                 var key = childSnapshot.key;
                 loginMap.set(key, childSnapshot.val());
             })
-        });    if(check == false)
-     sock.write('REGISTER SUCCESS\n');
+        });
+    setTimeout(function () {
+
+    var mailOptions = {
+        from: 'apartmate123@gmail.com',
+        to: email.toString(),
+        subject: 'Welcome to ApartMate!',
+        text: 'Your account has been verified!\nEnjoy using our app!'
+    };
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }setTimeout(function () {
+
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Email");
+                ref.set(email);
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Password");
+                ref.set(cryptr.encrypt(password));
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/FirstName");
+                ref.set(firstName);
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/LastName");
+                ref.set(lastName);
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/LatestAchievement");
+                ref.set("");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/GreatestAchievement");
+                ref.set("");
+                sock.write('REGISTER SUCCESS\n');
+            const dbLoginRef = firebase.database().ref("Login").orderByKey();
+            dbLoginRef.once("value")
+                .then(function (snapshot) {
+                    snapshot.forEach(function (childSnapshot) {
+                        var key = childSnapshot.key;
+                        loginMap.set(key, childSnapshot.val());
+                    })
+                });
+
+        },200)
+
+    });
+
+    },600);
 };
 
+/*======================================================================================================================
+                    Reset Password
+ =======================================================================================================================*/
 var resetPassword = function (data,sock) {
     var email = data.toString().split(" ")[1];
     var newPassword = data.toString().split(" ")[2];
     var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Password");
-    ref.set(newPassword);
+    ref.set(cryptr.encrypt(newPassword));
     sock.write('RESET_PASSWORD SUCCESS\n');
     const dbLoginRef = firebase.database().ref("Login").orderByKey();
     dbLoginRef.once("value")
@@ -115,10 +169,7 @@ var sendMessage = function (data,sock) {
             value.write('RECEIVE_MESSAGE '+senderEmail+' '+messageText+'\n');
         }
     });
-    if(check == true)
-    {
-        sock.write('SEND_MESSAGE USER_DISCONNECTED\n');
-    }
+
 
 }
 
@@ -129,7 +180,7 @@ var checkPassword = function (data,sock) {
     loginMap.forEach(function (value,key) {
         console.log(value.Email)
         if(value.Email == email) {
-            if(value.Password == password) {
+            if(cryptr.decrypt(value.Password) == password) {
                 c = false;
             }
         }
@@ -143,6 +194,103 @@ var checkPassword = function (data,sock) {
             sock.write('CHECK_PASSWORD SUCCESS\n');
         }
     },580)
+}
+
+var forgotPassword = function (data,sock) {
+    var email = data.toString().split(" ")[1];
+    var tempPass = Math.random().toString(36).substring(2, 15);
+    var mailOptions = {
+        from: 'apartmate123@gmail.com',
+        to: email.toString(),
+        subject: 'Temporary Password - ApartMate',
+        text: 'Here\'s a temporary password for your ApartMate account: '+tempPass +'\nPlease change it later!',
+    };
+    transporter.sendMail(mailOptions, function(error, info) {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
+    var check = true;
+    loginMap.forEach(function (value,key) {
+        if(value.Email == email) {
+            var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Password");
+            check = false;
+            ref.set(cryptr.encrypt(tempPass));
+            const dbLoginRef = firebase.database().ref("Login").orderByKey();
+            dbLoginRef.once("value")
+                .then(function (snapshot) {
+                    snapshot.forEach(function (childSnapshot) {
+                        var key = childSnapshot.key;
+                        loginMap.set(key, childSnapshot.val());
+                    })
+                });
+            sock.write('FORGOT_PASSWORD SUCCESS\n');
+            }
+
+    });
+        if(check == true){
+            sock.write('FORGOT_PASSWORD INVALID_EMAIL\n');
+        }
+
+}
+
+var editProfile = function (data,sock) {
+    var email = data.toString().split(";")[1];
+    var firstName = data.toString().split(";")[2];
+    var lastName = data.toString().split(";")[3];
+    var latestA = data.toString().split(";")[4];
+    var greatestA = data.toString().split(";")[5];
+
+    var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/FirstName");
+    ref.set(firstName);
+    var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/LastName");
+    ref.set(lastName);
+    var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/LatestAchievement");
+    ref.set(latestA);
+    var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/GreatestAchievement");
+    ref.set(greatestA);
+}
+
+var getProfile = function (data, sock) {
+    var firstName;
+    var lastName;
+    var latestA;
+    var greatestA;
+    var email;
+
+    socketMap.forEach(function (value, key) {
+        if(value == sock)
+        {
+            email = key.toString();
+        }
+    });
+    const dbLoginRef = firebase.database().ref("Login").orderByKey();
+    dbLoginRef.once("value")
+        .then(function (snapshot) {
+            snapshot.forEach(function (childSnapshot) {
+                var key = childSnapshot.key;
+                loginMap.set(key, childSnapshot.val());
+            })
+        });
+    setTimeout(function () {
+        loginMap.forEach(function (value,key) {
+            if(value.Email == email) {
+                firstName = value.FirstName;
+                lastName = value.LastName;
+                latestA = value.LatestAchievement;
+                greatestA = value.GreatestAchievement;
+            }
+        });
+    },310)
+
+    setTimeout(function () {
+
+    console.log('RECEIVE_PROFILE;'+email.toString()+';'+firstName.toString()+';'+lastName.toString()+';'+latestA.toString()+';'+greatestA)
+    sock.write('RECEIVE_PROFILE;'+email.toString()+';'+firstName.toString()+';'+lastName.toString()+';'+latestA.toString()+';'+greatestA+'\n');
+    },850)
+
 }
 var svr = net.createServer(function(sock) {
     function processRequest(data,sock){
@@ -167,9 +315,20 @@ var svr = net.createServer(function(sock) {
         else if(command == "CHECK_PASSWORD"){
             checkPassword(data,sock);
         }
+        else if(command == "FORGOT_PASSWORD"){
+            forgotPassword(data,sock);
+        }
+        else if(command == "GET_PROFILE"){
+            getProfile(data,sock);
+        }
         else
         {
             sock.write('INVALID_COMMAND\n')
+        }
+        var command2 = data.toString().split(";")[0];
+        if(command2 == "EDIT_PROFILE"){
+            editProfile(data,sock);
+
         }
 
 
@@ -197,7 +356,7 @@ var svr = net.createServer(function(sock) {
         socketMap.forEach(function (value, key) {
             if(value == sock)
             {
-                socketMap.remove(key);
+                socketMap.delete(key);
             }
         })
         if (idx != -1) {
@@ -206,8 +365,8 @@ var svr = net.createServer(function(sock) {
     });
 });
 
-var svraddr = '10.186.41.164';
-var svrport = 9900;
+var svraddr = '10.186.33.252';
+var svrport = 9910;
 
 svr.listen(svrport, svraddr);
 console.log('Server Created at ' + svraddr + ':' + svrport + '\n');
