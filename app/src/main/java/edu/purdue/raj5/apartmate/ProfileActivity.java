@@ -48,8 +48,14 @@ import java.util.Scanner;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-
+/*
+*    Class to represent a profile
+ */
 public class ProfileActivity extends AppCompatActivity {
+    /*
+    *
+    *   Declare ui components
+     */
     TextView tv_message;
 
     FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -70,6 +76,12 @@ public class ProfileActivity extends AppCompatActivity {
      EditText et_newPassword;
     EditText et_oldPassword;
     ToggleButton tb_theme;
+    /*
+    *
+    * Function to change app theme depending on "light" or "dark". Changes background color and updates text color
+    *
+    *
+     */
     public void getAppTheme(String theme) { //theme is "light" or "dark"
 
         //call this inside every activity
@@ -116,7 +128,10 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     }
-
+/*
+*   Kill activity on back button press
+*
+ */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
@@ -127,7 +142,10 @@ public class ProfileActivity extends AppCompatActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
-
+/*
+*
+* start MenuActivity to update theme
+ */
     @Override
     public void onBackPressed() {
         startActivity(new Intent(ProfileActivity.this, MenuActivity.class));
@@ -138,6 +156,10 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         initializeTextViews();
+        /*
+        *
+        * Checks theme
+         */
         String theme="";
         try {
             FileInputStream fis = openFileInput("theme");
@@ -153,7 +175,9 @@ public class ProfileActivity extends AppCompatActivity {
         else
         getAppTheme("light");
         socket.setClientCallback(new Client.ClientCallback(){
-
+            /*
+            *Handles server response
+             */
             @Override
             public void onMessage(String mess) {
                 Log.e("res", mess);
@@ -212,7 +236,10 @@ public class ProfileActivity extends AppCompatActivity {
 
         initializeButton();
         takePhoto();
-
+        /*
+        *
+        * Button listener for theme switch
+         */
         tb_theme.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton toggleButton, boolean isChecked) {
@@ -243,7 +270,10 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         }) ;
-
+        /*
+        *
+        * button listener for edit profile
+         */
         bt_changeProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -290,7 +320,10 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
-
+/*
+*
+*     Button listener to reset password
+ */
         tv_changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -317,7 +350,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
-
+/*
+*
+* Initializes ui components
+ */
     private void initializeButton(){
         tb_theme = (ToggleButton)findViewById(R.id.tb_theme);
         bt_changeProfile = (Button)findViewById(R.id.bt_profileChenge);
@@ -353,7 +389,9 @@ public class ProfileActivity extends AppCompatActivity {
         });
         */
     }
-
+/*
+*image upload
+ */
     private void selectImage(){
         final CharSequence[] items = {"Camera", "Gallery", "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
