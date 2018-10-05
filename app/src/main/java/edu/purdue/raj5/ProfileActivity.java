@@ -3,6 +3,7 @@ package com.example.dell.apartmate;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -16,6 +17,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.InputStream;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -31,6 +34,7 @@ public class ProfileActivity extends AppCompatActivity {
     TextView tv_GreatestAchievement;
     Button bt_changeProfile;
     TextView tv_changePassword;
+    TextView tv_message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +100,8 @@ public class ProfileActivity extends AppCompatActivity {
         tv_LatestAachievement = (TextView)findViewById(R.id.tv_latestAchievement);
         tv_GreatestAchievement = (TextView)findViewById(R.id.tv_greatestAchievement);
         tv_changePassword = (TextView)findViewById(R.id.tv_changePassword);
+        tv_message = (TextView) findViewById(R.id.tv_profileMessage);
+
     }
     private void takePhoto(){
         ib_camera_profile = (ImageButton)findViewById(R.id.ib_profilePhotoCamera);
@@ -154,7 +160,16 @@ public class ProfileActivity extends AppCompatActivity {
         else if(requestCode == 1){
             if (resultCode == RESULT_OK){
                 imageUri = data.getData();
-                profilePhoto.setImageURI(imageUri);
+                InputStream inputStream;
+
+                try{
+                    inputStream = getContentResolver().openInputStream(imageUri);
+                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                    profilePhoto.setImageBitmap(bitmap);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
 
             }
         }
