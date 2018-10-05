@@ -27,6 +27,7 @@ public class ScheduleActivity extends AppCompatActivity {
     public void getAppTheme(String theme) { //theme is "light" or "dark"
 
         //call this inside every activity
+        //SharedPreferences stored user data which can be retrieved later on
         SharedPreferences preferences = this.getSharedPreferences("MyTheme", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("theme", theme);
@@ -79,16 +80,17 @@ public class ScheduleActivity extends AppCompatActivity {
 
         cal_month = (GregorianCalendar) GregorianCalendar.getInstance();
         cal_month_copy = (GregorianCalendar) cal_month.clone();
-        hwAdapter = new HwAdapter(this, cal_month,HomeCollection.date_collection_arr);
+        hwAdapter = new HwAdapter(this, cal_month,HomeCollection.date_collection_arr); //call HwAdapter
 
-        tv_month = (TextView) findViewById(R.id.tv_month);
+        tv_month = (TextView) findViewById(R.id.tv_month);//find tv_month id inside the activity
         tv_month.setText(android.text.format.DateFormat.format("MMMM yyyy", cal_month));
 
 
         ImageButton previous = (ImageButton) findViewById(R.id.ib_prev);
-        previous.setOnClickListener(new View.OnClickListener() {
+        previous.setOnClickListener(new View.OnClickListener() { //set the OnClickListener on the left arrow
             @Override
             public void onClick(View v) {
+                //set minimum date of the calender
                 if (cal_month.get(GregorianCalendar.MONTH) == 4&&cal_month.get(GregorianCalendar.YEAR)==2017) {
                     //cal_month.set((cal_month.get(GregorianCalendar.YEAR) - 1), cal_month.getActualMaximum(GregorianCalendar.MONTH), 1);
                     Toast.makeText(ScheduleActivity.this, "Event Detail is available for current session only.", Toast.LENGTH_SHORT).show();
@@ -102,9 +104,11 @@ public class ScheduleActivity extends AppCompatActivity {
             }
         });
         ImageButton next = (ImageButton) findViewById(R.id.Ib_next);
+        //set the OnClickListener on the rigth arrow
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+              //set maximum date of the calender
                 if (cal_month.get(GregorianCalendar.MONTH) == 2&&cal_month.get(GregorianCalendar.YEAR)==2019) {
                     //cal_month.set((cal_month.get(GregorianCalendar.YEAR) + 1), cal_month.getActualMinimum(GregorianCalendar.MONTH), 1);
                     Toast.makeText(ScheduleActivity.this, "Event Detail is available for current session only.", Toast.LENGTH_SHORT).show();
@@ -126,6 +130,9 @@ public class ScheduleActivity extends AppCompatActivity {
 
         });
     }
+    /*
+    * Set the next month inside the calender
+    */
     protected void setNextMonth() {
         if (cal_month.get(GregorianCalendar.MONTH) == cal_month.getActualMaximum(GregorianCalendar.MONTH)) {
             cal_month.set((cal_month.get(GregorianCalendar.YEAR) + 1), cal_month.getActualMinimum(GregorianCalendar.MONTH), 1);
@@ -134,7 +141,9 @@ public class ScheduleActivity extends AppCompatActivity {
                     cal_month.get(GregorianCalendar.MONTH) + 1);
         }
     }
-
+    /*
+    * Set the previous month inside the calender
+    */
     protected void setPreviousMonth() {
         if (cal_month.get(GregorianCalendar.MONTH) == cal_month.getActualMinimum(GregorianCalendar.MONTH)) {
             cal_month.set((cal_month.get(GregorianCalendar.YEAR) - 1), cal_month.getActualMaximum(GregorianCalendar.MONTH), 1);
@@ -142,7 +151,9 @@ public class ScheduleActivity extends AppCompatActivity {
             cal_month.set(GregorianCalendar.MONTH, cal_month.get(GregorianCalendar.MONTH) - 1);
         }
     }
-
+    /*
+    * Refresh the calender
+    */
     public void refreshCalendar() {
         hwAdapter.refreshDays();
         hwAdapter.notifyDataSetChanged();
