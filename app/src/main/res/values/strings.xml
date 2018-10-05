@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">ApartMate</string>
+
+    <!-- Strings related to login -->
     <string name="action_register">Register</string>
     <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
+    <string name="prompt_password">Password (optional)</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
@@ -17,4 +19,13 @@
     <string name="register_email">Email</string>
     <string name="register_password">Password</string>
     <string name="register_confirm_Password">Confirm Password</string>
+    <string name="some_field_empty">Please Enter All the fields</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="apply_changes">Apply Changes</string>
+    <string name="latest_achievement">Latest Achievement</string>
+    <string name="greatest_achievement">Greatest Achievement</string>
+    <string name="reset_Password">Reset PAssword</string>
+    <string name="edit_profile">Edit Profile</string>
 </resources>

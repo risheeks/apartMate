@@ -52,7 +52,7 @@ public class RegisterActivity extends AppCompatActivity {
                     Intent i = new Intent(getBaseContext(), MenuActivity.class);
                     startActivity(i);
                 }else if(message.equals("REGISTER ACCOUNT_EXISTS")){
-                    Toast.makeText(getBaseContext(),"Account Exists", Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(getBaseContext(),"Account Exists", Toast.LENGTH_SHORT).show();
                 }else if(message.contains("LOGIN SUCCESS"))
                 {
                     Log.e("h","h");
@@ -94,7 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
                     message.setText(R.string.some_field_empty);
                     return;
                 }
-                socket.send("REGISTER "+email.getText()+" "+password.getText());
+                socket.send("REGISTER "+email.getText()+" "+password.getText()+" "+firstName.getText().toString()+" "+lastName.getText().toString());
 
             }
         });

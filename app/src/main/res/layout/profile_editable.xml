@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_gravity="center">
+
+
+        <EditText
+            android:id="@+id/et_profile_firstName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:layout_gravity="center"
+            android:hint="@string/register_first_Name"
+            android:padding="10dp"
+            />
+
+        <EditText
+            android:id="@+id/et_profile_lastName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:layout_gravity="center"
+            android:hint="@string/register_last_Name"
+            android:padding="10dp"
+            />
+
+        <EditText
+            android:id="@+id/et_latestAchievement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:layout_gravity="center"
+            android:hint="@string/latest_achievement"
+            android:padding="10dp"
+            />
+        <EditText
+            android:id="@+id/et_greatestAchievement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:layout_gravity="center"
+            android:hint="@string/greatest_achievement"
+            android:padding="10dp"/>
+        <Button
+            android:id="@+id/bt_profileEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:text="@string/apply_changes"
+            android:layout_gravity="center"/>
+
+</LinearLayout>

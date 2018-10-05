@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Build;
 import android.os.StrictMode;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.KeyListener;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     Button register;
     TextView forgotPass;
     TextView message;
+    static String currentUser;
      static Client sock;
 
     @Override
@@ -42,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
                     new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-        sock = new Client("10.186.47.140", 9910);
+        sock = new Client("10.186.33.252", 9910);
 
         super.onCreate(savedInstanceState);
 
@@ -83,17 +86,25 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-    private void processResponse(String message) {
-        Log.e("MESSAGE RECEIVED: ","'"+message+"'");
+    private void processResponse(String mess) {
+        Log.e("MESSAGE RECEIVED: ","'"+mess+"'");
         Log.e("aaaa","Asasas");
 
-        if(message.contains("LOGIN SUCCESS"))
+        if(mess.contains("LOGIN SUCCESS"))
         {
             Log.e("h","h");
             Intent i = new Intent(getBaseContext(), MenuActivity.class);
             startActivity(i);
-        }else if(message.contains("LOGIN FAILURE")){
-            Toast.makeText(LoginActivity.this,"Inalid Email or Password", Toast.LENGTH_SHORT).show();
+        }else if(mess.contains("LOGIN FAILURE")){
+            message.setText("Invalid username or password");
+        }
+        else if(mess.contains("FORGOT_PASSWORD")){
+            if(mess.contains("SUCCESS")){
+                message.setText("Email sent");
+            }
+            else{
+                message.setText("Invalid email");
+            }
         }
         else
         {
@@ -124,6 +135,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void register() {
         email = (EditText)findViewById(R.id.et_login_email);
+        currentUser = email.getText().toString();
         password = (EditText)findViewById(R.id.et_login_password);
         register = (Button)findViewById(R.id.bt_register);
         register.setOnClickListener(new View.OnClickListener() {
@@ -140,6 +152,7 @@ public class LoginActivity extends AppCompatActivity {
     private void login()
     {
         email = (EditText)findViewById(R.id.et_login_email);
+        currentUser = email.getText().toString();
         password = (EditText)findViewById(R.id.et_login_password);
         login = (Button)findViewById(R.id.bt_login);
         login.setOnClickListener(new View.OnClickListener() {
@@ -167,8 +180,20 @@ public class LoginActivity extends AppCompatActivity {
         forgotPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(LoginActivity.this, "Well, that is your problem",Toast.LENGTH_SHORT);
-                message.setText(R.string.forgot_password);
+                AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                View view = LayoutInflater.from(LoginActivity.this).inflate(R.layout.forgot_password,null);
+                final EditText et_forgotPassword = (EditText) view.findViewById(R.id.et_forgotPassword);
+                Button bt_forgotPass = (Button) view.findViewById(R.id.bt_forgotPasswordAction);
+                builder.setView(view);
+                AlertDialog dialog = builder.create();
+                bt_forgotPass.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        sock.send("FORGOT_PASSWORD "+et_forgotPassword.getText().toString());
+                    }
+                });
+                dialog.show();
+
             }
         });
     }
