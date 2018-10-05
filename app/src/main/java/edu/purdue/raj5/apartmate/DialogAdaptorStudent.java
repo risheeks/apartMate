@@ -23,7 +23,9 @@ class DialogAdaptorStudent extends BaseAdapter {
         this.alCustom = alCustom;
 
     }
-
+/*
+* get the total events 
+*/
     @Override
     public int getCount() {
         return alCustom.size();
@@ -34,12 +36,17 @@ class DialogAdaptorStudent extends BaseAdapter {
     public Object getItem(int i) {
         return alCustom.get(i);
     }
-
+/*
+* get the id for each event
+*/
     @Override
     public long getItemId(int i) {
         return i;
     }
-
+/*
+* Set the Title, Subject, Due Date, and Description for each event
+* returns a View with the event detail
+*/
     @TargetApi(Build.VERSION_CODES.O)
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {

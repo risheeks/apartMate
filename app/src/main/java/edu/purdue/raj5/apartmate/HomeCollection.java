@@ -2,7 +2,10 @@ package edu.purdue.raj5.apartmate;
 
 
 import java.util.ArrayList;
-
+/*
+* Class for the details within the event
+* Set the date, name, subject, description
+*/
 class HomeCollection {
     public String date="";
     public String name="";

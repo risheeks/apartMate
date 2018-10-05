@@ -24,13 +24,15 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+// This acts as the home page in the project. 
+
 public class MenuActivity extends AppCompatActivity {
-    ImageView optionsButton;
-    private ArrayList<String> mNames = new ArrayList<>();
-    private ArrayList<String> mImages = new ArrayList<>();
-    ImageView iv_chatSearch;
-    TextView et_chatSearch;
-    TextView tv_message;
+    ImageView optionsButton; // This is the options button in this page.
+    private ArrayList<String> mNames = new ArrayList<>(); // This contains the group names
+    private ArrayList<String> mImages = new ArrayList<>(); // This contains the group images
+    ImageView iv_chatSearch; // This is the search image. This is how you converse with other people.
+    TextView et_chatSearch; // This is where you type the email of the person you want to message
+    TextView tv_message; // This is used if there are any errors.
     public void getAppTheme(String theme) { //theme is "light" or "dark"
 
         //call this inside every activity
@@ -42,7 +44,7 @@ public class MenuActivity extends AppCompatActivity {
         et_chatSearch = (TextView)findViewById(R.id.et_chatSearch);
         optionsButton = (ImageView)findViewById(R.id.iv_menuOptions);
         LinearLayout ll = (LinearLayout)findViewById(R.id.ll);
-
+// The following code is used for theme preferences.
         String s = preferences.getString("theme", "");
         if(s.equals("dark")) {
             ll.setBackgroundColor(Color.DKGRAY);
@@ -108,7 +110,7 @@ public class MenuActivity extends AppCompatActivity {
         initializeOptions();
         initializeChatSearchComponents();
     }
-
+// This method is called in the onCreate. This is used to set theme according to the user's preferences.
     private void initializeTheme() {
         String theme="";
         try {
@@ -126,7 +128,8 @@ public class MenuActivity extends AppCompatActivity {
         else
             getAppTheme("light");
     }
-
+    // This method initializes the textView for chatText and the search Image. If a valid email was entered in the search, he should 
+// indent to chat Activity
     private void initializeChatSearchComponents(){
         iv_chatSearch = (ImageView)findViewById(R.id.iv_menuChatSearch);
         et_chatSearch = (TextView)findViewById(R.id.et_chatSearch);
@@ -139,16 +142,19 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
     }
+    // This is an item in the recyclerView. It will include all the groups the user is part of.
     private void initializeBitMaps(){
         mImages.add("https://i.redd.it/tpsnoz5bzo501.jpg");
         mNames.add("Wassup fellas");
     }
+    // This initializes all the recyclerViews.
     private void initializeRecyclerView(){
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.rv_groupNames);
         MenuRecyclerViewAdaptor adaptor = new MenuRecyclerViewAdaptor(this, mNames, mImages);
         recyclerView.setAdapter(adaptor);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
+    // This initializes all the options. A pop-up menu is included in this. 
     private void initializeOptions(){
         optionsButton = (ImageView)findViewById(R.id.iv_menuOptions);
         optionsButton.setOnClickListener(new View.OnClickListener() {
@@ -183,7 +189,7 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
     }
-
+// If there are any error messages, it will be posted in this textView.
     private void initializeErrorMessage(){
         tv_message = (TextView) findViewById(R.id.tv_menuMessage);
     }
