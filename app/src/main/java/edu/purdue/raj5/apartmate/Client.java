@@ -23,13 +23,14 @@ public class Client{
     private int port;
     private ClientCallback listener = null;
 
+	/*constructor for the Client class*/
     public Client(String ip, int port)
     {
         this.ip = ip;
         this.port = port;
     }
 
-
+	/*On start, connects the app to the server at ip and port.*/
     public void connect()
     {
         new Thread(new Runnable() {
@@ -54,6 +55,7 @@ public class Client{
         }).start();
     }
 
+	/*Disconnects from server.*/
     public void disconnect() throws IOException {
 
         try
@@ -68,6 +70,7 @@ public class Client{
         }
     }
 
+	/*Sends the message to the server on the global socket object*/
     public void send(String message){
         try{
             Log.e("Checking: ", message);
@@ -78,6 +81,7 @@ public class Client{
         }
     }
 
+	/*Starts a new thread when there is a connection to the server.*/
     private class ReceiveThread extends Thread implements Runnable{
         public void run(){
             String message;
@@ -100,6 +104,7 @@ public class Client{
         }
     }
 
+	
     public void setClientCallback(ClientCallback listener){
         this.listener = listener;
     }
@@ -108,6 +113,7 @@ public class Client{
         this.listener = null;
     }
 
+	/*Called when the client recieves something.*/
     public interface ClientCallback{
         void onMessage(String message);
         void onConnect(Socket socket) throws IOException;

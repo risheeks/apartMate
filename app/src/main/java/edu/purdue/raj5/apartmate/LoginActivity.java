@@ -85,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-
+	/*Processes the message recieved from the server.*/
     private void processResponse(String mess) {
         Log.e("MESSAGE RECEIVED: ","'"+mess+"'");
         Log.e("aaaa","Asasas");
@@ -115,6 +115,8 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+	/*Creates the register, login, and forgot password buttons,
+		and sets up the listeners.*/
     private void init() {
 
 
@@ -132,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-
+	/*Creates the listener for the register button. Starts the register activity on click.*/
     private void register() {
         email = (EditText)findViewById(R.id.et_login_email);
         currentUser = email.getText().toString();
@@ -144,11 +146,12 @@ public class LoginActivity extends AppCompatActivity {
                 message.setText("");
                 Intent i = new Intent(getBaseContext(), RegisterActivity.class);
                 startActivity(i);
-                Toast.makeText(getApplicationContext(),email.getText()+" "+password.getText(),Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(),email.getText()+" "+password.getText(),Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+	/*Creates listener for for the login button, sends login message to server.*/
     private void login()
     {
         email = (EditText)findViewById(R.id.et_login_email);
@@ -171,6 +174,8 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+	/*Creates the listener for the forgot password button. Makes a small
+		dialog box to input email. Sends message to server*/
     private void forgotPassword(){
         forgotPass = (TextView)findViewById(R.id.tv_forgotPass);
         message = (TextView)findViewById(R.id.tv_login_message);
