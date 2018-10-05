@@ -17,19 +17,20 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-
+// Adaptor is something that is absolutely needed for a recyclerView
 public class MenuRecyclerViewAdaptor extends RecyclerView.Adapter<MenuRecyclerViewAdaptor.ViewHolder> {
     private static final String TAG = "MenuRecyclerViewAdaptor";
-    private ArrayList<String> mGroupNames = new ArrayList<>();
-    private ArrayList<String> mGroupPhotos = new ArrayList<>();
+    private ArrayList<String> mGroupNames = new ArrayList<>(); // All the group Names as the name says.
+    private ArrayList<String> mGroupPhotos = new ArrayList<>(); // All the group photos as the name says.
     private Context mContext;
 
+    //Constructor of the MenuRecyclerViewAdaptor class
     public MenuRecyclerViewAdaptor(Context mContext, ArrayList<String> mGroupNames, ArrayList<String> mGroupPhotos) {
         this.mGroupNames = mGroupNames;
         this.mGroupPhotos = mGroupPhotos;
         this.mContext = mContext;
     }
-
+// These are the three methods that needs to be implemented. 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -47,6 +48,7 @@ public class MenuRecyclerViewAdaptor extends RecyclerView.Adapter<MenuRecyclerVi
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: "+mGroupNames.get(i));
+                // Currently just included the next line for 
                 Toast.makeText(mContext, mGroupNames.get(i), Toast.LENGTH_SHORT).show();
 
             }
@@ -58,7 +60,7 @@ public class MenuRecyclerViewAdaptor extends RecyclerView.Adapter<MenuRecyclerVi
     public int getItemCount() {
         return mGroupNames.size();
     }
-
+    // This viewholder is used to assist the xml components.
     public class ViewHolder extends RecyclerView.ViewHolder{
         CircleImageView groupPhoto;
         TextView groupName;
