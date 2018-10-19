@@ -48,7 +48,8 @@ public class MenuRecyclerViewAdaptor extends RecyclerView.Adapter<MenuRecyclerVi
             public void onClick(View v) {
                 Log.d(TAG, "onClick: "+mGroupNames.get(i));
                 Toast.makeText(mContext, mGroupNames.get(i), Toast.LENGTH_SHORT).show();
-
+                Intent intent = new Intent(mContext,GroupTabsActivity.class);
+                mContext.startActivity(intent);
             }
         });
 
