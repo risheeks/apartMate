@@ -28,4 +28,5 @@
     <string name="greatest_achievement">Greatest Achievement</string>
     <string name="reset_Password">Reset PAssword</string>
     <string name="edit_profile">Edit Profile</string>
+    <string name="schedule_subject">Subject</string>
 </resources>

@@ -1,4 +1,4 @@
-package edu.purdue.raj5.apartmate;
+package com.example.sid.apartmate;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

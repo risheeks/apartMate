@@ -1,4 +1,4 @@
-package edu.purdue.raj5.apartmate;
+package com.example.sid.apartmate;
 
 
 import java.util.ArrayList;
