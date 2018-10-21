@@ -6,6 +6,7 @@ var net = require('net');
 var firebase = require('firebase'); //for database
 var sockets = [];
 var loginMap = new Map();
+var groupMap = new Map();
 var app = firebase.initializeApp(    {databaseURL: "https://apartmate-3.firebaseio.com",}
 );
 var socketMap = new Map();
@@ -35,6 +36,15 @@ dbLoginRef.once("value")
         snapshot.forEach(function (childSnapshot) {
             var key = childSnapshot.key;
             loginMap.set(key, childSnapshot.val());
+        })
+    });
+const dbGroupRef = firebase.database().ref("Groups").orderByKey();
+dbGroupRef.once("value")
+    .then(function (snapshot) {
+        snapshot.forEach(function (childSnapshot) {
+            var key = childSnapshot.key;
+            console.log(key+" "+childSnapshot.val())
+            groupMap.set(key, childSnapshot);
         })
     });
 
@@ -195,8 +205,6 @@ var sendMessage = function (data,sock) {
             value.write('RECEIVE_MESSAGE '+senderEmail+' '+messageText+'\n');
         }
     });
-
-
 }
 /*
 *
@@ -322,14 +330,117 @@ var getProfile = function (data, sock) {
                 greatestA = value.GreatestAchievement;
             }
         });
-    },310)
+    },180)
 
     setTimeout(function () {
-
     console.log('RECEIVE_PROFILE;'+email.toString()+';'+firstName.toString()+';'+lastName.toString()+';'+latestA.toString()+';'+greatestA)
     sock.write('RECEIVE_PROFILE;'+email.toString()+';'+firstName.toString()+';'+lastName.toString()+';'+latestA.toString()+';'+greatestA+'\n');
-    },850)
+    },600)
 
+}
+
+
+var createGroup = function(data,sock){
+    var email = data.toString().split(";")[1];
+    var groupName = data.toString().split(";")[2];
+    var checkGroup = false;
+    checkUser = false;
+    groupMap.forEach(function (value,key) {
+       if(key == groupName)
+       {
+           console.log("equal")
+           checkGroup = true;
+       }
+    });
+    loginMap.forEach(function (value,key) {
+        if(value.Email == email) {
+            checkUser = true;
+        }
+    });
+    setTimeout(function () {
+        if(checkGroup == false && checkUser == true) {
+            var ref = firebase.database().ref("Groups/" + groupName + "/");
+            ref.set(email+";");
+            var ref = firebase.database().ref("Login/" + email.split("@")[0] + "/Group");
+            ref.set(groupName);
+            sock.write('CREATE_GROUP SUCCESS\n');
+            dbGroupRef.once("value")
+                .then(function (snapshot) {
+                    snapshot.forEach(function (childSnapshot) {
+                        var key = childSnapshot.key;
+                        console.log(key+" "+childSnapshot.val())
+                        groupMap.set(key, childSnapshot);
+                    })
+                });
+        }
+        else if(checkUser == false)
+        {
+            sock.write('CREATE_GROUP INVALID_USER\n')
+        }
+        else
+        {
+            sock.write('CREATE_GROUP GROUP_EXISTS\n')
+        }
+    },300);
+
+    //var ref = firebase.database().ref("Groups/" + email.toString().split("@")[0]+"/GroupName/"+groupName.toString()+"/Users");
+    //ref.set(email);
+}
+
+var addToGroup = function(data,sock){
+    var email = data.toString().split(";")[1];
+    var groupName = data.toString().split(";")[2];
+    var ref1 = firebase.database().ref("Groups/" + groupName + "/");
+    var ids;
+    ref1.on("value",function (snapshot) {
+        ids = snapshot.val();
+    });
+    setTimeout(function () {
+        var r =  firebase.database().ref("Groups/" + groupName + "/");
+        r.set(ids+email+";");
+        var ref2 = firebase.database().ref("Login/" + email.split("@")[0] + "/Group");
+        ref2.set(groupName);
+        dbGroupRef.once("value")
+            .then(function (snapshot) {
+                snapshot.forEach(function (childSnapshot) {
+                    var key = childSnapshot.key;
+                    console.log(key+" "+childSnapshot.val())
+                    groupMap.set(key, childSnapshot);
+                })
+            });
+
+    },300);
+
+
+    sock.write('ADD_GROUP SUCCESS\n')
+
+}
+
+var sendGroupMessage = function(data,sock)
+{
+    var senderEmail = data.toString().split(";")[1];
+    var groupName =  data.toString().split(";")[2];
+    var messageText =  data.toString().substr(data.toString().indexOf(groupName)+groupName.length+1);
+    var check = true;
+    var emails;
+    groupMap.forEach(function (value,key) {
+        console.log("Key: "+key)
+        if(key == groupName) {
+             emails = value.val().toString().split(";");
+            console.log(emails)
+        }
+    });
+    setTimeout(function () {
+        emails.forEach(function (val) {
+            socketMap.forEach(function (value, key) {
+                if(key == val)
+                {
+                    check = false;
+                    value.write('RECEIVE_GROUPM;'+senderEmail+';'+groupName+';'+messageText+'\n');
+                }
+            });
+        })
+    },250)
 }
 
 /*
@@ -373,7 +484,18 @@ var svr = net.createServer(function(sock) {
             editProfile(data,sock);
 
         }
-
+        else if(command2 == "CREATE_GROUP")
+        {
+            createGroup(data,sock);
+        }
+        else if(command2 == "ADD_GROUP")
+        {
+            addToGroup(data,sock);
+        }
+        else if(command2 == "SEND_GROUPM")
+        {
+            sendGroupMessage(data,sock);
+        }
 
     }
     console.log('Connected: ' + sock.remoteAddress + ':' + sock.remotePort);
@@ -408,7 +530,7 @@ var svr = net.createServer(function(sock) {
     });
 });
 
-var svraddr = '10.186.33.252';
+var svraddr = '10.186.84.70';
 var svrport = 9910;
 
 svr.listen(svrport, svraddr);
