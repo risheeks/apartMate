@@ -530,7 +530,7 @@ var svr = net.createServer(function(sock) {
     });
 });
 
-var svraddr = '0.0.0.0';
+var svraddr = '10.0.0.16';
 var svrport = 9910;
 
 svr.listen(svrport, svraddr);
