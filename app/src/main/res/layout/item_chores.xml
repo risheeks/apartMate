@@ -9,12 +9,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/tv_choreName"
         android:hint="Chore"
         android:layout_weight="5"
         />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/tv_choreByWho"
         android:hint="Who"
         android:layout_weight="5"
         />
@@ -22,6 +24,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/tv_choreDescription"
         android:hint="Chore Description"
         />
     <LinearLayout
@@ -30,12 +33,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/tv_choreDate"
             android:hint="Date"
+            android:inputType="date"
             android:layout_weight="5"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/tv_choreTime"
             android:hint="Time"
+            android:inputType="time"
             android:layout_weight="5"/>
     </LinearLayout>
 
