@@ -40,9 +40,9 @@ public class GroupChatFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_group_chat_tab, container, false);
         ChatBubbles = new ArrayList<>();
 
-        listView = (ListView) getView().findViewById(R.id.list_msg);
-        btnSend = getView().findViewById(R.id.btn_chat_send);
-        editText = (EditText) getView().findViewById(R.id.msg_type);
+        listView = (ListView) rootView.findViewById(R.id.list_msg);
+        btnSend = rootView.findViewById(R.id.btn_chat_send);
+        editText = (EditText) rootView.findViewById(R.id.msg_type);
 
         //set ListView adapter first
         adapter = new MessageAdapter(getActivity(), R.layout.left_chat_bubble, ChatBubbles);
