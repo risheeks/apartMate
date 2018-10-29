@@ -1,18 +1,12 @@
-package com.example.sid.apartmate;
+package edu.purdue.raj5.apartmate;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.renderscript.ScriptGroup;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -20,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.AlertDialog.Builder;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -51,65 +44,11 @@ public class ScheduleActivity extends AppCompatActivity {
 
 
     }
-    public void alerV() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add event");
-
-// Set up the input
-
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-
-        // Add a TextView here for the "Title" label, as noted in the comments
-        final EditText titleBox = new EditText(this);
-        titleBox.setHint("Subject");
-        titleBox.setInputType(InputType.TYPE_CLASS_TEXT);
-        layout.addView(titleBox); // Notice this is an add method
-
-        // Add another TextView here for the "Description" label
-        final EditText descriptionBox = new EditText(this);
-        descriptionBox.setHint("Description");
-        descriptionBox.setInputType(InputType.TYPE_CLASS_TEXT);
-        layout.addView(descriptionBox); // Another add method
-
-        final EditText nameBox = new EditText(this);
-        nameBox.setHint("Name");
-        nameBox.setInputType(InputType.TYPE_CLASS_TEXT);
-        layout.addView(nameBox); // Another add method
-
-        final EditText dateBox = new EditText(this);
-        dateBox.setHint("Date(YYYY-MM-DD)");
-        dateBox.setInputType(InputType.TYPE_CLASS_DATETIME);
-        layout.addView(dateBox); // Another add method
-
-        builder.setView(layout);
-
-        // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //Add event to the Calender
-                HomeCollection.date_collection_arr.add( new HomeCollection(dateBox.getText().toString() ,nameBox.getText().toString(),titleBox.getText().toString(),descriptionBox.getText().toString()));
-                refreshCalendar();
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
-
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
         String theme="";
-        HomeCollection.date_collection_arr=new ArrayList<HomeCollection>();
         try {
             FileInputStream fis = openFileInput("theme");
             Scanner scanner = new Scanner(fis);
@@ -125,17 +64,9 @@ public class ScheduleActivity extends AppCompatActivity {
         else
             getAppTheme("light");
 
-        Button addButton = (Button) findViewById(R.id.add_to_schedule);
-        addButton.setOnClickListener(new View.OnClickListener() { //set the OnClickListener on the left arrow
-            @Override
-            public void onClick(View v) {
-                alerV();
-
-            }
-        });
-
-        HomeCollection.date_collection_arr.add( new HomeCollection("2018-07-08" ,"Diwali","Chore","this is holiday"));
-        HomeCollection.date_collection_arr.add( new HomeCollection("2018-07-08" ,"Holi","Chore","this is holiday"));
+        HomeCollection.date_collection_arr=new ArrayList<HomeCollection>();
+        HomeCollection.date_collection_arr.add( new HomeCollection("2018-07-08" ,"Diwali","Holiday","this is holiday"));
+        HomeCollection.date_collection_arr.add( new HomeCollection("2018-07-08" ,"Holi","Holiday","this is holiday"));
         HomeCollection.date_collection_arr.add( new HomeCollection("2018-07-08" ,"Statehood Day","Holiday","this is holiday"));
         HomeCollection.date_collection_arr.add( new HomeCollection("2018-08-08" ,"Republic Unian","Holiday","this is holiday"));
         HomeCollection.date_collection_arr.add( new HomeCollection("2018-07-09" ,"ABC","Holiday","this is holiday"));

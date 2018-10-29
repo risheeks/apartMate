@@ -48,23 +48,23 @@ public class RegisterActivity extends AppCompatActivity {
         socket.setClientCallback(new Client.ClientCallback (){
 
             @Override
-            public void onMessage(String message) {
-                Log.e("MESSAGE RECEIVED: ",message);
+            public void onMessage(String mess) {
+                Log.e("MESSAGE RECEIVED: ",mess);
 
-                if(message.equals("REGISTER SUCCESS"))
+                if(mess.equals("REGISTER SUCCESS"))
                 {
                     Log.e("h","h");
                     Intent i = new Intent(getBaseContext(), MenuActivity.class);
                     startActivity(i);
-                }else if(message.equals("REGISTER ACCOUNT_EXISTS")){
+                }else if(mess.equals("REGISTER ACCOUNT_EXISTS")){
                   //  Toast.makeText(getBaseContext(),"Account Exists", Toast.LENGTH_SHORT).show();
 				  message.setText("Account is already registered.");
-                }else if(message.contains("LOGIN SUCCESS"))
+                }else if(mess.contains("LOGIN SUCCESS"))
                 {
                     Log.e("h","h");
                     Intent i = new Intent(getBaseContext(), MenuActivity.class);
                     startActivity(i);
-                }else if(message.contains("LOGIN FAILURE")){
+                }else if(mess.contains("LOGIN FAILURE")){
                    // Toast.makeText(getBaseContext(),"Inalid Email or Password", Toast.LENGTH_SHORT).show();
                 }
             }

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.ImageViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,6 +35,7 @@ public class MenuActivity extends AppCompatActivity {
     ImageView iv_chatSearch; // This is the search image. This is how you converse with other people.
     TextView et_chatSearch; // This is where you type the email of the person you want to message
     TextView tv_message; // This is used if there are any errors.
+    String email;
     public void getAppTheme(String theme) { //theme is "light" or "dark"
 
         //call this inside every activity
@@ -72,9 +75,30 @@ public class MenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu);
         initializeTheme();
         initializeErrorMessage();
+        Intent intent = getIntent();
+        email = intent.getExtras().getString("Email");
       //  Toolbar mToolBar = (Toolbar)findViewById(R.id.tb_menu);
       //  setSupportActionBar(mToolBar);
-
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab1);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Create Group", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                LoginActivity.sock.send("CREATE_GROUP;"+email+";friends");
+            }
+        });
+        FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Add Group", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+              //  LoginActivity.sock.send("CREATE_GROUP;"+email+";friends");
+                Intent i = new Intent(MenuActivity.this, GroupChatActivity.class);
+                startActivity(i);
+            }
+        });
         LoginActivity.sock.setClientCallback(new Client.ClientCallback () {
             @Override
             public void onMessage(String message) {

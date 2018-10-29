@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
                     new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-        sock = new Client("10.186.33.252", 9910);
+        sock = new Client("10.186.87.131", 9910);
 
         super.onCreate(savedInstanceState);
 
@@ -94,6 +94,7 @@ public class LoginActivity extends AppCompatActivity {
         {
             Log.e("h","h");
             Intent i = new Intent(getBaseContext(), MenuActivity.class);
+            i.putExtra("Email",email.getText().toString());
             startActivity(i);
         }else if(mess.contains("LOGIN FAILURE")){
             message.setText("Invalid username or password");
@@ -190,11 +191,12 @@ public class LoginActivity extends AppCompatActivity {
                 final EditText et_forgotPassword = (EditText) view.findViewById(R.id.et_forgotPassword);
                 Button bt_forgotPass = (Button) view.findViewById(R.id.bt_forgotPasswordAction);
                 builder.setView(view);
-                AlertDialog dialog = builder.create();
+                final AlertDialog dialog = builder.create();
                 bt_forgotPass.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         sock.send("FORGOT_PASSWORD "+et_forgotPassword.getText().toString());
+                        dialog.dismiss();
                     }
                 });
                 dialog.show();
