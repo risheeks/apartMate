@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -36,9 +37,12 @@ public class GroceryAdaptor extends RecyclerView.Adapter<GroceryAdaptor.ViewHold
         return 0;
     }
     public class ViewHolder extends RecyclerView.ViewHolder{
-
+        TextView groceryName;
+        TextView groceryNumItems;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            groceryName = (TextView) itemView.findViewById(R.id.tv_groceryName);
+            groceryNumItems = (TextView) itemView.findViewById(R.id.tv_groceryNumItems);
 
         }
     }
