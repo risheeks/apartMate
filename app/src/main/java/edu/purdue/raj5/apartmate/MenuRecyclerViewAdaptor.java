@@ -1,6 +1,8 @@
 package edu.purdue.raj5.apartmate;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -49,7 +51,8 @@ public class MenuRecyclerViewAdaptor extends RecyclerView.Adapter<MenuRecyclerVi
             public void onClick(View v) {
                 Log.d(TAG, "onClick: "+mGroupNames.get(i));
                 // Currently just included the next line for 
-                Toast.makeText(mContext, mGroupNames.get(i), Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(mContext,GroupTabsActivity.class);
+                mContext.startActivity(i);
 
             }
         });

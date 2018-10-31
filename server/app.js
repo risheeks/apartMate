@@ -105,14 +105,14 @@ var processRegister = function (data,sock) {
     setTimeout(function () {
 
     var mailOptions = {
-        /*from: 'apartmate123@gmail.com',
+        from: 'apartmate123@gmail.com',
         to: email.toString(),
         subject: 'Welcome to ApartMate!',
-        text: 'Your account has been verified!\nEnjoy using our app!'*/
+        text: 'Your account has been verified!\nEnjoy using our app!'
     };
     transporter.sendMail(mailOptions, function(error, info){
         if (error) {
-            //console.log(error);
+            console.log(error);
         } else {
             console.log('Email sent: ' + info.response);
         }setTimeout(function () {
@@ -530,7 +530,7 @@ var svr = net.createServer(function(sock) {
     });
 });
 
-var svraddr = '10.186.179.21';
+var svraddr = '10.186.87.131';
 var svrport = 9910;
 
 svr.listen(svrport, svraddr);

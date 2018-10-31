@@ -1,4 +1,4 @@
-package com.example.sid.apartmate;
+package edu.purdue.raj5.apartmate;
 /*
 * POJO Class for the event dialog
 * set and get the titles, subjects, types, duedates
