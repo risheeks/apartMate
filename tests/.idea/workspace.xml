@@ -15,10 +15,10 @@
     <session id="-269280393">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="3" />
           <entry key="project.open.time.12" value="1" />
-          <entry key="project.open.time.31" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.open.time.31" value="2" />
+          <entry key="project.opened" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -34,12 +34,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="java" value="1742" />
+          <entry key="java" value="2751" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="1731" />
+          <entry key="JAVA" value="2740" />
           <entry key="Scratch" value="11" />
         </counts>
       </usages-collector>
@@ -50,8 +50,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Test.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-102">
-              <caret line="10" column="8" lean-forward="true" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="8" />
+            <state relative-caret-position="85">
+              <caret line="12" column="18" lean-forward="true" selection-start-line="12" selection-start-column="18" selection-end-line="12" selection-end-column="18" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="method#test1_1#0;class#Test#0" />
@@ -63,6 +63,9 @@
                 <element signature="method#test3#0;class#Test#0" />
                 <element signature="method#test4_1#0;class#Test#0" />
                 <element signature="method#test4_2#0;class#Test#0" />
+                <element signature="method#test5#0;class#Test#0" />
+                <element signature="method#sendGMessage#0;class#Test#0" />
+                <element signature="method#receiveGMessage#0;class#Test#0" />
               </folding>
             </state>
           </provider>
@@ -71,7 +74,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Client.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="62">
+            <state relative-caret-position="-278">
               <caret line="72" column="14" selection-start-line="72" selection-start-column="14" selection-end-line="72" selection-end-column="14" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -88,6 +91,11 @@
         <option value="Class" />
       </list>
     </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>adrian</find>
+    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -219,11 +227,12 @@
       <updated>1540689620296</updated>
       <workItem from="1540689626699" duration="2425000" />
       <workItem from="1540745767275" duration="8265000" />
+      <workItem from="1540928057016" duration="4724000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="10690000" />
+    <option name="totallyTimeSpent" value="15414000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
@@ -267,7 +276,7 @@
     <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.java" />
     <entry file="file://$PROJECT_DIR$/src/Client.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="62">
+        <state relative-caret-position="-278">
           <caret line="72" column="14" selection-start-line="72" selection-start-column="14" selection-end-line="72" selection-end-column="14" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -277,8 +286,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Test.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-102">
-          <caret line="10" column="8" lean-forward="true" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="8" />
+        <state relative-caret-position="85">
+          <caret line="12" column="18" lean-forward="true" selection-start-line="12" selection-start-column="18" selection-end-line="12" selection-end-column="18" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#test1_1#0;class#Test#0" />
@@ -290,6 +299,9 @@
             <element signature="method#test3#0;class#Test#0" />
             <element signature="method#test4_1#0;class#Test#0" />
             <element signature="method#test4_2#0;class#Test#0" />
+            <element signature="method#test5#0;class#Test#0" />
+            <element signature="method#sendGMessage#0;class#Test#0" />
+            <element signature="method#receiveGMessage#0;class#Test#0" />
           </folding>
         </state>
       </provider>
