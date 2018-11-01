@@ -6,18 +6,24 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class ChoresAdaptor extends RecyclerView.Adapter<ChoresAdaptor.ViewHolder>  {
     private Context mContext;
-    private ArrayList<String> mGroupNames = new ArrayList<>();
+    private ArrayList<String> mChoreNames = new ArrayList<>();
+    private ArrayList<String> mChoreAssignee = new ArrayList<>();
+    private ArrayList<String> mChoreDescription = new ArrayList<>();
+    private ArrayList<String> mChoreDate = new ArrayList<>();
+    private ArrayList<String> mChoreTime = new ArrayList<>();
 
 
     public ChoresAdaptor(Context mContext, ArrayList<String> mGroupNames) {
         this.mContext = mContext;
-        this.mGroupNames = mGroupNames;
+        this.mChoreNames = mGroupNames;
     }
 
     @NonNull
@@ -29,29 +35,43 @@ public class ChoresAdaptor extends RecyclerView.Adapter<ChoresAdaptor.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ChoresAdaptor.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull ChoresAdaptor.ViewHolder viewHolder,final int i) {
+        viewHolder.chore.setText(mChoreNames.get(i));
+        viewHolder.choreAssignee.setText(mChoreAssignee.get(i));
+        viewHolder.choreDescription.setText(mChoreDescription.get(i));
+        viewHolder.choreDate.setText(mChoreDate.get(i));
+        viewHolder.choreTime.setText(mChoreTime.get(i));
+
+        viewHolder.ll_chores.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext, "Remove this item: "+mChoreNames.get(i), Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
     @Override
     public int getItemCount() {
-        return mGroupNames.size();
+        return mChoreNames.size();
     }
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView Chore;
-        TextView ChoreAssignee;
-        TextView ChoreDescription;
-        TextView ChoreDate;
-        TextView ChoreTime;
+        TextView chore;
+        TextView choreAssignee;
+        TextView choreDescription;
+        TextView choreDate;
+        TextView choreTime;
+        LinearLayout ll_chores;
 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            Chore = (TextView) itemView.findViewById(R.id.tv_choreName);
-            ChoreAssignee = (TextView) itemView.findViewById(R.id.tv_choreByWho);
-            ChoreDescription = (TextView) itemView.findViewById(R.id.tv_choreDescription);
-            ChoreDate = (TextView) itemView.findViewById(R.id.tv_choreDate);
-            ChoreTime = (TextView) itemView.findViewById(R.id.tv_choreTime);
+            chore = (TextView) itemView.findViewById(R.id.tv_choreName);
+            choreAssignee = (TextView) itemView.findViewById(R.id.tv_choreByWho);
+            choreDescription = (TextView) itemView.findViewById(R.id.tv_choreDescription);
+            choreDate = (TextView) itemView.findViewById(R.id.tv_choreDate);
+            choreTime = (TextView) itemView.findViewById(R.id.tv_choreTime);
+            ll_chores = (LinearLayout) itemView.findViewById(R.id.ll_chores);
         }
     }
 }
