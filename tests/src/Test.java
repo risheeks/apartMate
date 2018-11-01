@@ -6,12 +6,12 @@ public class Test {
     private static int port;
     private static String ip;
     public static void main(String[] args)  throws InterruptedException{
-        ip = "10.0.0.16";
+        ip = "10.186.81.198";
         port = 9910;
         test1_1();
         test1_2();
         test1_3();
-        Thread.sleep(1500);
+        Thread.sleep(3000);
         test2_1();
         test2_2();
         test2_3();
@@ -20,6 +20,8 @@ public class Test {
         Thread.sleep(1500);
         test4_1();
         test4_2();
+        Thread.sleep(1500);
+        test5();
     }
 
     //Adds user irettig
@@ -351,9 +353,6 @@ public class Test {
                         System.out.print(e.getMessage());
                     }
                 }
-                else if (message.equals("INVALID_COMMAND")) {
-                    System.out.print("Fix this Adrian\n");
-                }
                 else if (!message.equals("Welcome to the server!")) {
                     System.out.print("Failed test 3: " + message + "\n");
                     try {
@@ -406,9 +405,6 @@ public class Test {
                     } catch (java.io.IOException e) {
                         System.out.print(e.getMessage());
                     }
-                }
-                else if (message.equals("INVALID_COMMAND")) {
-                    System.out.print("Fix this Adrian\n");
                 }
                 else if (!message.equals("Welcome to the server!")) {
                     System.out.print("Failed test 4_1: " + message + "\n");
@@ -463,9 +459,6 @@ public class Test {
                         System.out.print(e.getMessage());
                     }
                 }
-                else if (message.equals("INVALID_COMMAND")) {
-                    System.out.print("Fix this Adrian\n");
-                }
                 else if (!message.equals("Welcome to the server!")) {
                     System.out.print("Failed test 4_2: " + message + "\n");
                     try {
@@ -480,6 +473,118 @@ public class Test {
             @Override
             public void onConnect(Socket socket) throws IOException {
                 String message = "LOGIN irettig@purdue.edu 12345";
+                c.send(message);
+
+            }
+
+            @Override
+            public void onDisconnect(Socket socket, String message) throws IOException {
+            }
+
+            @Override
+            public void onConnectError(Socket socket, String message) {
+            }
+        });
+
+        c.connect();
+    }
+
+    //open 3 clients, send a group message
+    static void test5() {
+        sendGMessage("irettig@purdue.edu","12345");
+        receiveGMessage("raj5@purdue.edu", "12345");
+        receiveGMessage("corruptsoul13@gmail.com", "12345");
+    }
+
+    //sends message to test group 1
+    static void sendGMessage(String username, String password) {
+        Client c = new Client(ip, port);
+
+        c.setClientCallback(new Client.ClientCallback (){
+
+            @Override
+            public void onMessage(String message) {
+                //System.out.print("MESSAGE RECEIVED in send message from " + username + ": " + message + "\n");
+                String token = message.split(";")[0];
+
+                if(message.equals("LOGIN SUCCESS")) {
+                    String message2 = "SEND_GROUPM;" + username + ";test group 1;This is a test message!" ;
+                    c.send(message2);
+                }
+                else if (token.equals("RECEIVE_GROUPM")) {
+                    System.out.print("Test: 5 Success! " + username + " sent a message\n");
+                    try {
+                        c.disconnect();
+                    } catch (java.io.IOException e) {
+                        System.out.print(e.getMessage());
+                    }
+                }
+                else if (!message.equals("Welcome to the server!")) {
+                    System.out.print("Failed test 5: " + message + " for " + username + "\n");
+                    try {
+                        c.disconnect();
+                    } catch (java.io.IOException e) {
+                        System.out.print(e.getMessage());
+                    }
+                }
+
+            }
+
+            @Override
+            public void onConnect(Socket socket) throws IOException {
+                String message = "LOGIN " + username + " " + password;
+                c.send(message);
+
+            }
+
+            @Override
+            public void onDisconnect(Socket socket, String message) throws IOException {
+            }
+
+            @Override
+            public void onConnectError(Socket socket, String message) {
+            }
+        });
+
+        c.connect();
+    }
+
+    //receives group messages in the passed in account. assumes account is already in test group 1
+    static void receiveGMessage (String username, String password) {
+        Client c = new Client(ip, port);
+
+        c.setClientCallback(new Client.ClientCallback (){
+
+            @Override
+            public void onMessage(String message) {
+                //System.out.print("MESSAGE RECEIVED in receive message from " + username + ": " + message + "\n");
+                String token = message.split(";")[0];
+
+                if(message.equals("LOGIN SUCCESS")) {
+                    //do nothing
+                }
+                else if (token.equals("RECEIVE_GROUPM")) {
+                    System.out.print("Test: 5 Success! " + username + " received a message\n");
+                    try {
+                        c.disconnect();
+                    } catch (java.io.IOException e) {
+                        System.out.print(e.getMessage());
+                    }
+                }
+                else if (!message.equals("Welcome to the server!")) {
+                    System.out.print("Failed test 5: " + message + " for " + username + "\n");
+                    try {
+                        c.disconnect();
+                    } catch (java.io.IOException e) {
+                        System.out.print(e.getMessage());
+                    }
+                }
+
+            }
+
+            @Override
+            public void onConnect(Socket socket) throws IOException {
+                String message = "LOGIN " + username + " " + password;
                 c.send(message);
 
             }
