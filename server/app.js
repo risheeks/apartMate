@@ -43,7 +43,7 @@ dbGroupRef.once("value")
     .then(function (snapshot) {
         snapshot.forEach(function (childSnapshot) {
             var key = childSnapshot.key;
-            console.log(key+" "+childSnapshot.val())
+            console.log(key+" "+childSnapshot.val().Members)
             groupMap.set(key, childSnapshot);
         })
     });
@@ -129,7 +129,11 @@ var processRegister = function (data,sock) {
                 ref.set("");
                 var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/GreatestAchievement");
                 ref.set("");
-                sock.write('REGISTER SUCCESS\n');
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/TotalAmountDue");
+                ref.set("0");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Interests");
+                ref.set("I like reading books");
+            sock.write('REGISTER SUCCESS\n');
             const dbLoginRef = firebase.database().ref("Login").orderByKey();
             dbLoginRef.once("value")
                 .then(function (snapshot) {
@@ -359,7 +363,7 @@ var createGroup = function(data,sock){
     });
     setTimeout(function () {
         if(checkGroup == false && checkUser == true) {
-            var ref = firebase.database().ref("Groups/" + groupName + "/");
+            var ref = firebase.database().ref("Groups/" + groupName + "/Members");
             ref.set(email+";");
             var ref = firebase.database().ref("Login/" + email.split("@")[0] + "/Group");
             ref.set(groupName);
@@ -368,7 +372,7 @@ var createGroup = function(data,sock){
                 .then(function (snapshot) {
                     snapshot.forEach(function (childSnapshot) {
                         var key = childSnapshot.key;
-                        console.log(key+" "+childSnapshot.val())
+                        console.log(key+" "+childSnapshot.val().Members)
                         groupMap.set(key, childSnapshot);
                     })
                 });
@@ -390,13 +394,13 @@ var createGroup = function(data,sock){
 var addToGroup = function(data,sock){
     var email = data.toString().split(";")[1];
     var groupName = data.toString().split(";")[2];
-    var ref1 = firebase.database().ref("Groups/" + groupName + "/");
+    var ref1 = firebase.database().ref("Groups/" + groupName + "/Members");
     var ids;
     ref1.on("value",function (snapshot) {
         ids = snapshot.val();
     });
     setTimeout(function () {
-        var r =  firebase.database().ref("Groups/" + groupName + "/");
+        var r =  firebase.database().ref("Groups/" + groupName + "/Members");
         r.set(ids+email+";");
         var ref2 = firebase.database().ref("Login/" + email.split("@")[0] + "/Group");
         ref2.set(groupName);
@@ -404,7 +408,7 @@ var addToGroup = function(data,sock){
             .then(function (snapshot) {
                 snapshot.forEach(function (childSnapshot) {
                     var key = childSnapshot.key;
-                    console.log(key+" "+childSnapshot.val())
+                    console.log(key+" "+childSnapshot.val().Members)
                     groupMap.set(key, childSnapshot);
                 })
             });
@@ -426,7 +430,7 @@ var sendGroupMessage = function(data,sock)
     groupMap.forEach(function (value,key) {
         console.log("Key: "+key)
         if(key == groupName) {
-             emails = value.val().toString().split(";");
+             emails = value.val().Members.toString().split(";");
             console.log(emails)
         }
     });
@@ -440,9 +444,159 @@ var sendGroupMessage = function(data,sock)
                 }
             });
         })
-    },250)
+    },350)
 }
 
+var addChore = function (data,sock) {
+    var groupName = data.toString().split(";")[1];
+    var choreName = data.toString().split(";")[2];
+    var assignee = data.toString().split(";")[3];
+    var choreDescription = data.toString().split(";")[4];
+    var choreDate = data.toString().split(";")[5];
+    var choreTime = data.toString().split(";")[6];
+
+    var ref1 = firebase.database().ref("Groups/" + groupName + "/Chores");
+    var chores;
+    ref1.on("value",function (snapshot) {
+        chores = snapshot.val();
+    });
+    setTimeout(function () {
+        var r =  firebase.database().ref("Groups/" + groupName + "/Chores");
+        r.set(chores+choreName+":"+assignee+":"+choreDescription+":"+choreDate+":"+choreTime+";");
+    },300);
+    sock.write('ADD_CHORE SUCCESS\n');
+
+}
+
+var addGroceryItem = function (data,sock) {
+    var groupName = data.toString().split(";")[1];
+    var itemName = data.toString().split(";")[2];
+    var quantity = data.toString().split(";")[3];
+
+    var ref1 = firebase.database().ref("Groups/" + groupName + "/GroceryList");
+    var groceryList;
+    ref1.on("value",function (snapshot) {
+        groceryList = snapshot.val();
+    });
+    setTimeout(function () {
+        var r =  firebase.database().ref("Groups/" + groupName + "/GroceryList");
+        if(groceryList == null)
+            groceryList = "";
+        r.set(groceryList+itemName+":"+quantity+";");
+    },300);
+    sock.write('ADD_GROCERYITEM SUCCESS\n');
+
+}
+
+var getChoresList = function (data,sock) {
+    var groupName = data.toString().split(";")[1];
+    var ref1 = firebase.database().ref("Groups/" + groupName + "/Chores");
+    var chores;
+    ref1.on("value",function (snapshot) {
+        chores = snapshot.val();
+    });
+    setTimeout(function () {
+        if (chores == null) {
+            chores = "";
+        }
+        sock.write('GET_CHORESLIST SUCCESS ' + chores + '\n');
+    },300);
+
+}
+
+var getGroceryList = function (data,sock) {
+    var groupName = data.toString().split(";")[1];
+    var ref1 = firebase.database().ref("Groups/" + groupName + "/GroceryList");
+    var groceryList;
+    ref1.on("value",function (snapshot) {
+        groceryList = snapshot.val();
+    });
+    setTimeout(function () {
+        if (groceryList == null) {
+            groceryList = "";
+        }
+        sock.write('GET_GROCERYLIST SUCCESS ' + groceryList + '\n');
+    },300);
+
+}
+
+var getTotalDue = function (data,scok) {
+    var email = data.toString().split(";")[1];
+    var ref1 = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/TotalAmountDue");
+    var totalAmount;
+    ref1.on("value",function (snapshot) {
+        totalAmount = snapshot.val();
+    });
+
+
+    setTimeout(function () {
+        sock.write('GET_TOTALDUE SUCCESS '+totalAmount+'\n')
+    },200)
+
+}
+
+var getInterests = function (data,sock) {
+    var email = data.toString().split(";")[1];
+    var ref1 = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Interests");
+    var interests;
+    ref1.on("value",function (snapshot) {
+        interests = snapshot.val();
+    });
+
+
+    setTimeout(function () {
+        sock.write('GET_INTERESTS;SUCCESS;'+interests+';\n')
+    },200)
+}
+
+var getGroupMembers = function (data,sock) {
+    var groupName = data.toString().split(";")[1];
+    var ref1 = firebase.database().ref("Groups/" + groupName + "/Members");
+    var members;
+    ref1.on("value",function (snapshot) {
+        members = snapshot.val();
+    });
+
+
+    setTimeout(function () {
+        sock.write('GET_GROUPMEMBERS;SUCCESS;'+members+'\n')
+    },200)
+}
+
+var addEvent = function (data,sock) {
+    var email = data.toString().split(";")[1];
+    var date = data.toString().split(";")[2];
+    var name = data.toString().split(";")[3];
+    var type = data.toString().split(";")[4];
+    var description = data.toString().split(";")[5];
+    var ref2 = firebase.database().ref("Login/" + email.split("@")[0] + "/Events");
+    var events;
+    ref2.on("value",function (snapshot) {
+        events = snapshot.val();
+    });
+
+
+    setTimeout(function () {
+        if(events == null)
+            events = "";
+        ref2.set(events+date+":"+name+":"+type+":"+description+";");
+        sock.write('ADD_EVENT;SUCCESS\n')
+    },200)
+}
+
+var getEvents = function (data,sock) {
+    var email = data.toString().split(";")[1];
+    var ref1 = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Events");
+    var events;
+    ref1.on("value",function (snapshot) {
+        events = snapshot.val();
+    });
+
+
+    setTimeout(function () {
+        sock.write('GET_EVENTS;SUCCESS;'+events+'\n')
+    },200)
+}
 /*
 *  Starts the server with sockets listening for different input commands
  */
@@ -475,9 +629,9 @@ var svr = net.createServer(function(sock) {
         else if(command == "GET_PROFILE"){
             getProfile(data,sock);
         }
-        else
+        else if(!(command.toString().indexOf(";") > -1))
         {
-            sock.write('INVALID_COMMAND\n')
+        //    sock.write('INVALID_COMMAND\n')
         }
         var command2 = data.toString().split(";")[0];
         if(command2 == "EDIT_PROFILE"){
@@ -495,6 +649,42 @@ var svr = net.createServer(function(sock) {
         else if(command2 == "SEND_GROUPM")
         {
             sendGroupMessage(data,sock);
+        }
+        else if(command2 == "ADD_CHORE")
+        {
+            addChore(data,sock);
+        }
+        else if(command2 == "ADD_GROCERYITEM")
+        {
+            addGroceryItem(data,sock);
+        }
+        else if(command2 == "GET_CHORESLIST")
+        {
+            getChoresList(data,sock);
+        }
+        else if(command2 == "GET_GROCERYLIST")
+        {
+            getGroceryList(data,sock);
+        }
+        else if(command2 == "GET_TOTALDUE")
+        {
+            getTotalDue(data,sock);
+        }
+        else if(command2 == "GET_INTERESTS")
+        {
+            getInterests(data,sock);
+        }
+        else if(command2 == "GET_GROUPMEMBERS")
+        {
+            getGroupMembers(data,sock);
+        }
+        else if(command2 == "ADD_EVENT")
+        {
+            addEvent(data,sock);
+        }
+        else if(command2 == "GET_EVENTS")
+        {
+            getEvents(data,sock);
         }
 
     }
@@ -530,7 +720,7 @@ var svr = net.createServer(function(sock) {
     });
 });
 
-var svraddr = '10.186.87.131';
+var svraddr = '10.186.90.204';
 var svrport = 9910;
 
 svr.listen(svrport, svraddr);
