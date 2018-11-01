@@ -29,4 +29,9 @@
     <string name="reset_Password">Reset PAssword</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="schedule_subject">Subject</string>
+    <string name="receiptTitle">Receipt Title</string>
+    <string name="receiptAmount">Amount $</string>
+    <string name="submit">Submit</string>
+    <string name="cancel">Cancel</string>
+    <string name="receiptMembers">Choose Members</string>
 </resources>
