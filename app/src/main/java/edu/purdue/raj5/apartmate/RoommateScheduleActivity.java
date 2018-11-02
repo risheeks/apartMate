@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package edu.purdue.raj5.apartmate;
 
 
@@ -8,20 +7,17 @@ import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-=======
 package com.example.sid.apartmate;
 
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
->>>>>>> cc35bd6d648bb2cba0320706723c527d3be71aff
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-<<<<<<< HEAD
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,26 +32,27 @@ import com.google.firebase.storage.StorageReference;
 
 import java.net.Socket;
 import java.util.ArrayList;
-=======
->>>>>>> cc35bd6d648bb2cba0320706723c527d3be71aff
+
+/*
+* Class to display schedule for different members of the grop
+*/
 
 public class RoommateScheduleActivity extends AppCompatActivity {
-    //TODO add a schedule button in the misc tab to open this activity
+    
     TableLayout mTlayout;
     TableRow tr;
-    //TODO get roommates
-<<<<<<< HEAD
+    
+
     ArrayList<String> mTextofButton = new ArrayList<>();// = { "Risheek", "Adrian", "Ian", "Akshay", "Sid" };
     String groupName;
-=======
-    String[] mTextofButton = { "Risheek", "Adrian", "Ian", "Akshay", "Sid" };
 
->>>>>>> cc35bd6d648bb2cba0320706723c527d3be71aff
+//    String[] mTextofButton = { "Risheek", "Adrian", "Ian", "Akshay", "Sid" };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_roommate_schedule);
-<<<<<<< HEAD
         Intent i = getIntent();
         groupName = i.getExtras().getString("GroupName");
 //        LoginActivity.sock.setClientCallback(new Client.ClientCallback () {
@@ -97,6 +94,9 @@ public class RoommateScheduleActivity extends AppCompatActivity {
         DatabaseReference storageRef = storage.getReference("Groups/"+groupName+"/Members");
         storageRef.addValueEventListener(new ValueEventListener() {
             @Override
+            /*
+            * Firebase call to get members of that particular group
+            */
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String message = dataSnapshot.getValue().toString();
                 int j = 0;
@@ -122,34 +122,23 @@ public class RoommateScheduleActivity extends AppCompatActivity {
 
     }
 
-    public void init() {
-        //mTlayout = (TableLayout) findViewById(R.id.table_main);
-        Log.e("Test","Call");
-        int i = 0;
-        mTlayout = (TableLayout) findViewById(R.id.table_main);
-        while (i < mTextofButton.size()) {
-=======
-        init();
-    }
-
+    /*
+    * initializes the members of the group displays the membets in a rowLayout
+    */
     public void init() {
         mTlayout = (TableLayout) findViewById(R.id.table_main);
 
         int i = 0;
         while (i < mTextofButton.length) {
->>>>>>> cc35bd6d648bb2cba0320706723c527d3be71aff
             if (i % 3 == 0) {
                 tr = new TableRow(this);
                 mTlayout.addView(tr);
             }
-<<<<<<< HEAD
           //  Log.e("buttonsLength", String.valueOf(mTextofButton.length));
             Button btn = new Button(this);
             btn.setText(mTextofButton.get(i));
-=======
             Button btn = new Button(this);
             btn.setText(mTextofButton[i]);
->>>>>>> cc35bd6d648bb2cba0320706723c527d3be71aff
             btn.setId(i);
             btn.setOnClickListener(new View.OnClickListener() {
 
@@ -157,21 +146,14 @@ public class RoommateScheduleActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     //TODO Add event for the button
                     //System.out.println("v.getid is:- " + v.getId());
-<<<<<<< HEAD
                     Button btn = (Button)v;
                     Intent i = new Intent(RoommateScheduleActivity.this, ScheduleActivity.class);
                     i.putExtra("Email", btn.getText().toString());
                     startActivity(i);
-=======
->>>>>>> cc35bd6d648bb2cba0320706723c527d3be71aff
                 }
             });
             tr.addView(btn);
             i++;
         }
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> cc35bd6d648bb2cba0320706723c527d3be71aff
