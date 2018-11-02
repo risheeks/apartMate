@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
+// This is where all the buttons are present
 public class GroupOtherFragment extends Fragment{
     Button chores;
     Button grocery;
@@ -28,6 +28,10 @@ public class GroupOtherFragment extends Fragment{
         groupTabsActivity = (GroupTabsActivity) getActivity();
         groupName = groupTabsActivity.groupName;
         email = groupTabsActivity.email;
+        // As the methods say, we are intializing all the recyclerviews
+        // Each method will intent to different activities to perform their work.
+        // Each class shows us a list of information
+        // It is also separated by group members
         initializationChores(rootView);
         initializationGroceries(rootView);
         initializationSchedules(rootView);
@@ -39,7 +43,8 @@ public class GroupOtherFragment extends Fragment{
         initializeEmergencyContact(rootView);
         return rootView;
     }
-
+    // This is used for the emergency contacts. 
+    // When we click the button, we are also sending group name and email to other activities. 
     private void initializeEmergencyContact(View rootView) {
         emergencyContact = (Button) rootView.findViewById(R.id.bt_emergency);
         emergencyContact.setOnClickListener(new View.OnClickListener() {
@@ -53,6 +58,8 @@ public class GroupOtherFragment extends Fragment{
         });
     }
 
+    // This is used for the interests. 
+    // When we click the button, we are also sending group name and email to other activities. 
     public void initializationInterests(View v){
         interest = (Button) v.findViewById(R.id.bt_interest);
         interest.setOnClickListener(new View.OnClickListener() {
@@ -65,6 +72,9 @@ public class GroupOtherFragment extends Fragment{
             }
         });
     }
+    
+    // This is used for the birthdays. 
+    // When we click the button, we are also sending group name and email to other activities. 
     public void initializationBirthdays(View v){
         birthday = (Button) v.findViewById(R.id.bt_birthdays);
         birthday.setOnClickListener(new View.OnClickListener() {
@@ -76,6 +86,9 @@ public class GroupOtherFragment extends Fragment{
             }
         });
     }
+    
+    // This is used for the Shareable Possessions. 
+    // When we click the button, we are also sending group name and email to other activities. 
     public void initializationShareablePossessions(View v){
         shareablePossessions = (Button) v.findViewById(R.id.bt_sharePossessions);
         shareablePossessions.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +101,9 @@ public class GroupOtherFragment extends Fragment{
             }
         });
     }
+    
+    // This is used for the unshareable possessions. 
+    // When we click the button, we are also sending group name and email to other activities. 
     public void initializationUnShareablePosessions(View v){
         unshareablePossessions = (Button) v.findViewById(R.id.bt_sharePossessionsNo);
         unshareablePossessions.setOnClickListener(new View.OnClickListener() {
@@ -101,6 +117,8 @@ public class GroupOtherFragment extends Fragment{
         });
     }
 
+    // This is used for the receipt. 
+    // When we click the button, we are also sending group name and email to other activities. 
     private void initializeReceipt(View rootView) {
         receipt = (Button) rootView.findViewById(R.id.bt_receipt);
         receipt.setOnClickListener(new View.OnClickListener() {
@@ -114,6 +132,8 @@ public class GroupOtherFragment extends Fragment{
         });
     }
 
+    // This is used for the schedule. 
+    // When we click the button, we are also sending group name and email to other activities. 
     private void initializationSchedules(View rootView) {
         schedules = (Button) rootView.findViewById(R.id.bt_schedules);
         schedules.setOnClickListener(new View.OnClickListener() {
@@ -130,7 +150,9 @@ public class GroupOtherFragment extends Fragment{
             }
         });
     }
-
+    
+    // This is used for the chores. 
+    // When we click the button, we are also sending group name and email to other activities. 
     public void initializationChores(View v){
         chores = (Button) v.findViewById(R.id.bt_chores);
         chores.setOnClickListener(new View.OnClickListener() {
@@ -142,7 +164,9 @@ public class GroupOtherFragment extends Fragment{
             }
         });
     }
-
+    
+    // This is used for the groceries. 
+    // When we click the button, we are also sending group name and email to other activities. 
     public void initializationGroceries(View v){
         grocery = (Button) v.findViewById(R.id.bt_grocery);
         grocery.setOnClickListener(new View.OnClickListener() {
