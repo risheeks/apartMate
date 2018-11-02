@@ -1,8 +1,10 @@
 package edu.purdue.raj5.apartmate;
 
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v4.app.Fragment;
@@ -15,7 +17,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class GroupTabsActivity extends AppCompatActivity {
 
@@ -33,7 +38,9 @@ public class GroupTabsActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
+    public String groupName;
+    public String email;
+    public Client sock = LoginActivity.sock;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +48,9 @@ public class GroupTabsActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Intent intent = getIntent();
+        groupName = intent.getExtras().getString("GroupName");
+        email = intent.getExtras().getString("Email");
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -55,8 +65,10 @@ public class GroupTabsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent i = new Intent(GroupTabsActivity.this,GroupChatActivity.class);
+                i.putExtra("GroupName", groupName);
+                i.putExtra("Email",email);
+                startActivity(i);
             }
         });
 
@@ -80,6 +92,26 @@ public class GroupTabsActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+        if(id == R.id.action_add_to_group){
+            final AlertDialog.Builder builder = new AlertDialog.Builder(GroupTabsActivity.this);
+            View viewDialog = LayoutInflater.from(GroupTabsActivity.this).inflate(R.layout.add_member,null);
+            final EditText et_addMember = (EditText) viewDialog.findViewById(R.id.et_memberAdd);
+            final Button bt_memberAdd = (Button) viewDialog.findViewById(R.id.bt_memberAdd);
+            builder.setView(viewDialog);
+            final AlertDialog dialog = builder.create();
+            bt_memberAdd.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String newMember = et_addMember.getText().toString();
+                    Toast.makeText(GroupTabsActivity.this, "A new group member has been added", Toast.LENGTH_SHORT).show();
+                    LoginActivity.sock.send("ADD_GROUP;"+newMember+";"+groupName);
+                    dialog.dismiss();
+
+                }
+            });
+
+            dialog.show();
         }
 
         return super.onOptionsItemSelected(item);

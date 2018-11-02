@@ -96,6 +96,7 @@
                 android:layout_gravity="center"
                 android:hint="@string/greatest_achievement"
                 android:padding="10dp"/>
+
             <Button
                 android:id="@+id/bt_profileChenge"
                 android:text="@string/edit_profile"

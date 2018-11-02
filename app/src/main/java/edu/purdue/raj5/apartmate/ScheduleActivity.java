@@ -23,6 +23,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.app.AlertDialog.Builder;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.io.FileInputStream;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -33,6 +39,7 @@ public class ScheduleActivity extends AppCompatActivity {
     public GregorianCalendar cal_month, cal_month_copy;
     private HwAdapter hwAdapter;
     private TextView tv_month;
+    String email;
     public void getAppTheme(String theme) { //theme is "light" or "dark"
 
         //call this inside every activity
@@ -91,7 +98,7 @@ public class ScheduleActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Add event to the Calender
-                LoginActivity.sock.send("ADD_EVENT;raj5@purdue.edu;"+dateBox.getText().toString()+";"+nameBox.getText().toString()+";"+titleBox.getText().toString()+";"+descriptionBox.getText().toString());
+                LoginActivity.sock.send("ADD_EVENT;"+email+";"+dateBox.getText().toString()+";"+nameBox.getText().toString()+";"+titleBox.getText().toString()+";"+descriptionBox.getText().toString());
                 HomeCollection.date_collection_arr.add( new HomeCollection(dateBox.getText().toString() ,nameBox.getText().toString(),titleBox.getText().toString(),descriptionBox.getText().toString()));
                 refreshCalendar();
             }
@@ -117,6 +124,7 @@ public class ScheduleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
+        email = getIntent().getExtras().getString("Email");
         String theme="";
         HomeCollection.date_collection_arr=new ArrayList<HomeCollection>();
         try {
@@ -133,39 +141,7 @@ public class ScheduleActivity extends AppCompatActivity {
 
         else
             getAppTheme("light");
-        LoginActivity.sock.setClientCallback(new Client.ClientCallback () {
-            @Override
-            public void onMessage(String message) {
-                Log.e("Resp",message);
-                if(message.contains("GET_EVENTS;SUCCESS"))
-                {
-                    HomeCollection.date_collection_arr.clear();
-                    String[] events = message.split(";");
-                    for(int i = 2; i < events.length; i++)
-                    {
-                        String[] event = events[i].split(":");
-                        HomeCollection.date_collection_arr.add( new HomeCollection(event[0],event[1],event[2],event[3]));
-                    }
-                }
-            }
 
-            @Override
-            public void onConnect(Socket socket)  {
-                LoginActivity.sock.send("Connected");
-
-                //sock.disconnect();
-            }
-
-            @Override
-            public void onDisconnect(Socket socket, String message)  {
-
-
-            }
-
-            @Override
-            public void onConnectError(Socket socket, String message) {
-            }
-        });
         Button addButton = (Button) findViewById(R.id.add_to_schedule);
         addButton.setOnClickListener(new View.OnClickListener() { //set the OnClickListener on the left arrow
             @Override
@@ -266,7 +242,31 @@ public class ScheduleActivity extends AppCompatActivity {
     * Refresh the calender
     */
     public void refreshCalendar() {
-        LoginActivity.sock.send("GET_EVENTS;raj5@purdue.edu");
+        FirebaseDatabase storage = FirebaseDatabase.getInstance();
+        DatabaseReference storageRef = storage.getReference("Login/"+email.split("@")[0]+"/Events");
+        storageRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                if(dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                HomeCollection.date_collection_arr.clear();
+                String[] events = message.split(";");
+                for(int i = 0; i < events.length; i++)
+                {
+                        String[] event = events[i].split(":");
+                        HomeCollection.date_collection_arr.add( new HomeCollection(event[0],event[1],event[2],event[3]));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+
         hwAdapter.refreshDays();
         hwAdapter.notifyDataSetChanged();
         tv_month.setText(android.text.format.DateFormat.format("MMMM yyyy", cal_month));

@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -76,6 +77,8 @@ public class ProfileActivity extends AppCompatActivity {
      EditText et_newPassword;
     EditText et_oldPassword;
     ToggleButton tb_theme;
+
+    String email;
     /*
     *
     * Function to change app theme depending on "light" or "dark". Changes background color and updates text color
@@ -155,6 +158,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        email = getIntent().getExtras().getString("Email");
         initializeTextViews();
         /*
         *
@@ -293,7 +297,6 @@ public class ProfileActivity extends AppCompatActivity {
                         String lName = et_lastName.getText().toString();
                         String lAchievement = et_latestAchievement.getText().toString();
                         String gAchievement = et_greatestAchievement.getText().toString();
-
                         if(fName.isEmpty())
                             fName = tv_firstName.getText().toString();
                         else
@@ -310,7 +313,7 @@ public class ProfileActivity extends AppCompatActivity {
                             gAchievement = tv_GreatestAchievement.getText().toString();
                         else
                             tv_GreatestAchievement.setText(gAchievement);
-                        socket.send("EDIT_PROFILE;"+tv_email.getText().toString()+";"+fName+";"+lName+";"+lAchievement+";"+gAchievement);
+                        socket.send("EDIT_PROFILE;"+email+";"+fName+";"+lName+";"+lAchievement+";"+gAchievement);
                         dialog.dismiss();
 
                     }

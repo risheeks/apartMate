@@ -11,7 +11,7 @@ var app = firebase.initializeApp(    {databaseURL: "https://apartmate-3.firebase
 );
 var socketMap = new Map();
 var nodemailer = require('nodemailer')
-
+var chores = "";
 /*
 Transporter for the email client initialized with auth info
  */
@@ -290,6 +290,9 @@ var editProfile = function (data,sock) {
     var lastName = data.toString().split(";")[3];
     var latestA = data.toString().split(";")[4];
     var greatestA = data.toString().split(";")[5];
+    var interests = data.toString().split(";")[6];
+    var emergencyContacts = data.toString().split(";")[7];
+    var birthday = data.toString().split(";")[8];
 
     var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/FirstName");
     ref.set(firstName);
@@ -299,6 +302,13 @@ var editProfile = function (data,sock) {
     ref.set(latestA);
     var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/GreatestAchievement");
     ref.set(greatestA);
+     var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Interests");
+     ref.set(interests);
+    var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/EmergencyContact");
+    ref.set(emergencyContacts);
+    var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Birthday");
+    ref.set(birthday);
+
 }
 /*
 *
@@ -334,12 +344,12 @@ var getProfile = function (data, sock) {
                 greatestA = value.GreatestAchievement;
             }
         });
-    },180)
+    },150)
 
     setTimeout(function () {
     console.log('RECEIVE_PROFILE;'+email.toString()+';'+firstName.toString()+';'+lastName.toString()+';'+latestA.toString()+';'+greatestA)
     sock.write('RECEIVE_PROFILE;'+email.toString()+';'+firstName.toString()+';'+lastName.toString()+';'+latestA.toString()+';'+greatestA+'\n');
-    },600)
+    },0000)
 
 }
 
@@ -365,6 +375,18 @@ var createGroup = function(data,sock){
         if(checkGroup == false && checkUser == true) {
             var ref = firebase.database().ref("Groups/" + groupName + "/Members");
             ref.set(email+";");
+            var ref = firebase.database().ref("Groups/" + groupName + "/Chores");
+            ref.set("A:B:C:D:E");
+            var ref = firebase.database().ref("Groups/" + groupName + "/GroceryList");
+            ref.set("Bananas:1 dozen");
+            var ref = firebase.database().ref("Groups/" + groupName + "/ShareablePossessions");
+            ref.set(email+":Refrigerator");
+            var ref = firebase.database().ref("Groups/" + groupName + "/UnshareablePossessions");
+            ref.set(email+":Clothing");
+            var ref = firebase.database().ref("Groups/" + groupName + "/Interests");
+            ref.set(email+":I like reading books and listening to music");
+            var ref = firebase.database().ref("Groups/" + groupName + "/EmergencyContact");
+            ref.set(email+":911");
             var ref = firebase.database().ref("Login/" + email.split("@")[0] + "/Group");
             ref.set(groupName);
             sock.write('CREATE_GROUP SUCCESS\n');
@@ -444,7 +466,7 @@ var sendGroupMessage = function(data,sock)
                 }
             });
         })
-    },350)
+    },300)
 }
 
 var addChore = function (data,sock) {
@@ -461,7 +483,10 @@ var addChore = function (data,sock) {
         chores = snapshot.val();
     });
     setTimeout(function () {
+        if(chores == null)
+            chores="";
         var r =  firebase.database().ref("Groups/" + groupName + "/Chores");
+        console.log(chores+choreName+":"+assignee+":"+choreDescription+":"+choreDate+":"+choreTime+";")
         r.set(chores+choreName+":"+assignee+":"+choreDescription+":"+choreDate+":"+choreTime+";");
     },300);
     sock.write('ADD_CHORE SUCCESS\n');
@@ -482,26 +507,93 @@ var addGroceryItem = function (data,sock) {
         var r =  firebase.database().ref("Groups/" + groupName + "/GroceryList");
         if(groceryList == null)
             groceryList = "";
-        r.set(groceryList+itemName+":"+quantity+";");
+        r.set(groceryList+";"+itemName+":"+quantity+";");
     },300);
     sock.write('ADD_GROCERYITEM SUCCESS\n');
 
 }
 
-var getChoresList = function (data,sock) {
+var addShareablePossession = function (data,sock) {
     var groupName = data.toString().split(";")[1];
-    var ref1 = firebase.database().ref("Groups/" + groupName + "/Chores");
-    var chores;
+    var email = data.toString().split(";")[2];
+    var possession = data.toString().split(";")[3];
+    var ref1 = firebase.database().ref("Groups/" + groupName + "/ShareablePossessions");
+    var groceryList;
     ref1.on("value",function (snapshot) {
-        chores = snapshot.val();
+        groceryList = snapshot.val();
     });
     setTimeout(function () {
-        if (chores == null) {
-            chores = "";
-        }
-        sock.write('GET_CHORESLIST SUCCESS ' + chores + '\n');
+        var r =  firebase.database().ref("Groups/" + groupName + "/ShareablePossessions");
+        if(groceryList == null)
+            groceryList = "";
+        r.set(groceryList+";"+email+":"+possession+";");
     },300);
+    sock.write('ADD_SHAREABLEPOSSESSION SUCCESS\n');
 
+}
+
+var addInterest = function (data,sock) {
+    var groupName = data.toString().split(";")[1];
+    var email = data.toString().split(";")[2];
+    var interest = data.toString().split(";")[3];
+    var ref1 = firebase.database().ref("Groups/" + groupName + "/Interests");
+    var groceryList;
+    ref1.on("value",function (snapshot) {
+        groceryList = snapshot.val();
+    });
+    setTimeout(function () {
+        var r =  firebase.database().ref("Groups/" + groupName + "/Interests");
+        if(groceryList == null)
+            groceryList = "";
+        r.set(groceryList+";"+email+":"+interest+";");
+    },300);
+    sock.write('ADD_INTEREST SUCCESS\n');
+
+}
+
+var addUnshareablePossessions = function (data,sock) {
+    var groupName = data.toString().split(";")[1];
+    var email = data.toString().split(";")[2];
+    var possession = data.toString().split(";")[3];
+    var ref1 = firebase.database().ref("Groups/" + groupName + "/UnshareablePossessions");
+    var groceryList;
+    ref1.on("value",function (snapshot) {
+        groceryList = snapshot.val();
+    });
+    setTimeout(function () {
+        var r =  firebase.database().ref("Groups/" + groupName + "/UnshareablePossessions");
+        if(groceryList == null)
+            groceryList = "";
+        r.set(groceryList+";"+email+":"+possession+";");
+    },300);
+    sock.write('ADD_UNSHAREABLEPOSSESSION SUCCESS\n');
+
+}
+
+var addEmergency = function (data,sock) {
+    var groupName = data.toString().split(";")[1];
+    var email = data.toString().split(";")[2];
+    var emergency = data.toString().split(";")[3];
+    var ref1 = firebase.database().ref("Groups/" + groupName + "/EmergencyContacts");
+    var groceryList;
+    ref1.on("value",function (snapshot) {
+        groceryList = snapshot.val();
+    });
+    setTimeout(function () {
+        var r =  firebase.database().ref("Groups/" + groupName + "/EmergencyContacts");
+        if(groceryList == null)
+            groceryList = "";
+        r.set(groceryList+email+":"+emergency+";");
+    },300);
+    sock.write('ADD_EMERGENCY SUCCESS\n');
+}
+
+var getChoresList = function (data,sock) {
+  //  var groupName = data.toString().split(";")[1];
+ //   var msg = 'GET_CHORESLIST;SUCCESS;' +  '\n'
+   // setTimeout(function () {
+        sock.write('GET_CHORESLIST;SUCCESS;' + chores + '\n');
+    //},100);
 }
 
 var getGroceryList = function (data,sock) {
@@ -516,7 +608,7 @@ var getGroceryList = function (data,sock) {
             groceryList = "";
         }
         sock.write('GET_GROCERYLIST SUCCESS ' + groceryList + '\n');
-    },300);
+    },200);
 
 }
 
@@ -555,13 +647,14 @@ var getGroupMembers = function (data,sock) {
     var members;
     ref1.on("value",function (snapshot) {
         members = snapshot.val();
+
     });
-
-
     setTimeout(function () {
         sock.write('GET_GROUPMEMBERS;SUCCESS;'+members+'\n')
-    },200)
-}
+
+    },100)
+    }
+
 
 var addEvent = function (data,sock) {
     var email = data.toString().split(";")[1];
@@ -596,6 +689,80 @@ var getEvents = function (data,sock) {
     setTimeout(function () {
         sock.write('GET_EVENTS;SUCCESS;'+events+'\n')
     },200)
+}
+
+var getGroup = function (data,sock) {
+    var email = data.toString().split(";")[1];
+    var ref1 = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Group");
+    var groupName;
+    ref1.on("value",function (snapshot) {
+        groupName = snapshot.val();
+    });
+
+    setTimeout(function () {
+        console.log("in"+groupName)
+        sock.write('GET_GROUP;SUCCESS;'+groupName+'\n')
+        var ref2 = firebase.database().ref("Groups/" + groupName + "/Chores");
+        ref2.on("value",function (snapshot) {
+            chores = snapshot.val();
+        });
+    },200)
+}
+
+var addReceipt = function (data,sock) {
+    var groupName = data.toString().split(";")[1];
+    var owedTo = data.toString().split(";")[2];
+    var title = data.toString().split(";")[3];
+    var amount = data.toString().split(";")[4];
+    var members = data.toString().split(";")[5];
+    var numMembers = (members.toString().split(",")).length;
+    var memberArray = members.toString().split(",");
+    var totalOwed;
+    var ref1 = firebase.database().ref("Groups/" + groupName + "/Receipts");
+    var receipts;
+    ref1.on("value",function (snapshot) {
+        receipts = snapshot.val();
+    });
+    setTimeout(function () {
+        if(receipts == null)
+            receipts="";
+        var r =  firebase.database().ref("Groups/" + groupName + "/Receipts");
+        r.set(receipts+title+":"+amount+":"+members+";");
+        memberArray.forEach(function(element) {
+            if(element != owedTo)
+            {
+                var ref1 = firebase.database().ref("Login/" + (element.toString().split("@")[0]).trim() + "/TotalAmountDue");
+                var amoun="lol";
+                ref1.on("value",function (snapshot) {
+                    amoun = snapshot.val();
+                });
+                setTimeout(function () {
+                    if(amoun == null)
+                    {
+                        amoun = 0;
+                    }
+                    console.log(amoun)
+                    console.log(amount/numMembers)
+                    amoun = parseInt(amoun)+(amount/numMembers);
+                    console.log(amoun)
+                    ref1.set(amoun);
+                },500)
+            }
+            else
+            {
+                var ref2 = firebase.database().ref("Login/" + element.toString().split("@")[0] + "/TotalAmountDue");
+                var amoun1="lol";
+                ref2.on("value",function (snapshot) {
+                    amoun1 = snapshot.val();
+                });
+                setTimeout(function () {
+                    amoun1 = parseInt(amoun1)-amount+(amount/numMembers);
+                    ref2.set(amoun1);
+                },300)
+            }
+        });
+    },300);
+    //sock.write('ADD_CHORE SUCCESS\n');
 }
 /*
 *  Starts the server with sockets listening for different input commands
@@ -686,6 +853,32 @@ var svr = net.createServer(function(sock) {
         {
             getEvents(data,sock);
         }
+        else if(command2 == "GET_GROUP")
+        {
+            getGroup(data,sock)
+        }
+        else if(command2 == "ADD_RECEIPT")
+        {
+            addReceipt(data,sock);
+        }
+        else if(command2 == "ADD_SHAREABLEPOSSESSIONS")
+        {
+            addShareablePossession(data,sock);
+        }
+        else if(command2 == "ADD_UNSHAREABLEPOSSESSIONS")
+        {
+            addUnshareablePossessions(data,sock);
+        }
+        else if(command2 == "ADD_INTEREST")
+        {
+            addInterest(data,sock);
+        }
+        else if(command2 == "ADD_EMERGENCY")
+        {
+            addEmergency(data,sock);
+        }
+
+
 
     }
     console.log('Connected: ' + sock.remoteAddress + ':' + sock.remotePort);
@@ -720,7 +913,7 @@ var svr = net.createServer(function(sock) {
     });
 });
 
-var svraddr = '10.186.90.204';
+var svraddr = '10.186.93.103';
 var svrport = 9910;
 
 svr.listen(svrport, svraddr);

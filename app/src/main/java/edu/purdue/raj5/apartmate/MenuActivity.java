@@ -7,21 +7,33 @@ import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.ImageViewCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -35,7 +47,9 @@ public class MenuActivity extends AppCompatActivity {
     ImageView iv_chatSearch; // This is the search image. This is how you converse with other people.
     TextView et_chatSearch; // This is where you type the email of the person you want to message
     TextView tv_message; // This is used if there are any errors.
+    TextView tv_bill;
     String email;
+    String groupName;
     public void getAppTheme(String theme) { //theme is "light" or "dark"
 
         //call this inside every activity
@@ -77,39 +91,49 @@ public class MenuActivity extends AppCompatActivity {
         initializeErrorMessage();
         Intent intent = getIntent();
         email = intent.getExtras().getString("Email");
+        tv_bill = (TextView)findViewById(R.id.list_size);
       //  Toolbar mToolBar = (Toolbar)findViewById(R.id.tb_menu);
       //  setSupportActionBar(mToolBar);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab1);
-        fab.setOnClickListener(new View.OnClickListener() {
+        final FirebaseDatabase storage = FirebaseDatabase.getInstance();
+        final DatabaseReference storageRef = storage.getReference("Login/" + email.split("@")[0] + "/TotalAmountDue");
+        Log.e("GN",email);
+        storageRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Create Group", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                LoginActivity.sock.send("CREATE_GROUP;"+email+";friends");
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                String remainingPossessions = "";
+                if (dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+
+                tv_bill.setText("Total due: $" + message);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
             }
         });
-        FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
-        fab2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Add Group", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-              //  LoginActivity.sock.send("CREATE_GROUP;"+email+";friends");
-                Intent i = new Intent(MenuActivity.this, GroupChatActivity.class);
-                startActivity(i);
-            }
-        });
+
         LoginActivity.sock.setClientCallback(new Client.ClientCallback () {
             @Override
             public void onMessage(String message) {
-                if(message.equals("CHECK_USER ACCOUNT_EXISTS")){
-                    Intent i = new Intent(MenuActivity.this, ChatActivity.class);
-                   i.putExtra("Email",et_chatSearch.getText().toString());
-                    startActivity(i);
-                }
-                else{
-                    tv_message.setText("Account Does Not Exist");
-                }
+                Log.e("Resp",message);
+               if(message.contains("CREATE_GROUP;SUCCESS"))
+               {
+                   mImages.add("https://i.redd.it/tpsnoz5bzo501.jpg");
+                   mNames.add(groupName);
+                   Intent i = new Intent(MenuActivity.this, MenuActivity.class);
+                   startActivity(i);
+               }
+                else if(message.contains("GET_GROUP;SUCCESS"))
+               {
+                   String groupName = message.split(";")[2];
+                   mImages.add("https://i.redd.it/tpsnoz5bzo501.jpg");
+                   mNames.add(groupName);
+                   initializeRecyclerView();
+            }
             }
 
             @Override
@@ -120,15 +144,43 @@ public class MenuActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onDisconnect(Socket socket, String message)  {
-
-
+            public void onDisconnect(Socket socket, String message) throws IOException {
+              //  socket.close();
             }
 
             @Override
             public void onConnectError(Socket socket, String message) {
             }
         });
+
+        FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Add Group", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                final AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this);
+                View viewDialog = LayoutInflater.from(MenuActivity.this).inflate(R.layout.add_group_item,null);
+                final EditText et_groupName = (EditText) viewDialog.findViewById(R.id.et_groupNameAdd);
+                final Button bt_choreItemAdd = (Button) viewDialog.findViewById(R.id.bt_groupCreate);
+                builder.setView(viewDialog);
+                final AlertDialog dialog = builder.create();
+                bt_choreItemAdd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        groupName = et_groupName.getText().toString();
+                       // Toast.makeText(MenuActivity.this, "The item has been added", Toast.LENGTH_SHORT).show();
+                        LoginActivity.sock.send("CREATE_GROUP;"+email+";"+groupName);
+                        dialog.dismiss();
+
+                    }
+                });
+
+                dialog.show();
+
+            }
+        });
+        LoginActivity.sock.send("GET_GROUP;"+email);
         initializeBitMaps();
         initializeRecyclerView();
         initializeOptions();
@@ -174,7 +226,7 @@ public class MenuActivity extends AppCompatActivity {
     // This initializes all the recyclerViews.
     private void initializeRecyclerView(){
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.rv_groupNames);
-        MenuRecyclerViewAdaptor adaptor = new MenuRecyclerViewAdaptor(this, mNames, mImages);
+        MenuRecyclerViewAdaptor adaptor = new MenuRecyclerViewAdaptor(this, mNames, mImages,email);
         recyclerView.setAdapter(adaptor);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -199,10 +251,22 @@ public class MenuActivity extends AppCompatActivity {
                         ).show();
                         if(item.getTitle().toString().equals("Profile")){
                             Intent i = new Intent(getBaseContext(), ProfileActivity.class);
+                            i.putExtra("Email",email);
                             startActivity(i);
                         }
                         if(item.getTitle().toString().equals("Schedule")){
                             Intent i = new Intent(getBaseContext(), ScheduleActivity.class);
+                            i.putExtra("Email",email);
+                            startActivity(i);
+                        }
+                        if(item.getTitle().toString().equals("Logout")){
+                            Intent i = new Intent(getBaseContext(), LoginActivity.class);
+                            i.putExtra("Email",email);
+                            try {
+                                LoginActivity.sock.disconnect();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                             startActivity(i);
                         }
                         return true;

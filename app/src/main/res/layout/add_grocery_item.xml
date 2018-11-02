@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true">
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/et_groceryNameAdd"
+            android:ems="8"
+            android:hint="@string/grocery_name_add"/>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/et_groceryNumItemsAdd"
+            android:ems="8"
+            android:hint="@string/grocery_num_items_add"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bt_groceryAdd"
+            android:ems="8"
+            android:text="@string/grocery_button_caption"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>

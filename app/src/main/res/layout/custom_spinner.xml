@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="3px" >
+
+    <TextView
+        android:id="@+id/text_main_seen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5px"
+        android:layout_marginTop="2px"
+        android:padding="3px"
+        android:text="member"
+        android:textColor="#0022ee"
+        android:textSize="30px"
+        android:textStyle="bold" />
+
+</RelativeLayout>

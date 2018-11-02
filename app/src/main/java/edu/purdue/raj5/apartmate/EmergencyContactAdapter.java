@@ -1,8 +1,8 @@
-
 package edu.purdue.raj5.apartmate;
+
+
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -20,48 +20,38 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-import edu.purdue.raj5.apartmate.R;
-
-public class ChoresAdaptor extends RecyclerView.Adapter<ChoresAdaptor.ViewHolder>  {
+public class EmergencyContactAdapter extends RecyclerView.Adapter<EmergencyContactAdapter.ViewHolder> {
     private Context mContext;
-    private ArrayList<String> mChoreNames = new ArrayList<>();
-    private ArrayList<String> mChoreAssignee = new ArrayList<>();
-    private ArrayList<String> mChoreDescription = new ArrayList<>();
-    private ArrayList<String> mChoreDate = new ArrayList<>();
-    private ArrayList<String> mChoreTime = new ArrayList<>();
-    private  ArrayList <String> mTempChoreNames = new ArrayList<>();
+    private ArrayList<String> mNames = new ArrayList<>();
+    private ArrayList<String> mEmergencyContacts = new ArrayList<>();
+    ArrayList<String> mTempEmergency = new ArrayList<>();
     String groupName;
-
-    public ChoresAdaptor(Context mContext, ArrayList<String> mChoreNames, ArrayList<String> mChoreAssignee, ArrayList<String> mChoreDescription, ArrayList<String> mChoreDate, ArrayList<String> mChoreTime, String groupName, ArrayList<String> mTempChoreNames) {
+    String email;
+    public EmergencyContactAdapter(Context mContext, ArrayList<String> mGroupNames, ArrayList<String> mEmergencyContacts,ArrayList<String> mTempEmergency, String groupName, String email) {
         this.mContext = mContext;
-        this.mChoreNames = mChoreNames;
-        this.mChoreAssignee = mChoreAssignee;
-        this.mChoreDescription = mChoreDescription;
-        this.mChoreDate = mChoreDate;
-        this.mChoreTime = mChoreTime;
+        this.mNames = mGroupNames;
+        this.mEmergencyContacts = mEmergencyContacts;
+        this.mTempEmergency = mTempEmergency;
         this.groupName = groupName;
-        this.mTempChoreNames = mTempChoreNames;
+        this.email = email;
     }
 
     @NonNull
     @Override
-    public ChoresAdaptor.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_chores,viewGroup,false);
-        ViewHolder holder = new ViewHolder(view);
+    public EmergencyContactAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_emergency_contact,viewGroup,false);
+        EmergencyContactAdapter.ViewHolder holder = new EmergencyContactAdapter.ViewHolder(view);
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ChoresAdaptor.ViewHolder viewHolder,final int i) {
-        viewHolder.chore.setText(mChoreNames.get(i));
-        viewHolder.choreAssignee.setText(mChoreAssignee.get(i));
-        viewHolder.choreDescription.setText(mChoreDescription.get(i));
-        viewHolder.choreDate.setText(mChoreDate.get(i));
-        viewHolder.choreTime.setText(mChoreTime.get(i));
-
-        viewHolder.ll_chores.setOnClickListener(new View.OnClickListener() {
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
+        viewHolder.name.setText(mNames.get(i));
+        viewHolder.emergencyContacts.setText(mEmergencyContacts.get(i));
+        viewHolder.ll_emergencyContacts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
@@ -73,37 +63,35 @@ public class ChoresAdaptor extends RecyclerView.Adapter<ChoresAdaptor.ViewHolder
 
                     public void onClick(DialogInterface dialog, int which) {
                         // Do nothing but close the dialog
-                        Toast.makeText(mContext, "Remove this item: "+mChoreNames.get(i), Toast.LENGTH_SHORT).show();
-
+                        Toast.makeText(mContext, "Remove this item: "+mEmergencyContacts.get(i), Toast.LENGTH_SHORT).show();
                         final FirebaseDatabase storage = FirebaseDatabase.getInstance();
-                        final DatabaseReference storageRef = storage.getReference("Groups/" + groupName + "/Chores");
+                        final DatabaseReference storageRef = storage.getReference("Groups/" + groupName + "/EmergencyContacts");
                         Log.e("GN",groupName);
                         storageRef.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 String message;
-                                String remainingChores = "";
+                                String remainingEmer = "";
                                 if (dataSnapshot.getValue() == null)
                                     message = "";
                                 else
                                     message = dataSnapshot.getValue().toString();
-                                String chores[] = message.split(";");
+                                String emergency[] = message.split(";");
 
 
-                                for(int j = 0; j < chores.length;j++) {
-                                    String[] chore = chores[j].split(":");
+                                for(int j = 0; j < emergency.length;j++) {
+                                    String[] emer = emergency[j].split(":");
                                     Log.e("Iny","For");
                                     Log.e("In",String.valueOf(i));
                                     Log.e("In",String.valueOf(j));
 
-
-                                    if (!chore[0].equals(mTempChoreNames.get(i)))
+                                    if (!emer[1].equals(mTempEmergency.get(i)))
                                     {
-                                        remainingChores += chores[j]+";";
+                                        remainingEmer += emergency[j]+";";
                                     }
                                 }
-                                Log.e("Remainig",remainingChores);
-                                storageRef.setValue(remainingChores);
+                                Log.e("Remainig",remainingEmer);
+                                storageRef.setValue(remainingEmer);
                             }
 
                             @Override
@@ -111,6 +99,7 @@ public class ChoresAdaptor extends RecyclerView.Adapter<ChoresAdaptor.ViewHolder
                                 System.out.println("The read failed: " + databaseError.getCode());
                             }
                         });
+
 
                     }
                 });
@@ -127,7 +116,6 @@ public class ChoresAdaptor extends RecyclerView.Adapter<ChoresAdaptor.ViewHolder
 
                 AlertDialog alert = builder.create();
                 alert.show();
-
             }
         });
 
@@ -135,25 +123,18 @@ public class ChoresAdaptor extends RecyclerView.Adapter<ChoresAdaptor.ViewHolder
 
     @Override
     public int getItemCount() {
-        return mChoreNames.size();
+        return mNames.size();
     }
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView chore;
-        TextView choreAssignee;
-        TextView choreDescription;
-        TextView choreDate;
-        TextView choreTime;
-        LinearLayout ll_chores;
-
+        TextView name;
+        TextView emergencyContacts;
+        LinearLayout ll_emergencyContacts;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            chore = (TextView) itemView.findViewById(R.id.tv_choreName);
-            choreAssignee = (TextView) itemView.findViewById(R.id.tv_choreByWho);
-            choreDescription = (TextView) itemView.findViewById(R.id.tv_choreDescription);
-            choreDate = (TextView) itemView.findViewById(R.id.tv_choreDate);
-            choreTime = (TextView) itemView.findViewById(R.id.tv_choreTime);
-            ll_chores = (LinearLayout) itemView.findViewById(R.id.ll_chores);
+            name = (TextView) itemView.findViewById(R.id.tv_emergencyContactPersonName);
+            emergencyContacts = (TextView) itemView.findViewById(R.id.tv_emergencyContact);
+            ll_emergencyContacts = (LinearLayout) itemView.findViewById(R.id.ll_emergencyContact);
         }
     }
 }

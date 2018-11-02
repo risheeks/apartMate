@@ -60,9 +60,9 @@ class DialogAdaptorStudent extends BaseAdapter {
 
 
         tvTitle.setText("Title : "+alCustom.get(position).getTitles());
-        tvSubject.setText("Subject : "+alCustom.get(position).getSubjects());
+        tvSubject.setText("Description : "+alCustom.get(position).getSubjects());
         tvDuedate.setText("Due Date : "+alCustom.get(position).getDuedates());
-        tvDescription.setText("Description : "+alCustom.get(position).getDescripts());
+        tvDescription.setText("Time : "+alCustom.get(position).getDescripts());
 
         return  listViewItem;
     }

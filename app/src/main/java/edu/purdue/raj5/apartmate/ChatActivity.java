@@ -160,6 +160,7 @@ public class ChatActivity extends AppCompatActivity {
                         FileOutputStream fos = openFileOutput(friendName, Context.MODE_APPEND);
                         Toast.makeText(getBaseContext(), LoginActivity.currentUser, Toast.LENGTH_LONG).show();
                         LoginActivity.sock.send("SEND_MESSAGE "+ LoginActivity.currentUser + " " + friendName+" "+editText.getText().toString());
+                        Thread.sleep(150);
                         fos.write(("Myself " + Calendar.getInstance().getTime().toString()+" "+ editText.getText().toString() + "\n").getBytes());
                         fos.flush();
                         fos.close();

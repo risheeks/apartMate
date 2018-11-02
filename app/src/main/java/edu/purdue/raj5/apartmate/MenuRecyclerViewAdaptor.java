@@ -25,12 +25,13 @@ public class MenuRecyclerViewAdaptor extends RecyclerView.Adapter<MenuRecyclerVi
     private ArrayList<String> mGroupNames = new ArrayList<>(); // All the group Names as the name says.
     private ArrayList<String> mGroupPhotos = new ArrayList<>(); // All the group photos as the name says.
     private Context mContext;
-
+    String email;
     //Constructor of the MenuRecyclerViewAdaptor class
-    public MenuRecyclerViewAdaptor(Context mContext, ArrayList<String> mGroupNames, ArrayList<String> mGroupPhotos) {
+    public MenuRecyclerViewAdaptor(Context mContext, ArrayList<String> mGroupNames, ArrayList<String> mGroupPhotos, String email) {
         this.mGroupNames = mGroupNames;
         this.mGroupPhotos = mGroupPhotos;
         this.mContext = mContext;
+        this.email = email;
     }
 // These are the three methods that needs to be implemented. 
     @NonNull
@@ -51,8 +52,10 @@ public class MenuRecyclerViewAdaptor extends RecyclerView.Adapter<MenuRecyclerVi
             public void onClick(View v) {
                 Log.d(TAG, "onClick: "+mGroupNames.get(i));
                 // Currently just included the next line for 
-                Intent i = new Intent(mContext,GroupTabsActivity.class);
-                mContext.startActivity(i);
+                Intent intent = new Intent(mContext,GroupTabsActivity.class);
+                intent.putExtra("GroupName",mGroupNames.get(i));
+                intent.putExtra("Email",email);
+                mContext.startActivity(intent);
 
             }
         });

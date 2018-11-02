@@ -2,19 +2,18 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/ll_groceries"
     android:orientation="vertical"
-    >
+    android:id="@+id/ll_emergencyContact">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_groceryName"
-        android:hint="Item Name"
-        android:layout_weight="9"/>
+        android:id="@+id/tv_emergencyContactPersonName"
+        android:layout_gravity="center"
+        />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_groceryNumItems"
-        android:hint="# items"
-        android:layout_weight="1"/>
+        android:id="@+id/tv_emergencyContact"
+        android:layout_gravity="center"
+        />
 </LinearLayout>

@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
                     new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-        sock = new Client("10.186.90.204", 9910);
+        sock = new Client("10.186.93.103", 9910);
 
         super.onCreate(savedInstanceState);
 

@@ -11,24 +11,65 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
         android:orientation="vertical"
+
         >
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/bt_chores"
             android:text="@string/chores"
-            android:ems="8"/>
+            android:ems="12"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/bt_grocery"
             android:text="@string/grocery"
-            android:ems="8"/>
-
-
-
+            android:ems="12"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bt_receipt"
+            android:text="@string/receipts"
+            android:ems="12"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bt_interest"
+            android:text="@string/interest"
+            android:ems="12"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bt_birthdays"
+            android:text="@string/birthday"
+            android:ems="12"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bt_sharePossessions"
+            android:text="@string/sharePossessions"
+            android:ems="12"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bt_sharePossessionsNo"
+            android:text="@string/sharePossessionsNo"
+            android:ems="12"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bt_schedules"
+            android:text="@string/schedules"
+            android:ems="12"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bt_emergency"
+            android:text="@string/emergency_contact"
+            android:ems="12"/>
     </LinearLayout>
 
 </RelativeLayout>
