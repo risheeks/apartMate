@@ -22,6 +22,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+
+/*
+ * Allows the user to let others in the group know about which possessions of theirs can be
+ * shared and which cannot be shared amongst them
+ *
+ */
 public class ShareablePossessionsActivity extends AppCompatActivity {
     RecyclerView rv_shareablePossessions;
     FloatingActionButton fab2;

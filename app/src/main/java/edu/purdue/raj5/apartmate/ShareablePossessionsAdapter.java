@@ -21,6 +21,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+
+/*
+ * Manages what the Sharable Possessions list diplays 
+ *
+ */
 public class ShareablePossessionsAdapter extends RecyclerView.Adapter<ShareablePossessionsAdapter.ViewHolder> {
     private  String groupName;
     private  String email;
