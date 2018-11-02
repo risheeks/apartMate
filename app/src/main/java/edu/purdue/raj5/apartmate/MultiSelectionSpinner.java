@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 package edu.purdue.raj5.apartmate;
+=======
+package com.example.risheek.apartmate;
+>>>>>>> cc35bd6d648bb2cba0320706723c527d3be71aff
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -187,7 +191,11 @@ public class MultiSelectionSpinner extends android.support.v7.widget.AppCompatSp
         for (int i = 0; i < _items.length; ++i) {
             if (mSelection[i]) {
                 if (foundOne) {
+<<<<<<< HEAD
                     sb.append(",");
+=======
+                    sb.append(", ");
+>>>>>>> cc35bd6d648bb2cba0320706723c527d3be71aff
                 }
                 foundOne = true;
                 sb.append(_items[i]);

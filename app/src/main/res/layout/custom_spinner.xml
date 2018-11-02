@@ -17,4 +17,8 @@
         android:textSize="30px"
         android:textStyle="bold" />
 
+<<<<<<< HEAD
 </RelativeLayout>
+=======
+</RelativeLayout>
+>>>>>>> cc35bd6d648bb2cba0320706723c527d3be71aff
