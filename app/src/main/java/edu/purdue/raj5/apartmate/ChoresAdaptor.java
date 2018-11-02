@@ -23,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import edu.purdue.raj5.apartmate.R;
-
+// We are using the choreAdapter 
 public class ChoresAdaptor extends RecyclerView.Adapter<ChoresAdaptor.ViewHolder>  {
     private Context mContext;
     private ArrayList<String> mChoreNames = new ArrayList<>();
@@ -44,6 +44,7 @@ public class ChoresAdaptor extends RecyclerView.Adapter<ChoresAdaptor.ViewHolder
         this.groupName = groupName;
         this.mTempChoreNames = mTempChoreNames;
     }
+    
 
     @NonNull
     @Override
@@ -52,7 +53,7 @@ public class ChoresAdaptor extends RecyclerView.Adapter<ChoresAdaptor.ViewHolder
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
-
+    // This is how we attach the viewholder.
     @Override
     public void onBindViewHolder(@NonNull ChoresAdaptor.ViewHolder viewHolder,final int i) {
         viewHolder.chore.setText(mChoreNames.get(i));
@@ -60,7 +61,7 @@ public class ChoresAdaptor extends RecyclerView.Adapter<ChoresAdaptor.ViewHolder
         viewHolder.choreDescription.setText(mChoreDescription.get(i));
         viewHolder.choreDate.setText(mChoreDate.get(i));
         viewHolder.choreTime.setText(mChoreTime.get(i));
-
+    // this is where the remove item code is written
         viewHolder.ll_chores.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,6 +138,7 @@ public class ChoresAdaptor extends RecyclerView.Adapter<ChoresAdaptor.ViewHolder
     public int getItemCount() {
         return mChoreNames.size();
     }
+// The item_layout is initialized here. 
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView chore;
         TextView choreAssignee;
