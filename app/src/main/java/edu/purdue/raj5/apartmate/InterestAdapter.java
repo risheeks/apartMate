@@ -21,6 +21,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+/*
+* Adapter for the interest Class
+* Adds interest to fireBase
+*/
+
 public class InterestAdapter extends RecyclerView.Adapter<InterestAdapter.ViewHolder> {
     private  String groupName;
     private  String email;
@@ -69,6 +74,7 @@ public class InterestAdapter extends RecyclerView.Adapter<InterestAdapter.ViewHo
                         final FirebaseDatabase storage = FirebaseDatabase.getInstance();
                         final DatabaseReference storageRef = storage.getReference("Groups/" + groupName + "/Interests");
                         Log.e("GN",groupName);
+                        //FireBase call to get the groupName->interest and add the interest
                         storageRef.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
