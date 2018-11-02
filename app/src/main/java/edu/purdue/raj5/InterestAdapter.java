@@ -1,7 +1,9 @@
 package com.example.dell.apartmate;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,12 +38,37 @@ public class InterestAdapter extends RecyclerView.Adapter<InterestAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
         viewHolder.name.setText(mNames.get(i));
         viewHolder.interests.setText(mInterests.get(i));
-        /*viewHolder.ll_chores.setOnClickListener(new View.OnClickListener() {
+        viewHolder.ll_interest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Editing is yet to be added", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+
+                builder.setTitle("Confirm");
+                builder.setMessage("Are you sure?");
+
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Do nothing but close the dialog
+                        Toast.makeText(mContext, "Remove this item: "+mInterests.get(i), Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        // Do nothing
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
             }
-        });*/
+        });
 
     }
 
@@ -52,15 +79,13 @@ public class InterestAdapter extends RecyclerView.Adapter<InterestAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView name;
         TextView interests;
-        //LinearLayout ll_chores;
+        LinearLayout ll_interest;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.tv_interestPersonName);
             interests = (TextView) itemView.findViewById(R.id.tv_interestDescription);
-            //ll_chores = (LinearLayout) itemView.findViewById(R.id.ll_groceries);
-
-
+            ll_interest = (LinearLayout) itemView.findViewById(R.id.ll_interest);
         }
     }
 }
