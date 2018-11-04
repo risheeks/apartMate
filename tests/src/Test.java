@@ -6,12 +6,12 @@ public class Test {
     private static int port;
     private static String ip;
     public static void main(String[] args)  throws InterruptedException{
-        ip = "10.186.81.198";
+        ip = "10.186.93.103";
         port = 9910;
         test1_1();
         test1_2();
         test1_3();
-        Thread.sleep(3000);
+        Thread.sleep(4000);
         test2_1();
         test2_2();
         test2_3();
@@ -22,9 +22,10 @@ public class Test {
         test4_2();
         Thread.sleep(1500);
         test5();
+        //testCommand("irettig@purdue.edu", "12345", "GET_GROUPMEMBERS;test group 1");
     }
 
-    //Adds user irettig
+    //Adds user patel716
     static void test1_1() {
         //System.out.print("Test 1_1\n");
 
@@ -58,7 +59,7 @@ public class Test {
 
             @Override
             public void onConnect(Socket socket) throws IOException {
-                String message = "REGISTER irettig@purdue.edu 12345 Ian Rettig";
+                String message = "REGISTER patel716@purdue.edu 12345 Ian Rettig";
                 c.send(message);
 
             }
@@ -77,7 +78,7 @@ public class Test {
 
     }
 
-    //Adds user raj5
+    //Adds user rajadrian18
     static void test1_2() {
         //System.out.print("Test 1_2\n");
 
@@ -111,7 +112,7 @@ public class Test {
 
             @Override
             public void onConnect(Socket socket) throws IOException {
-                String message = "REGISTER raj5@purdue.edu 12345 Adrian Raj";
+                String message = "REGISTER rajadrian18@gmail.com 12345 Adrian Raj";
                 c.send(message);
 
             }
@@ -130,7 +131,7 @@ public class Test {
 
     }
 
-    //Adds user corruptsoul13
+    //Adds user adrianraj1818
     static void test1_3() {
         //System.out.print("Test 1_3\n");
 
@@ -164,7 +165,7 @@ public class Test {
 
             @Override
             public void onConnect(Socket socket) throws IOException {
-                String message = "REGISTER corruptsoul13@gmail.com 12345 Ian Rettig";
+                String message = "REGISTER adrianraj1818@gmail.com 12345 Ian Rettig";
                 c.send(message);
 
             }
@@ -183,7 +184,7 @@ public class Test {
 
     }
 
-    //logs in as user irettig
+    //logs in as user patel716
     static void test2_1() {
         Client c = new Client(ip, port);
 
@@ -215,7 +216,7 @@ public class Test {
 
             @Override
             public void onConnect(Socket socket) throws IOException {
-                String message = "LOGIN irettig@purdue.edu 12345";
+                String message = "LOGIN patel716@purdue.edu 12345";
                 c.send(message);
 
             }
@@ -232,7 +233,7 @@ public class Test {
         c.connect();
     }
 
-    //logs in as user raj5
+    //logs in as user rajadrian18
     static void test2_2() {
         Client c = new Client(ip, port);
 
@@ -264,7 +265,7 @@ public class Test {
 
             @Override
             public void onConnect(Socket socket) throws IOException {
-                String message = "LOGIN raj5@purdue.edu 12345";
+                String message = "LOGIN rajadrian18@gmail.com 12345";
                 c.send(message);
 
             }
@@ -281,7 +282,7 @@ public class Test {
         c.connect();
     }
 
-    //logs in as user corruptsoul13
+    //logs in as user adrianraj1818
     static void test2_3() {
         Client c = new Client(ip, port);
 
@@ -313,7 +314,7 @@ public class Test {
 
             @Override
             public void onConnect(Socket socket) throws IOException {
-                String message = "LOGIN corruptsoul13@gmail.com 12345";
+                String message = "LOGIN adrianraj1818@gmail.com 12345";
                 c.send(message);
 
             }
@@ -342,7 +343,7 @@ public class Test {
                 //System.out.print("MESSAGE RECEIVED: " + message + "\n");
 
                 if(message.equals("LOGIN SUCCESS")) {
-                    String message2 = "CREATE_GROUP;irettig@purdue.edu;test group 1";
+                    String message2 = "CREATE_GROUP;adrianraj1818@gmail.com;test group 1";
                     c.send(message2);
                 }
                 else if (message.equals("CREATE_GROUP SUCCESS")) {
@@ -383,7 +384,7 @@ public class Test {
         c.connect();
     }
 
-    //add raj5 to test group 1
+    //add patel716 to test group 1
     static void test4_1() {
         Client c = new Client(ip, port);
 
@@ -395,7 +396,7 @@ public class Test {
                 //System.out.print("MESSAGE RECEIVED: " + message + "\n");
 
                 if(message.equals("LOGIN SUCCESS")) {
-                    String message2 = "ADD_GROUP;raj5@purdue.edu;test group 1";
+                    String message2 = "ADD_GROUP;patel716@purdue.edu;test group 1";
                     c.send(message2);
                 }
                 else if (message.equals("ADD_GROUP SUCCESS")) {
@@ -436,7 +437,7 @@ public class Test {
         c.connect();
     }
 
-    //add corruptsoul13 to test group 1
+    //add rajadrian18 to test group 1
     static void test4_2() {
         Client c = new Client(ip, port);
 
@@ -448,7 +449,7 @@ public class Test {
                 //System.out.print("MESSAGE RECEIVED: " + message + "\n");
 
                 if(message.equals("LOGIN SUCCESS")) {
-                    String message2 = "ADD_GROUP;corruptsoul13@gmail.com;test group 1";
+                    String message2 = "ADD_GROUP;rajadrian18@gmail.com;test group 1";
                     c.send(message2);
                 }
                 else if (message.equals("ADD_GROUP SUCCESS")) {
@@ -491,9 +492,9 @@ public class Test {
 
     //open 3 clients, send a group message
     static void test5() {
-        sendGMessage("irettig@purdue.edu","12345");
-        receiveGMessage("raj5@purdue.edu", "12345");
-        receiveGMessage("corruptsoul13@gmail.com", "12345");
+        sendGMessage("adrianraj1818@gmail.com","12345");
+        receiveGMessage("patel716@purdue.edu", "12345");
+        receiveGMessage("rajadrian18@gmail.com", "12345");
     }
 
     //sends message to test group 1
@@ -573,6 +574,49 @@ public class Test {
                 }
                 else if (!message.equals("Welcome to the server!")) {
                     System.out.print("Failed test 5: " + message + " for " + username + "\n");
+                    try {
+                        c.disconnect();
+                    } catch (java.io.IOException e) {
+                        System.out.print(e.getMessage());
+                    }
+                }
+
+            }
+
+            @Override
+            public void onConnect(Socket socket) throws IOException {
+                String message = "LOGIN " + username + " " + password;
+                c.send(message);
+
+            }
+
+            @Override
+            public void onDisconnect(Socket socket, String message) throws IOException {
+            }
+
+            @Override
+            public void onConnectError(Socket socket, String message) {
+            }
+        });
+
+        c.connect();
+    }
+
+    static void testCommand(String username, String password, String command) {
+        Client c = new Client(ip, port);
+
+        c.setClientCallback(new Client.ClientCallback (){
+
+            @Override
+            public void onMessage(String message) {
+                System.out.print("MESSAGE RECEIVED: " + message + "\n");
+
+                if(message.equals("LOGIN SUCCESS")) {
+                    String message2 = command;
+                    c.send(message2);
+                }
+
+                else if (!message.equals("Welcome to the server!")) {
                     try {
                         c.disconnect();
                     } catch (java.io.IOException e) {

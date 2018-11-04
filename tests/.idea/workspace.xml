@@ -2,6 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="991e02b1-c059-4f75-9a6f-d0f36aea3bd8" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$10.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$10.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$11.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$11.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$5.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$6.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$7.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$7.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$8.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$8.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$9.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$9.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/tests/Test.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Test.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -15,10 +28,13 @@
     <session id="-269280393">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="3" />
+          <entry key="project.closed" value="6" />
           <entry key="project.open.time.12" value="1" />
+          <entry key="project.open.time.21" value="1" />
+          <entry key="project.open.time.22" value="1" />
           <entry key="project.open.time.31" value="2" />
-          <entry key="project.opened" value="3" />
+          <entry key="project.open.time.6" value="1" />
+          <entry key="project.opened" value="6" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -34,12 +50,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="java" value="2751" />
+          <entry key="java" value="3227" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="2740" />
+          <entry key="JAVA" value="3216" />
           <entry key="Scratch" value="11" />
         </counts>
       </usages-collector>
@@ -50,8 +66,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Test.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="12" column="18" lean-forward="true" selection-start-line="12" selection-start-column="18" selection-end-line="12" selection-end-column="18" />
+            <state relative-caret-position="538">
+              <caret line="646" column="1" lean-forward="true" selection-start-line="646" selection-start-column="1" selection-end-line="646" selection-end-column="1" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="method#test1_1#0;class#Test#0" />
@@ -63,9 +79,9 @@
                 <element signature="method#test3#0;class#Test#0" />
                 <element signature="method#test4_1#0;class#Test#0" />
                 <element signature="method#test4_2#0;class#Test#0" />
-                <element signature="method#test5#0;class#Test#0" />
                 <element signature="method#sendGMessage#0;class#Test#0" />
                 <element signature="method#receiveGMessage#0;class#Test#0" />
+                <element signature="method#testCommand#0;class#Test#0" />
               </folding>
             </state>
           </provider>
@@ -74,8 +90,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Client.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-278">
-              <caret line="72" column="14" selection-start-line="72" selection-start-column="14" selection-end-line="72" selection-end-column="14" />
+            <state relative-caret-position="1377">
+              <caret line="87" column="38" selection-start-line="87" selection-start-column="38" selection-end-line="87" selection-end-column="38" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -228,11 +244,14 @@
       <workItem from="1540689626699" duration="2425000" />
       <workItem from="1540745767275" duration="8265000" />
       <workItem from="1540928057016" duration="4724000" />
+      <workItem from="1541113850164" duration="2724000" />
+      <workItem from="1541190575460" duration="950000" />
+      <workItem from="1541194106706" duration="1550000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="15414000" />
+    <option name="totallyTimeSpent" value="20638000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
@@ -272,22 +291,24 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/Test.java</url>
+          <line>29</line>
+          <properties />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="editorHistoryManager">
     <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.java" />
-    <entry file="file://$PROJECT_DIR$/src/Client.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-278">
-          <caret line="72" column="14" selection-start-line="72" selection-start-column="14" selection-end-line="72" selection-end-column="14" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Test.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="12" column="18" lean-forward="true" selection-start-line="12" selection-start-column="18" selection-end-line="12" selection-end-column="18" />
+        <state relative-caret-position="538">
+          <caret line="646" column="1" lean-forward="true" selection-start-line="646" selection-start-column="1" selection-end-line="646" selection-end-column="1" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#test1_1#0;class#Test#0" />
@@ -299,9 +320,19 @@
             <element signature="method#test3#0;class#Test#0" />
             <element signature="method#test4_1#0;class#Test#0" />
             <element signature="method#test4_2#0;class#Test#0" />
-            <element signature="method#test5#0;class#Test#0" />
             <element signature="method#sendGMessage#0;class#Test#0" />
             <element signature="method#receiveGMessage#0;class#Test#0" />
+            <element signature="method#testCommand#0;class#Test#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Client.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1377">
+          <caret line="87" column="38" selection-start-line="87" selection-start-column="38" selection-end-line="87" selection-end-column="38" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
