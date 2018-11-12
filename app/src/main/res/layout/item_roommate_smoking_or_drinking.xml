@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/ll_roomateSmokingOrDrinking">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_isRoommateSmokingOrDrinkingPersonName"
+        android:layout_gravity="center"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Do You Smoke?"
+            android:layout_weight="8"
+            android:layout_gravity="center"
+            />
+        <ToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tb_isRoommateSmoking"
+            android:enabled="false"
+            android:layout_weight="2"
+            android:textOn="Yes"
+            android:textOff="No"
+            />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Do You Drink?"
+            android:layout_weight="8"
+            android:layout_gravity="center"
+            />
+        <ToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tb_isRoommateDrinking"
+            android:enabled="false"
+            android:layout_weight="2"
+            android:textOn="Yes"
+            android:textOff="No"
+            />
+
+    </LinearLayout>
+</LinearLayout>
