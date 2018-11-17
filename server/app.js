@@ -13,11 +13,13 @@ var app = firebase.initializeApp(    {databaseURL: "https://apartmate-3.firebase
 var socketMap = new Map();
 var nodemailer = require('nodemailer')
 var chores = "";
+
 /*
 *==================================================================================================================
 Transporter for the email client initialized with auth info
 *==================================================================================================================
 */
+
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -25,18 +27,22 @@ var transporter = nodemailer.createTransport({
     pass: 'adrian@123SOL'
   }
 });
+
 /*
 *==================================================================================================================
 Cryptr library for encrypt and decrypt
 *==================================================================================================================
 */
+
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr('apartmate');
+
 /*
 *==================================================================================================================
 Initialize loginMap with existing users
 *==================================================================================================================
 */
+
 const dbLoginRef = firebase.database().ref("Login").orderByKey();
 dbLoginRef.once("value")
 .then(function (snapshot) {
@@ -61,6 +67,7 @@ dbGroupRef.once("value")
 *Function to process user login with password encryption
 *==================================================================================================================
 */
+
 var processLogin = function (data,sock) {
   var email = data.toString().split(" ")[1];
   var password = data.toString().split(" ")[2];
@@ -819,6 +826,84 @@ var updateRoommateRating = function(data,sock){
   ref1.set(rating);
   sock.write('UPDATE_ROOMMATE_RATING SUCCESS\n');
 }
+
+/*
+*==================================================================================================================
+*  Function for a user to leave a group
+*==================================================================================================================
+*/
+
+var leaveGroup = function(data,sock) {
+  var group = data.toString().split(";")[1];
+  var email = data.toString().split(";")[2];
+
+  //remove group from user in firebase
+  var userGroup = firebase.database().ref("Login/" + email.split("@")[0] + "/Group");
+  userGroup.set("");
+
+  //remove user from emergency contact, interests, members, shared and unshared possessions
+  var refMembers = firebase.database().ref("Groups/" + group + "/Members");
+  var refInterests = firebase.database().ref("Groups/" + group + "/Interests");
+  var refContact = firebase.database().ref("Groups/" + group + "/EmergencyContacts");
+  var refShare = firebase.database().ref("Groups/" + group + "/ShareablePossessions");
+  var refUnshare = firebase.database().ref("Groups/" + group + "/UnshareablePossessions");
+  var Members;
+  var Interests;
+  var Contact;
+  var Share;
+  var Unshare;
+
+  //get the current database's information involving the group
+  refMembers.on("value", function (snapshot) {
+    Members = snapshot.val();
+  });
+  refInterests.on("value", function (snapshot) {
+    Interests = snapshot.val();
+  });
+  refContact.on("value", function (snapshot) {
+    Contact = snapshot.val();
+  });
+  refShare.on("value", function (snapshot) {
+    Share = snapshot.val();
+  });
+  refUnshare.on("value", function (snapshot) {
+    Unshare = snapshot.val();
+  });
+
+  //remove the user leaving the group from the database information and send back
+  setTimeout(function () {
+    var replace1 = email + ";";
+    var replace2 = email + ":[^;]*;"
+    var regex1 = new RegExp(RegExp.quote(replace1), "g");
+    var regex2 = new RegExp(RegExp.quote(replace2), "g");
+    Members = Members.toString().replace(regex1, "");
+    refMembers.set(Members);
+    Interests = Interests.toString().replace(regex2, "");
+    refInterests.set(Interests);
+    Contact = Contact.toString().replace(regex2, "");
+    refContact.set(Contact);
+    Share = Share.toString().replace(regex2, "");
+    refShare.set(Share);
+    Unshare = Unshare.toString().replace(regex2, "");
+    refUnshare.set(Unshare);
+  }, 300);
+
+  //adjust the group map with the firebase data
+  var refGroups = firebase.database().ref("Groups/" + group);
+  refGroups.on("value", function (snapshot) {
+    groupMap.set(group, snapshot);
+  });
+}
+
+/*
+*==================================================================================================================
+*  Adjusts regex to include the literal "." instead of any character
+*==================================================================================================================
+*/
+
+RegExp.quote = function(str) {
+     return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+ };
 
 /*
 *==================================================================================================================
