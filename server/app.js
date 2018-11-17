@@ -353,7 +353,11 @@ var getProfile = function (data, sock) {
 
 }
 
-
+/*
+ *
+ *   Function to create group given input from the client. Updates fields in the database with  individual logins updated with emails
+ *
+ */
 var createGroup = function(data,sock){
     var email = data.toString().split(";")[1];
     var groupName = data.toString().split(";")[2];
@@ -373,6 +377,9 @@ var createGroup = function(data,sock){
     });
     setTimeout(function () {
         if(checkGroup == false && checkUser == true) {
+            /*
+            Initializing default fields in profile
+             */
             var ref = firebase.database().ref("Groups/" + groupName + "/Members");
             ref.set(email+";");
             var ref = firebase.database().ref("Groups/" + groupName + "/Chores");
@@ -412,7 +419,11 @@ var createGroup = function(data,sock){
     //var ref = firebase.database().ref("Groups/" + email.toString().split("@")[0]+"/GroupName/"+groupName.toString()+"/Users");
     //ref.set(email);
 }
-
+/*
+ *
+ *   Function to add members to a group given input from the client. Updates fields in the database
+ *
+ */
 var addToGroup = function(data,sock){
     var email = data.toString().split(";")[1];
     var groupName = data.toString().split(";")[2];
@@ -441,7 +452,11 @@ var addToGroup = function(data,sock){
     sock.write('ADD_GROUP SUCCESS\n')
 
 }
-
+/*
+ *
+ *   Function to Send messages to member sockets in a group.
+ *
+ */
 var sendGroupMessage = function(data,sock)
 {
     var senderEmail = data.toString().split(";")[1];
@@ -468,7 +483,11 @@ var sendGroupMessage = function(data,sock)
         })
     },300)
 }
-
+/*
+ *
+ *   Function to add a Chore
+ *
+ */
 var addChore = function (data,sock) {
     var groupName = data.toString().split(";")[1];
     var choreName = data.toString().split(";")[2];
@@ -492,7 +511,11 @@ var addChore = function (data,sock) {
     sock.write('ADD_CHORE SUCCESS\n');
 
 }
-
+/*
+ *
+ *   Function to add grocery items to a grocery list
+ *
+ */
 var addGroceryItem = function (data,sock) {
     var groupName = data.toString().split(";")[1];
     var itemName = data.toString().split(";")[2];
@@ -507,12 +530,16 @@ var addGroceryItem = function (data,sock) {
         var r =  firebase.database().ref("Groups/" + groupName + "/GroceryList");
         if(groceryList == null)
             groceryList = "";
-        r.set(groceryList+";"+itemName+":"+quantity+";");
+        r.set(groceryList+itemName+":"+quantity+";");
     },300);
     sock.write('ADD_GROCERYITEM SUCCESS\n');
 
 }
-
+/*
+ *
+ *   Function to add grocery items to a grocery list
+ *
+ */
 var addShareablePossession = function (data,sock) {
     var groupName = data.toString().split(";")[1];
     var email = data.toString().split(";")[2];
@@ -526,7 +553,7 @@ var addShareablePossession = function (data,sock) {
         var r =  firebase.database().ref("Groups/" + groupName + "/ShareablePossessions");
         if(groceryList == null)
             groceryList = "";
-        r.set(groceryList+";"+email+":"+possession+";");
+        r.set(groceryList+email+":"+possession+";");
     },300);
     sock.write('ADD_SHAREABLEPOSSESSION SUCCESS\n');
 
@@ -545,7 +572,7 @@ var addInterest = function (data,sock) {
         var r =  firebase.database().ref("Groups/" + groupName + "/Interests");
         if(groceryList == null)
             groceryList = "";
-        r.set(groceryList+";"+email+":"+interest+";");
+        r.set(groceryList+email+":"+interest+";");
     },300);
     sock.write('ADD_INTEREST SUCCESS\n');
 
@@ -564,8 +591,8 @@ var addUnshareablePossessions = function (data,sock) {
         var r =  firebase.database().ref("Groups/" + groupName + "/UnshareablePossessions");
         if(groceryList == null)
             groceryList = "";
-        r.set(groceryList+";"+email+":"+possession+";");
-    },300);
+        r.set(groceryList+email+":"+possession+";");
+    },200);
     sock.write('ADD_UNSHAREABLEPOSSESSION SUCCESS\n');
 
 }
@@ -764,6 +791,48 @@ var addReceipt = function (data,sock) {
     },300);
     //sock.write('ADD_CHORE SUCCESS\n');
 }
+
+var sendLocation = function (data,sock) {
+    var senderEmail = data.toString().split(";")[1];
+    var groupName = data.toString().split(";")[2];
+    var address =  data.toString().split(";")[3];
+    var check = true;
+    var emails;
+    groupMap.forEach(function (value,key) {
+        console.log("Key: "+key)
+        if(key == groupName) {
+            emails = value.val().Members.toString().split(";");
+            console.log(emails)
+        }
+    });
+    setTimeout(function () {
+        emails.forEach(function (val) {
+            socketMap.forEach(function (value, key) {
+                var mailOptions = {
+                    from: 'apartmate123@gmail.com',
+                    to: val.toString(),
+                    subject: "Emergency: "+senderEmail+"'s current location",
+                    text: 'Here\'s '+senderEmail+'\'s location: '+address,
+                };
+                transporter.sendMail(mailOptions, function(error, info) {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        console.log('Email sent: ' + info.response);
+                    }
+                });
+            });
+        })
+    },300)
+}
+
+var updateRoommateRating = function(data,sock){
+    var email = data.toString().split(";")[1];
+    var rating = data.toString().split(";")[2];
+    var ref1 = firebase.database().ref("Login/" + email.toString().split("@")[0]+ "/Rating");
+   ref1.set(rating);
+    sock.write('UPDATE_ROOMMATE_RATING SUCCESS\n');
+}
 /*
 *  Starts the server with sockets listening for different input commands
  */
@@ -861,11 +930,11 @@ var svr = net.createServer(function(sock) {
         {
             addReceipt(data,sock);
         }
-        else if(command2 == "ADD_SHAREABLEPOSSESSIONS")
+        else if(command2 == "ADD_SHAREABLEPOSSESSION")
         {
             addShareablePossession(data,sock);
         }
-        else if(command2 == "ADD_UNSHAREABLEPOSSESSIONS")
+        else if(command2 == "ADD_UNSHAREABLEPOSSESSION")
         {
             addUnshareablePossessions(data,sock);
         }
@@ -876,6 +945,14 @@ var svr = net.createServer(function(sock) {
         else if(command2 == "ADD_EMERGENCY")
         {
             addEmergency(data,sock);
+        }
+        else if(command2 == "SEND_LOCATION")
+        {
+            sendLocation(data,sock);
+        }
+        else if(command2 == "UPDATE_ROOMMATE_RATING")
+        {
+            updateRoommateRating(data,sock);
         }
 
 
@@ -913,7 +990,7 @@ var svr = net.createServer(function(sock) {
     });
 });
 
-var svraddr = '10.186.93.103';
+var svraddr = '10.186.156.163';
 var svrport = 9910;
 
 svr.listen(svrport, svraddr);

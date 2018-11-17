@@ -8,4 +8,14 @@
         android:id="@+id/Schedule"
         android:title="Schedule"/>
 
+    <item
+        android:id="@+id/testingDummy"
+        android:title="Dummy Test"/>
+    <item
+        android:id="@+id/Logout"
+        android:title="Logout"/>
+    <item
+        android:id="@+id/Location"
+        android:title="Location"/>
+
 </menu>
