@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.*;
 
@@ -23,6 +24,7 @@ public class Test {
         Thread.sleep(1500);
         test5();
         //testCommand("irettig@purdue.edu", "12345", "GET_GROUPMEMBERS;test group 1");
+        test6();
     }
 
     //Adds user patel716
@@ -643,5 +645,37 @@ public class Test {
         });
 
         c.connect();
+    }
+
+    //test for leaving group. assumes that patel1716 is in a group
+    static void test6() {
+        try {
+            //connect to the server
+            Socket sock = new Socket(ip, port);
+            PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
+
+            //add interests, emergency contact, shared and unshared items
+            String interest = "ADD_INTEREST;test group 1;patel1716@purdue.edu;Programming software.";
+            String emergencyContact = "ADD_EMERGENCY;test group 1;patel1716@purdue.edu;911";
+            String shared = "ADD_SHAREABLEPOSSESSION;test group 1; patel1716@purdue.edu;television";
+            String unshared = "ADD_UNSHAREABLEPOSSESSION;test group 1;patel1716@purdue.edu;My bed";
+            out.write(interest);
+            out.write(emergencyContact);
+            out.write(shared);
+            out.write(unshared);
+            shared = "ADD_SHAREABLEPOSSESSION;test group 1; patel1716@purdue.edu;playstation";
+            unshared = "ADD_UNSHAREABLEPOSSESSION;test group 1;patel1716@purdue.edu;toothbrush";
+            out.write(shared);
+            out.write(unshared);
+
+            //access firebase to show that patel1716 is in a group, show things
+
+            //leave the group
+
+            //access firebase again to show that patel1716 has left the group
+            } catch (Exception e) {
+            System.out.print("Error\n");
+            e.printStackTrace();
+        }
     }
 }

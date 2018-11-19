@@ -564,7 +564,7 @@ var addGroceryItem = function (data,sock) {
 }
 /*
 *==================================================================================================================
-*   Function to add grocery items to a grocery list
+*   Function to add a shareable possession
 *==================================================================================================================
 */
 var addShareablePossession = function (data,sock) {
