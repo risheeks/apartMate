@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import java.io.IOException;
 import java.net.Socket;
 
@@ -45,9 +47,10 @@ public class LoginActivity extends AppCompatActivity {
                     new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-        sock = new Client("10.186.93.103", 9910);
+        sock = new Client("10.186.156.163", 9910);
 
         super.onCreate(savedInstanceState);
+        FirebaseMessaging.getInstance().subscribeToTopic("NEWS");
 
         setContentView(R.layout.activity_login);
         password = (EditText)findViewById(R.id.et_login_password);

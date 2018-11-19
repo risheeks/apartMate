@@ -20,10 +20,6 @@ package edu.purdue.raj5.apartmate;
 
         import java.util.List;
 
-/*
-* Class to display birthdays of the members in a group
-*/
-
 public class BirthdayActivity extends AppCompatActivity {
 
     LinearLayout linearLayout;
@@ -37,9 +33,6 @@ public class BirthdayActivity extends AppCompatActivity {
         linearLayout = findViewById(R.id.linear_layout);
         FirebaseDatabase storage = FirebaseDatabase.getInstance();
         DatabaseReference storageRef = storage.getReference("Groups/"+groupName+"/Members");
-        /*
-        * FireBase call to get the birthdays of different members in the group
-        */
         storageRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -61,14 +54,13 @@ public class BirthdayActivity extends AppCompatActivity {
                                 message = "";
                             else
                                 message = dataSnapshot.getValue().toString();
-                            //Member textField
                             TextView nameView = new TextView(BirthdayActivity.this);
                             nameView.setText(members[x].split("@")[0]);
                             nameView.setTextColor(Color.BLACK);
                             nameView.setPadding(10,30,10,5);
                             nameView.setTextSize(22);
                             linearLayout.addView(nameView);
-                            //Birthday textField
+
                             TextView bdayView = new TextView(BirthdayActivity.this);
                             bdayView.setText("Wish me on: "+ message); //TODO: Get the date
                             bdayView.setTextColor(Color.DKGRAY);

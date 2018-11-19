@@ -14,11 +14,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
-<<<<<<< HEAD
             android:text="Receipt Title" />
-=======
-            android:text="@string/receiptTitle" />
->>>>>>> cc35bd6d648bb2cba0320706723c527d3be71aff
 
         <EditText
             android:id="@+id/receiptTitle"
@@ -53,7 +49,6 @@
         android:orientation="horizontal"
         android:layout_marginTop="20px" >
 
-<<<<<<< HEAD
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,16 +57,6 @@
             android:textSize="30px" />
 
         <edu.purdue.raj5.apartmate.MultiSelectionSpinner
-=======
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:text="@string/receiptMembers"
-        android:textSize="30px" />
-
-        <com.example.risheek.apartmate.MultiSelectionSpinner
->>>>>>> cc35bd6d648bb2cba0320706723c527d3be71aff
             android:id="@+id/members"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

@@ -71,18 +71,18 @@ public class ScheduleActivity extends AppCompatActivity {
 
         // Add a TextView here for the "Title" label, as noted in the comments
         final EditText titleBox = new EditText(this);
-        titleBox.setHint("Subject");
+        titleBox.setHint("Description");
         titleBox.setInputType(InputType.TYPE_CLASS_TEXT);
         layout.addView(titleBox); // Notice this is an add method
 
         // Add another TextView here for the "Description" label
         final EditText descriptionBox = new EditText(this);
-        descriptionBox.setHint("Description");
+        descriptionBox.setHint("Time");
         descriptionBox.setInputType(InputType.TYPE_CLASS_TEXT);
         layout.addView(descriptionBox); // Another add method
 
         final EditText nameBox = new EditText(this);
-        nameBox.setHint("Name");
+        nameBox.setHint("Title");
         nameBox.setInputType(InputType.TYPE_CLASS_TEXT);
         layout.addView(nameBox); // Another add method
 

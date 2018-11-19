@@ -1,11 +1,19 @@
 package edu.purdue.raj5.apartmate;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.ImageViewCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -36,6 +44,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 // This acts as the home page in the project. 
@@ -49,7 +59,8 @@ public class MenuActivity extends AppCompatActivity {
     TextView tv_message; // This is used if there are any errors.
     TextView tv_bill;
     String email;
-    String groupName;
+    String groupName="a";
+
     public void getAppTheme(String theme) { //theme is "light" or "dark"
 
         //call this inside every activity
@@ -57,18 +68,18 @@ public class MenuActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("theme", theme);
         editor.commit();
-        iv_chatSearch = (ImageView)findViewById(R.id.iv_menuChatSearch);
-        et_chatSearch = (TextView)findViewById(R.id.et_chatSearch);
-        optionsButton = (ImageView)findViewById(R.id.iv_menuOptions);
-        LinearLayout ll = (LinearLayout)findViewById(R.id.ll);
+        iv_chatSearch = (ImageView) findViewById(R.id.iv_menuChatSearch);
+        et_chatSearch = (TextView) findViewById(R.id.et_chatSearch);
+        optionsButton = (ImageView) findViewById(R.id.iv_menuOptions);
+        LinearLayout ll = (LinearLayout) findViewById(R.id.ll);
 // The following code is used for theme preferences.
         String s = preferences.getString("theme", "");
-        if(s.equals("dark")) {
+        if (s.equals("dark")) {
             ll.setBackgroundColor(Color.DKGRAY);
             iv_chatSearch.setBackgroundColor(Color.WHITE);
             optionsButton.setBackgroundColor(Color.WHITE);
 
-        }else {
+        } else {
             ll.setBackgroundColor(Color.WHITE);
             iv_chatSearch.setBackgroundColor(Color.GRAY);
             optionsButton.setBackgroundColor(Color.GRAY);
@@ -77,6 +88,13 @@ public class MenuActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        DummyTestActivity.mIsInForegroundMode = false;
+        Log.e("Yo: ", "onDestroy: Well Menu ");
+    }
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
@@ -87,16 +105,18 @@ public class MenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+        DummyTestActivity.mIsInForegroundMode = true;
+        Log.e("Yo: ", "onCreate: Menu ");
         initializeTheme();
         initializeErrorMessage();
         Intent intent = getIntent();
         email = intent.getExtras().getString("Email");
-        tv_bill = (TextView)findViewById(R.id.list_size);
-      //  Toolbar mToolBar = (Toolbar)findViewById(R.id.tb_menu);
-      //  setSupportActionBar(mToolBar);
+        tv_bill = (TextView) findViewById(R.id.list_size);
+        //  Toolbar mToolBar = (Toolbar)findViewById(R.id.tb_menu);
+        //  setSupportActionBar(mToolBar);
         final FirebaseDatabase storage = FirebaseDatabase.getInstance();
         final DatabaseReference storageRef = storage.getReference("Login/" + email.split("@")[0] + "/TotalAmountDue");
-        Log.e("GN",email);
+        Log.e("GN", email);
         storageRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -116,28 +136,25 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
-        LoginActivity.sock.setClientCallback(new Client.ClientCallback () {
+        LoginActivity.sock.setClientCallback(new Client.ClientCallback() {
             @Override
             public void onMessage(String message) {
-                Log.e("Resp",message);
-               if(message.contains("CREATE_GROUP;SUCCESS"))
-               {
-                   mImages.add("https://i.redd.it/tpsnoz5bzo501.jpg");
-                   mNames.add(groupName);
-                   Intent i = new Intent(MenuActivity.this, MenuActivity.class);
-                   startActivity(i);
-               }
-                else if(message.contains("GET_GROUP;SUCCESS"))
-               {
-                   String groupName = message.split(";")[2];
-                   mImages.add("https://i.redd.it/tpsnoz5bzo501.jpg");
-                   mNames.add(groupName);
-                   initializeRecyclerView();
-            }
+                Log.e("Resp", message);
+                if (message.contains("CREATE_GROUP;SUCCESS")) {
+                    mImages.add("https://i.redd.it/tpsnoz5bzo501.jpg");
+                    mNames.add(groupName);
+                    Intent i = new Intent(MenuActivity.this, MenuActivity.class);
+                    startActivity(i);
+                } else if (message.contains("GET_GROUP;SUCCESS")) {
+                    String groupName = message.split(";")[2];
+                    mImages.add("https://i.redd.it/tpsnoz5bzo501.jpg");
+                    mNames.add(groupName);
+                    initializeRecyclerView();
+                }
             }
 
             @Override
-            public void onConnect(Socket socket)  {
+            public void onConnect(Socket socket) {
                 LoginActivity.sock.send("Connected");
 
                 //sock.disconnect();
@@ -145,7 +162,7 @@ public class MenuActivity extends AppCompatActivity {
 
             @Override
             public void onDisconnect(Socket socket, String message) throws IOException {
-              //  socket.close();
+                //  socket.close();
             }
 
             @Override
@@ -160,7 +177,7 @@ public class MenuActivity extends AppCompatActivity {
                 Snackbar.make(view, "Add Group", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 final AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this);
-                View viewDialog = LayoutInflater.from(MenuActivity.this).inflate(R.layout.add_group_item,null);
+                View viewDialog = LayoutInflater.from(MenuActivity.this).inflate(R.layout.add_group_item, null);
                 final EditText et_groupName = (EditText) viewDialog.findViewById(R.id.et_groupNameAdd);
                 final Button bt_choreItemAdd = (Button) viewDialog.findViewById(R.id.bt_groupCreate);
                 builder.setView(viewDialog);
@@ -169,8 +186,8 @@ public class MenuActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         groupName = et_groupName.getText().toString();
-                       // Toast.makeText(MenuActivity.this, "The item has been added", Toast.LENGTH_SHORT).show();
-                        LoginActivity.sock.send("CREATE_GROUP;"+email+";"+groupName);
+                        // Toast.makeText(MenuActivity.this, "The item has been added", Toast.LENGTH_SHORT).show();
+                        LoginActivity.sock.send("CREATE_GROUP;" + email + ";" + groupName);
                         dialog.dismiss();
 
                     }
@@ -180,59 +197,64 @@ public class MenuActivity extends AppCompatActivity {
 
             }
         });
-        LoginActivity.sock.send("GET_GROUP;"+email);
+        LoginActivity.sock.send("GET_GROUP;" + email);
         initializeBitMaps();
         initializeRecyclerView();
         initializeOptions();
         initializeChatSearchComponents();
     }
-// This method is called in the onCreate. This is used to set theme according to the user's preferences.
+
+    // This method is called in the onCreate. This is used to set theme according to the user's preferences.
     private void initializeTheme() {
-        String theme="";
+        String theme = "";
         try {
             FileInputStream fis = openFileInput("theme");
             Scanner scanner = new Scanner(fis);
             theme = scanner.next();
             scanner.close();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        if(theme.contains("dark"))
+        if (theme.contains("dark"))
             getAppTheme("dark");
 
         else
             getAppTheme("light");
     }
-    // This method initializes the textView for chatText and the search Image. If a valid email was entered in the search, he should 
+
+    // This method initializes the textView for chatText and the search Image. If a valid email was entered in the search, he should
 // indent to chat Activity
-    private void initializeChatSearchComponents(){
-        iv_chatSearch = (ImageView)findViewById(R.id.iv_menuChatSearch);
-        et_chatSearch = (TextView)findViewById(R.id.et_chatSearch);
+    private void initializeChatSearchComponents() {
+        iv_chatSearch = (ImageView) findViewById(R.id.iv_menuChatSearch);
+        et_chatSearch = (TextView) findViewById(R.id.et_chatSearch);
 
         iv_chatSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MenuActivity.this, String.valueOf(et_chatSearch.getText()),Toast.LENGTH_SHORT).show();
-                LoginActivity.sock.send("CHECK_USER "+et_chatSearch.getText().toString());
+                Toast.makeText(MenuActivity.this, String.valueOf(et_chatSearch.getText()), Toast.LENGTH_SHORT).show();
+                LoginActivity.sock.send("CHECK_USER " + et_chatSearch.getText().toString());
             }
         });
     }
+
     // This is an item in the recyclerView. It will include all the groups the user is part of.
-    private void initializeBitMaps(){
+    private void initializeBitMaps() {
         mImages.add("https://i.redd.it/tpsnoz5bzo501.jpg");
         mNames.add("Wassup fellas");
     }
+
     // This initializes all the recyclerViews.
-    private void initializeRecyclerView(){
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.rv_groupNames);
-        MenuRecyclerViewAdaptor adaptor = new MenuRecyclerViewAdaptor(this, mNames, mImages,email);
+    private void initializeRecyclerView() {
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_groupNames);
+        MenuRecyclerViewAdaptor adaptor = new MenuRecyclerViewAdaptor(this, mNames, mImages, email);
         recyclerView.setAdapter(adaptor);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
-    // This initializes all the options. A pop-up menu is included in this. 
-    private void initializeOptions(){
-        optionsButton = (ImageView)findViewById(R.id.iv_menuOptions);
+
+    // This initializes all the options. A pop-up menu is included in this.
+    private void initializeOptions() {
+        optionsButton = (ImageView) findViewById(R.id.iv_menuOptions);
         optionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -249,25 +271,64 @@ public class MenuActivity extends AppCompatActivity {
                                 "You Clicked : " + item.getTitle(),
                                 Toast.LENGTH_SHORT
                         ).show();
-                        if(item.getTitle().toString().equals("Profile")){
+                        if (item.getTitle().toString().equals("Profile")) {
                             Intent i = new Intent(getBaseContext(), ProfileActivity.class);
-                            i.putExtra("Email",email);
+                            i.putExtra("Email", email);
                             startActivity(i);
                         }
-                        if(item.getTitle().toString().equals("Schedule")){
+                        if (item.getTitle().toString().equals("Schedule")) {
                             Intent i = new Intent(getBaseContext(), ScheduleActivity.class);
-                            i.putExtra("Email",email);
+                            i.putExtra("Email", email);
                             startActivity(i);
                         }
-                        if(item.getTitle().toString().equals("Logout")){
+                        if (item.getTitle().toString().equals("Dummy Test")) {
+                            Intent i = new Intent(getBaseContext(), DummyTestActivity.class);
+                            i.putExtra("Email", email);
+                            startActivity(i);
+                        }
+                        if (item.getTitle().toString().equals("Logout")) {
                             Intent i = new Intent(getBaseContext(), LoginActivity.class);
-                            i.putExtra("Email",email);
+                            i.putExtra("Email", email);
                             try {
                                 LoginActivity.sock.disconnect();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                             startActivity(i);
+                        }
+                        if (item.getTitle().toString().equals("Location")) {
+                            LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+
+                            @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                            if (location != null) {
+                                double latitude=location.getLatitude();
+                                double longitude=location.getLongitude();
+                                Log.e("GPS","lat :  "+latitude);
+                                Log.e("GPS","long :  "+longitude);
+                                Geocoder geocoder;
+                                List<Address> addresses = null;
+                                geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+
+                                try {
+                                    addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                                String city = addresses.get(0).getLocality();
+                                String state = addresses.get(0).getAdminArea();
+                                String country = addresses.get(0).getCountryName();
+                                String postalCode = addresses.get(0).getPostalCode();
+                                String knownName = addresses.get(0).getFeatureName();
+                                String fullAddress =  address+", "+city+", "+state+", "+country+" "+postalCode;
+                                Toast.makeText(
+                                        MenuActivity.this, "Address: "+fullAddress,
+                                        Toast.LENGTH_SHORT
+                                ).show();
+                                LoginActivity.sock.send("SEND_LOCATION;" +email+";"+groupName+";"+fullAddress);
+
+                            }
                         }
                         return true;
                     }

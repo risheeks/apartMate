@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<<<<<<< HEAD
 
-=======
->>>>>>> cc35bd6d648bb2cba0320706723c527d3be71aff
 <ScrollView android:id="@+id/scrollView1"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -30,8 +27,4 @@
             </TableLayout>
         </RelativeLayout>
     </HorizontalScrollView>
-<<<<<<< HEAD
 </ScrollView>
-=======
-</ScrollView>
->>>>>>> cc35bd6d648bb2cba0320706723c527d3be71aff
