@@ -20,4 +20,10 @@
 
     <string name="action_send">Send</string>
     <string name="prompt_message">Message</string>
+    <string name="Interests">Interests:</string>
+    <string name="filtertitle">Filter Roommates:</string>
+    <string name="Age">Age:</string>
+    <string name="age">Age:</string>
+    <string name="major">Major:</string>
+
 </resources>
