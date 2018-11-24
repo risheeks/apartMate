@@ -123,14 +123,14 @@ var processRegister = function (data,sock) {
   setTimeout(function () {
 
     var mailOptions = {
-      from: 'apartmate123@gmail.com',
+      /*from: 'apartmate123@gmail.com',
       to: email.toString(),
       subject: 'Welcome to ApartMate!',
-      text: 'Your account has been verified!\nEnjoy using our app!'
+      text: 'Your account has been verified!\nEnjoy using our app!'*/
     };
     transporter.sendMail(mailOptions, function(error, info){
       if (error) {
-        console.log(error);
+        //console.log(error);
       } else {
         console.log('Email sent: ' + info.response);
       }setTimeout(function () {
@@ -409,17 +409,17 @@ var createGroup = function(data,sock){
       var ref = firebase.database().ref("Groups/" + groupName + "/Members");
       ref.set(email+";");
       var ref = firebase.database().ref("Groups/" + groupName + "/Chores");
-      ref.set("A:B:C:D:E");
+      ref.set("A:B:C:D:E;");
       var ref = firebase.database().ref("Groups/" + groupName + "/GroceryList");
-      ref.set("Bananas:1 dozen");
+      ref.set("Bananas:1 dozen;");
       var ref = firebase.database().ref("Groups/" + groupName + "/ShareablePossessions");
-      ref.set(email+":Refrigerator");
+      ref.set(email+":Refrigerator;");
       var ref = firebase.database().ref("Groups/" + groupName + "/UnshareablePossessions");
-      ref.set(email+":Clothing");
+      ref.set(email+":Clothing;");
       var ref = firebase.database().ref("Groups/" + groupName + "/Interests");
-      ref.set(email+":I like reading books and listening to music");
+      ref.set(email+":I like reading books and listening to music;");
       var ref = firebase.database().ref("Groups/" + groupName + "/EmergencyContact");
-      ref.set(email+":911");
+      ref.set(email+":911;");
       var ref = firebase.database().ref("Login/" + email.split("@")[0] + "/Group");
       ref.set(groupName);
       sock.write('CREATE_GROUP SUCCESS\n');
@@ -592,7 +592,7 @@ var addShareablePossession = function (data,sock) {
 *==================================================================================================================
 */
 
-var addInterest = function (data,sock) {
+  var addInterest = function (data,sock) {
   var groupName = data.toString().split(";")[1];
   var email = data.toString().split(";")[2];
   var interest = data.toString().split(";")[3];
@@ -878,14 +878,22 @@ var leaveGroup = function(data,sock) {
     var regex2 = new RegExp(RegExp.quote(replace2), "g");
     Members = Members.toString().replace(regex1, "");
     refMembers.set(Members);
-    Interests = Interests.toString().replace(regex2, "");
-    refInterests.set(Interests);
-    Contact = Contact.toString().replace(regex2, "");
-    refContact.set(Contact);
-    Share = Share.toString().replace(regex2, "");
-    refShare.set(Share);
-    Unshare = Unshare.toString().replace(regex2, "");
-    refUnshare.set(Unshare);
+    if (Interests !== null) {
+      Interests = Interests.toString().replace(regex2, "");
+      refInterests.set(Interests);
+    }
+    if (Contact !== null) {
+      Contact = Contact.toString().replace(regex2, "");
+      refContact.set(Contact);
+    }
+    if (Share !== null) {
+      Share = Share.toString().replace(regex2, "");
+      refShare.set(Share);
+    }
+    if (Unshare !== null) {
+      Unshare = Unshare.toString().replace(regex2, "");
+      refUnshare.set(Unshare);
+    }
   }, 300);
 
   //adjust the group map with the firebase data
@@ -1054,7 +1062,7 @@ sock.on('end', function() {
 });
 });
 
-var svraddr = '10.186.156.163';
+var svraddr = '127.0.0.1';
 var svrport = 9910;
 
 svr.listen(svrport, svraddr);

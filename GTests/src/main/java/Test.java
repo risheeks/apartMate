@@ -1,14 +1,68 @@
-import java.io.IOException;
-import java.io.PrintWriter;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.*;
+
+import java.io.*;
 import java.net.Socket;
 import java.util.*;
+
+class Group {
+    private String Chores;
+    private String EmergencyContact;
+    private String GroceryList;
+    private String Interests;
+    private String Members;
+    private String ShareablePossessions;
+    private String UnshareablePossessions;
+
+    private Group() {}
+
+    public Group(String Chores, String EmergencyContact, String GroceryList, String Interests, String Members, String ShareablePossessions, String UnshareablePossessions) {
+        this.Chores = Chores;
+        this.EmergencyContact = EmergencyContact;
+        this.GroceryList = GroceryList;
+        this.Interests = Interests;
+        this.Members = Members;
+        this.ShareablePossessions = ShareablePossessions;
+        this.UnshareablePossessions = UnshareablePossessions;
+    }
+
+    public String getChores() {
+        return Chores;
+    }
+
+    public String getEmergencyContact() {
+        return EmergencyContact;
+    }
+
+    public String getGroceryList() {
+        return GroceryList;
+    }
+
+    public String getInterests() {
+        return Interests;
+    }
+
+    public String getMembers() {
+        return Members;
+    }
+
+    public String getShareablePossessions() {
+        return ShareablePossessions;
+    }
+
+    public String getUnshareablePossessions() {
+        return UnshareablePossessions;
+    }
+}
 
 public class Test {
     private static int port;
     private static String ip;
     public static void main(String[] args)  throws InterruptedException{
         //System.out.printf("This is a test\n");
-        ip = "10.186.93.103";
+        ip = "127.0.0.1";
         port = 9910;
         /*test1_1();
         test1_2();
@@ -25,6 +79,7 @@ public class Test {
         Thread.sleep(1500);
         test5();*/
         //testCommand("irettig@purdue.edu", "12345", "GET_GROUPMEMBERS;test group 1");
+        prepTest6();
         test6();
     }
 
@@ -648,32 +703,84 @@ public class Test {
         c.connect();
     }
 
-    //test for leaving group. assumes that patel1716 is in a group
-    static void test6() {
+    //preps the database for test6 by adding things to be removed
+    static void prepTest6() {
         try {
             //connect to the server
             Socket sock = new Socket(ip, port);
             PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
             //add interests, emergency contact, shared and unshared items
-            String interest = "ADD_INTEREST;test group 1;patel1716@purdue.edu;Programming software.";
-            String emergencyContact = "ADD_EMERGENCY;test group 1;patel1716@purdue.edu;911";
-            String shared = "ADD_SHAREABLEPOSSESSION;test group 1; patel1716@purdue.edu;television";
-            String unshared = "ADD_UNSHAREABLEPOSSESSION;test group 1;patel1716@purdue.edu;My bed";
+            String interest = "ADD_INTEREST;test group 1;patel716@purdue.edu;Programming software.";
+            //String emergencyContact = "ADD_EMERGENCY;test group 1;patel716@purdue.edu;911";
+            //String shared = "ADD_SHAREABLEPOSSESSION;test group 1; patel716@purdue.edu;television";
+            //String unshared = "ADD_UNSHAREABLEPOSSESSION;test group 1;patel716@purdue.edu;My bed";
             out.write(interest);
-            out.write(emergencyContact);
+            in.read();
+            /*out.write(emergencyContact);
             out.write(shared);
             out.write(unshared);
-            shared = "ADD_SHAREABLEPOSSESSION;test group 1; patel1716@purdue.edu;playstation";
-            unshared = "ADD_UNSHAREABLEPOSSESSION;test group 1;patel1716@purdue.edu;toothbrush";
+            shared = "ADD_SHAREABLEPOSSESSION;test group 1; patel716@purdue.edu;playstation";
+            unshared = "ADD_UNSHAREABLEPOSSESSION;test group 1;patel716@purdue.edu;toothbrush";
             out.write(shared);
-            out.write(unshared);
+            out.write(unshared);*/
 
-            //access firebase to show that patel1716 is in a group, show things
+            out.close();
+            in.close();
+            sock.close();
+        } catch (Exception e) {
+            System.out.print("Error\n");
+            e.printStackTrace();
+        }
+    }
+
+    //test for leaving group. assumes that patel716 is in a group
+    static void test6() {
+        try {
+            //Connect to firebase, set up listeners for data we want to change
+            /*FileInputStream serviceAccount =
+                    new FileInputStream("apartmate-3-firebase-adminsdk-l73jh-07155a6434.json");
+
+            FirebaseOptions options = new FirebaseOptions.Builder()
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setDatabaseUrl("https://apartmate-3.firebaseio.com")
+                    .setDatabaseAuthVariableOverride(null)
+                    .build();
+
+            FirebaseApp.initializeApp(options);
+
+            // Get a reference to our posts
+            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference ref = database.getReference("Groups/");
+
+            // Attach a listener to read the data at our posts reference
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Group g = dataSnapshot.getValue(Group.class);
+                    System.out.println(g);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    System.out.println("The read failed: " + databaseError.getCode());
+                }
+            });*/
+
+            //connect to the server
+            Socket sock = new Socket(ip, port);
+            PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
             //leave the group
+            String leave = "LEAVE_GROUP;test group 1;patel716@purdue.edu";
+            out.write(leave);
 
-            //access firebase again to show that patel1716 has left the group
+            out.close();
+            in.close();
+            sock.close();
+
             } catch (Exception e) {
             System.out.print("Error\n");
             e.printStackTrace();
