@@ -872,10 +872,11 @@ var leaveGroup = function(data,sock) {
 
   //remove the user leaving the group from the database information and send back
   setTimeout(function () {
-    var replace1 = email + ";";
-    var replace2 = email + ":[^;]*;"
-    var regex1 = new RegExp(RegExp.quote(replace1), "g");
-    var regex2 = new RegExp(RegExp.quote(replace2), "g");
+    var str = email.split(".")[0] + "\." + email.split(".")[1];
+    var replace1 = str + ";";
+    var replace2 = str + ":[^;]*;"
+    var regex1 = new RegExp(replace1, "g");
+    var regex2 = new RegExp(replace2, "g");
     Members = Members.toString().replace(regex1, "");
     refMembers.set(Members);
     if (Interests !== null) {
@@ -903,16 +904,6 @@ var leaveGroup = function(data,sock) {
   });
   sock.write("LEAVE_GROUP SUCCESS\n");
 }
-
-/*
-*==================================================================================================================
-*  Adjusts regex to include the literal "." instead of any character
-*==================================================================================================================
-*/
-
-RegExp.quote = function(str) {
-     return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
- };
 
  /*
  *==================================================================================================================

@@ -22,3 +22,5 @@ server/node_modules/@firebase/auth/
 server/node_modules/
 
 server/npm-debug\.log
+
+tests/\.idea/workspace\.xml

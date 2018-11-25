@@ -25,7 +25,7 @@ public class Test {
         test5();
         Thread.sleep(1500);*/
         //testCommand("irettig@purdue.edu", "12345", "GET_GROUPMEMBERS;test group 1");
-        //prepTest6();
+        prepTest6();
         test6();
     }
 
