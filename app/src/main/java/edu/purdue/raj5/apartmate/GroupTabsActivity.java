@@ -113,6 +113,36 @@ public class GroupTabsActivity extends AppCompatActivity {
 
             dialog.show();
         }
+        if (id == R.id.action_leave_group) {
+          AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+
+                builder.setTitle("Confirm");
+                builder.setMessage("Are you sure you want to leave group?");
+
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        //server call to leave group. switch intent
+                        LoginActivity.sock.send("LEAVE_GROUP;"+groupName + ";" + email);
+
+                        Intent i = new Intent(getActivity(), MenuActivity.class);
+                        startActivity(i);
+                    }
+                });
+
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        // Do nothing
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+        }
 
         return super.onOptionsItemSelected(item);
     }

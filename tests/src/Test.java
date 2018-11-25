@@ -1,4 +1,4 @@
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
@@ -6,9 +6,10 @@ public class Test {
     private static int port;
     private static String ip;
     public static void main(String[] args)  throws InterruptedException{
-        ip = "10.186.93.103";
+        //System.out.printf("This is a test\n");
+        ip = "127.0.0.1";
         port = 9910;
-        test1_1();
+        /*test1_1();
         test1_2();
         test1_3();
         Thread.sleep(4000);
@@ -22,7 +23,10 @@ public class Test {
         test4_2();
         Thread.sleep(1500);
         test5();
+        Thread.sleep(1500);*/
         //testCommand("irettig@purdue.edu", "12345", "GET_GROUPMEMBERS;test group 1");
+        prepTest6();
+        test6();
     }
 
     //Adds user patel716
@@ -643,5 +647,100 @@ public class Test {
         });
 
         c.connect();
+    }
+
+    //preps the database for test6 by adding things to be removed
+    static void prepTest6() {
+        try {
+            //connect to the server
+            Socket sock = new Socket(ip, port);
+            PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+            in.readLine();
+
+            //add interests, emergency contact, shared and unshared items
+            String interest = "ADD_INTEREST;test group 1;patel716@purdue.edu;Programming software.";
+            String emergencyContact = "ADD_EMERGENCY;test group 1;patel716@purdue.edu;911";
+            String shared = "ADD_SHAREABLEPOSSESSION;test group 1; patel716@purdue.edu;television";
+            String unshared = "ADD_UNSHAREABLEPOSSESSION;test group 1;patel716@purdue.edu;My bed";
+
+            sendServer(interest, out, in);
+            sendServer(emergencyContact, out, in);
+            sendServer(shared, out, in);
+            sendServer(unshared, out, in);
+
+            shared = "ADD_SHAREABLEPOSSESSION;test group 1; patel716@purdue.edu;playstation";
+            unshared = "ADD_UNSHAREABLEPOSSESSION;test group 1;patel716@purdue.edu;toothbrush";
+
+            sendServer(shared, out, in);
+            sendServer(unshared, out, in);
+
+            out.close();
+            in.close();
+            sock.close();
+        } catch (Exception e) {
+            System.out.print("Error\n");
+            e.printStackTrace();
+        }
+    }
+
+    //test for leaving group. assumes that patel716 is in test group 1
+    static void test6() {
+        try {
+
+
+            //connect to the server
+            Socket sock = new Socket(ip, port);
+            PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+            in.readLine();
+
+            //check the information on the database for patel716
+            getGroupInfo(out, in);
+
+            //leave the group
+            String leave = "LEAVE_GROUP;test group 1;patel716@purdue.edu";
+            sendServer(leave, out, in);
+
+            //view the information on database to see that patel716 is out of the group
+            getGroupInfo(out, in);
+
+            out.close();
+            in.close();
+            sock.close();
+
+        } catch (Exception e) {
+            System.out.print("Error\n");
+            e.printStackTrace();
+        }
+    }
+
+    static void sendServer(String command, PrintWriter out, BufferedReader in) {
+        try {
+            out.write(command);
+            out.flush();
+            System.out.println(in.readLine());
+        } catch (Exception e) {
+            System.out.print("Error\n");
+            e.printStackTrace();
+        }
+    }
+
+    static void getGroupInfo(PrintWriter out, BufferedReader in) {
+        String command = "GET_SOMETHING;test group 1;Members";
+        System.out.printf("Members: ");
+        sendServer(command, out, in);
+        command = "GET_SOMETHING;test group 1;Interests";
+        System.out.printf("Interests: ");
+        sendServer(command, out, in);
+        command = "GET_SOMETHING;test group 1;EmergencyContacts";
+        System.out.printf("Emergency Contacts: ");
+        sendServer(command, out, in);
+        command = "GET_SOMETHING;test group 1;ShareablePossessions";
+        System.out.printf("Shareable Possessions: ");
+        sendServer(command, out, in);
+        command = "GET_SOMETHING;test group 1;UnshareablePossessions";
+        System.out.printf("Un-Sharable Possessions: ");
+        sendServer(command, out, in);
     }
 }
