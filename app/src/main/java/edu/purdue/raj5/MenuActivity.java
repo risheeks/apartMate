@@ -2,6 +2,8 @@ package com.example.dell.apartmate;
 
 
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.support.v4.widget.ImageViewCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class MenuActivity extends AppCompatActivity {
     ImageView optionsButton;
@@ -25,6 +29,7 @@ public class MenuActivity extends AppCompatActivity {
     ImageView iv_chatSearch;
     TextView tv_chatSearch;
     TextView tv_message;
+    RecyclerView rv_groups;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +43,106 @@ public class MenuActivity extends AppCompatActivity {
         initializeOptions();
         initializeChatSearchComponents();
         initializeErrorMessage();
+        createGroceryReminder();
+        createRoommateSearchReminder();
+        createEndOfLeaseReminder();
+
     }
+    private void createEndOfLeaseReminder() {
+
+        Calendar calendar = Calendar.getInstance();
+
+        // set the calendar to start of today
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        // and get that as a Date
+        Date today = calendar.getTime();
+
+        // user-specified date which you are testing
+        // let's say the components come from a form or something
+        int year = 2019;
+        int month = 5;
+        int dayOfMonth = 20;
+
+        if(month == 1){
+            month = 13;
+        }
+        // reuse the calendar to set user specified date
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month-1);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+        // and get that as a Date
+        Date dateSpecified = calendar.getTime();
+
+        // test your condition
+        if (!dateSpecified.before(today)) {
+            //System.err.println("Date specified [" + dateSpecified + "] is before today [" + today + "]");
+            createWeeklyReminders("EndOfLease",calendar);
+        }
+
+
+    }
+
+    private void createRoommateSearchReminder() {
+        Calendar calendar = Calendar.getInstance();
+
+        // set the calendar to start of today
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        // and get that as a Date
+        Date today = calendar.getTime();
+
+        // user-specified date which you are testing
+        // let's say the components come from a form or something
+        int year = 2019;
+        int month = 5;
+        int dayOfMonth = 20;
+
+        if(month == 1){
+            month = 13;
+        }
+        // reuse the calendar to set user specified date
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month-1);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+        // and get that as a Date
+        Date dateSpecified = calendar.getTime();
+
+        // test your condition
+        if (!dateSpecified.before(today)) {
+            //System.err.println("Date specified [" + dateSpecified + "] is before today [" + today + "]");
+            createWeeklyReminders("RoommateSearch",calendar);
+        }
+
+    }
+
+    private void createGroceryReminder() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY,22);
+        calendar.set(Calendar.MINUTE, 45);
+        calendar.set(Calendar.SECOND,30);
+        createWeeklyReminders("Grocery",calendar);
+    }
+
+    private void createWeeklyReminders(String intentPurpose, Calendar calendar) {
+
+        //calendar.set(Calendar.DAY_OF_WEEK,5);
+        Intent intent = new Intent(getApplicationContext(),NotificationReceiver.class);
+        intent.putExtra("Class",intentPurpose);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),/*AlarmManager.INTERVAL_DAY*7*/ AlarmManager.INTERVAL_FIFTEEN_MINUTES,pendingIntent);
+    }
+
+
     private void initializeChatSearchComponents(){
         iv_chatSearch = (ImageView)findViewById(R.id.iv_menuChatSearch);
         tv_chatSearch = (TextView)findViewById(R.id.tv_chatSearch);
@@ -55,10 +159,10 @@ public class MenuActivity extends AppCompatActivity {
         mNames.add("Wassup fellas");
     }
     private void initializeRecyclerView(){
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.rv_groupNames);
+        rv_groups = (RecyclerView)findViewById(R.id.rv_groupNames);
         MenuRecyclerViewAdaptor adaptor = new MenuRecyclerViewAdaptor(this, mNames, mImages);
-        recyclerView.setAdapter(adaptor);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        rv_groups.setAdapter(adaptor);
+        rv_groups.setLayoutManager(new LinearLayoutManager(this));
     }
     private void initializeOptions(){
         optionsButton = (ImageView)findViewById(R.id.iv_menuOptions);
