@@ -418,7 +418,7 @@ var createGroup = function(data,sock){
       ref.set(email+":Clothing;");
       var ref = firebase.database().ref("Groups/" + groupName + "/Interests");
       ref.set(email+":I like reading books and listening to music;");
-      var ref = firebase.database().ref("Groups/" + groupName + "/EmergencyContact");
+      var ref = firebase.database().ref("Groups/" + groupName + "/EmergencyContacts");
       ref.set(email+":911;");
       var ref = firebase.database().ref("Login/" + email.split("@")[0] + "/Group");
       ref.set(groupName);
@@ -901,6 +901,7 @@ var leaveGroup = function(data,sock) {
   refGroups.on("value", function (snapshot) {
     groupMap.set(group, snapshot);
   });
+  sock.write("LEAVE_GROUP SUCCESS\n");
 }
 
 /*
@@ -912,6 +913,26 @@ var leaveGroup = function(data,sock) {
 RegExp.quote = function(str) {
      return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
  };
+
+ /*
+ *==================================================================================================================
+ *  Returns to the socket the information inside of the group and
+ *==================================================================================================================
+ */
+
+ var getSomething = function(data, sock) {
+   var group = data.toString().split(";")[1];
+   var item = data.toString().split(";")[2];
+   var ref = firebase.database().ref("Groups/" + group + "/" + item);
+
+   var response;
+   ref.on("value", function (snapshot) {
+     response = snapshot.val();
+   });
+   setTimeout(function () {
+     sock.write(response.toString() + "\n");
+   }, 300);
+ }
 
 /*
 *==================================================================================================================
@@ -1027,6 +1048,9 @@ var svr = net.createServer(function(sock) {
     }
     else if(command2 == "LEAVE_GROUP") {
       leaveGroup(data,sock);
+    }
+    else if(command2 == "GET_SOMETHING") {
+      getSomething(data,sock);
     }
 
   }

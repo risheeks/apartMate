@@ -2,28 +2,50 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="991e02b1-c059-4f75-9a6f-d0f36aea3bd8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/runConfigurations.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/.gradle/4.10/fileChanges/last-build.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/.gradle/4.10/fileHashes/fileHashes.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/.gradle/4.10/fileHashes/fileHashes.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/.gradle/4.10/gc.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/.gradle/4.10/taskHistory/taskHistory.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/.gradle/4.10/taskHistory/taskHistory.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/.gradle/vcs-1/gc.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/.idea/gradle.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/apartmate-3-firebase-adminsdk-l73jh-07155a6434.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/gradlew" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/gradlew.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/out/production/classes/Client$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/out/production/classes/Client$ClientCallback.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/out/production/classes/Client$ReceiveThread.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/out/production/classes/Client.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/out/production/classes/Group.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/out/production/classes/Test$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/out/production/classes/Test$10.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/out/production/classes/Test$11.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/out/production/classes/Test$12.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/out/production/classes/Test$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/out/production/classes/Test$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/out/production/classes/Test$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/out/production/classes/Test$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/out/production/classes/Test$6.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/out/production/classes/Test$7.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/out/production/classes/Test$8.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/out/production/classes/Test$9.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/out/production/classes/Test.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/settings.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/src/main/java/Client.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GTests/src/main/java/Test.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/tests/Client$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Client$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/tests/Client$ClientCallback.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Client$ClientCallback.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/tests/Client$ReceiveThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Client$ReceiveThread.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/tests/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Client.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$10.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$10.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$11.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$11.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$12.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$12.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$5.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$6.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$7.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$7.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$8.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$8.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/tests/Test$9.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test$9.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/tests/Test.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/tests/Test.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Test.java" afterDir="false" />
     </list>
@@ -36,11 +58,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Test.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="25" column="18" selection-start-line="25" selection-start-column="18" selection-end-line="25" selection-end-column="18" />
+            <state relative-caret-position="1365">
+              <caret line="705" column="12" lean-forward="true" selection-start-line="705" selection-start-column="12" selection-end-line="705" selection-end-column="12" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="method#test1_1#0;class#Test#0" />
@@ -56,16 +78,8 @@
                 <element signature="method#sendGMessage#0;class#Test#0" />
                 <element signature="method#receiveGMessage#0;class#Test#0" />
                 <element signature="method#testCommand#0;class#Test#0" />
+                <element signature="method#prepTest6#0;class#Test#0" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/build.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="17" column="1" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -73,7 +87,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Client.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1215">
+            <state relative-caret-position="1170">
               <caret line="87" column="38" selection-start-line="87" selection-start-column="38" selection-end-line="87" selection-end-column="38" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -104,8 +118,8 @@
       <list>
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch.java" />
         <option value="$PROJECT_DIR$/src/Client.java" />
-        <option value="$PROJECT_DIR$/src/Test.java" />
         <option value="$PROJECT_DIR$/.idea/build.gradle" />
+        <option value="$PROJECT_DIR$/src/Test.java" />
       </list>
     </option>
   </component>
@@ -121,15 +135,25 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane" />
-      <pane id="PackagesPane" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="tests" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tests" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
       <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1543021424245" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1543115643021" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="JAVA" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
@@ -220,16 +244,18 @@
       <workItem from="1542587531814" duration="1720000" />
       <workItem from="1543016669688" duration="453000" />
       <workItem from="1543018305544" duration="995000" />
+      <workItem from="1543113059710" duration="2583000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="23820000" />
+    <option name="totallyTimeSpent" value="26403000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="-1" width="1920" height="1053" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16488793" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1664888" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -238,7 +264,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32831" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32831" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -269,7 +295,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/Test.java</url>
-          <line>32</line>
+          <line>33</line>
           <properties />
           <option name="timeStamp" value="1" />
         </line-breakpoint>
@@ -278,16 +304,6 @@
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.java" />
-    <entry file="file://$PROJECT_DIR$/src/Client.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1215">
-          <caret line="87" column="38" selection-start-line="87" selection-start-column="38" selection-end-line="87" selection-end-column="38" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.idea/misc.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
@@ -295,10 +311,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Client.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1170">
+          <caret line="87" column="38" selection-start-line="87" selection-start-column="38" selection-end-line="87" selection-end-column="38" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="1" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Test.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="25" column="18" selection-start-line="25" selection-start-column="18" selection-end-line="25" selection-end-column="18" />
+        <state relative-caret-position="1365">
+          <caret line="705" column="12" lean-forward="true" selection-start-line="705" selection-start-column="12" selection-end-line="705" selection-end-column="12" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#test1_1#0;class#Test#0" />
@@ -314,14 +347,8 @@
             <element signature="method#sendGMessage#0;class#Test#0" />
             <element signature="method#receiveGMessage#0;class#Test#0" />
             <element signature="method#testCommand#0;class#Test#0" />
+            <element signature="method#prepTest6#0;class#Test#0" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="1" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
         </state>
       </provider>
     </entry>
