@@ -1,20 +1,40 @@
 /*
-*   Initializing variables with libraries and dependencies for the server side
-*
+ *==================================================================================================================
+ *   Initializing variables with libraries and dependencies for the server side
+ *==================================================================================================================
  */
+
 var net = require('net');
-var firebase = require('firebase'); //for database
+const firebase = require('firebase/app');
 var sockets = [];
 var loginMap = new Map();
 var groupMap = new Map();
 var app = firebase.initializeApp(    {databaseURL: "https://apartmate-3.firebaseio.com",}
 );
+var admin = require("firebase-admin");
+
+var serviceAccount = require("C:\\Users\\Adrian Gerard Raj\\WebstormProjects\\ApartMate_Server\\apartmate-3-firebase-adminsdk-l73jh-8c59b5f699.json");
+var regToken = 'zzu@88fdbc9';
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://apartmate-3.firebaseio.com"
+});
+require("firebase/auth");
+require("firebase/storage");
+require("firebase/database");
+var FCM = require('fcm-node');
+var serverKey = 'AAAAuwY6jMA:APA91bE_v43c8ehxQvwvVrumU5RR-jFbK1LFeDdOkc8Vjksy6enjBau5orUNq6oKXTpN8z538IjQtgOQa0diT2BewkR7bZJjoN6P7iPP_kb_4VlcYXQifNLpi4_n4Q1eqiCqPx2tPjwP'; //put your server key here
+var fcm = new FCM(serverKey);
 var socketMap = new Map();
 var nodemailer = require('nodemailer')
 var chores = "";
+
 /*
-Transporter for the email client initialized with auth info
+ *==================================================================================================================
+ Transporter for the email client initialized with auth info
+ *==================================================================================================================
  */
+
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -22,14 +42,22 @@ var transporter = nodemailer.createTransport({
         pass: 'adrian@123SOL'
     }
 });
+
 /*
-Cryptr library for encrypt and decrypt
+ *==================================================================================================================
+ Cryptr library for encrypt and decrypt
+ *==================================================================================================================
  */
+
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr('apartmate');
+
 /*
-Initialize loginMap with existing users
+ *==================================================================================================================
+ Initialize loginMap with existing users
+ *==================================================================================================================
  */
+
 const dbLoginRef = firebase.database().ref("Login").orderByKey();
 dbLoginRef.once("value")
     .then(function (snapshot) {
@@ -50,8 +78,11 @@ dbGroupRef.once("value")
 
 
 /*
-*Function to process user login with password encryption
+ *==================================================================================================================
+ *Function to process user login with password encryption
+ *==================================================================================================================
  */
+
 var processLogin = function (data,sock) {
     var email = data.toString().split(" ")[1];
     var password = data.toString().split(" ")[2];
@@ -75,10 +106,12 @@ var processLogin = function (data,sock) {
         }
     },700)
 };
-/*==================================================================================================================
-                                      Register Function
-                                that deals with incoming requests
- ===================================================================================================================*/
+/*
+ *==================================================================================================================
+ *                                      Register Function
+ *                                that deals with incoming requests
+ *===================================================================================================================
+ */
 var processRegister = function (data,sock) {
     var email = data.toString().split(" ")[1];
     var password = data.toString().split(" ")[2];
@@ -88,10 +121,10 @@ var processRegister = function (data,sock) {
     var check = false;
     loginMap.forEach(function (value,key) {
         console.log(key)
-       if(value.Email == email) {
+        if(value.Email == email) {
             check = true;
-           sock.write('REGISTER ACCOUNT_EXISTS\n');         //Communicate with client
-       }
+            sock.write('REGISTER ACCOUNT_EXISTS\n');         //Communicate with client
+        }
     });
     //Refresh the login map with newly updated data from Firebase
     const dbLoginRef = firebase.database().ref("Login").orderByKey();
@@ -104,18 +137,18 @@ var processRegister = function (data,sock) {
         });
     setTimeout(function () {
 
-    var mailOptions = {
-        from: 'apartmate123@gmail.com',
-        to: email.toString(),
-        subject: 'Welcome to ApartMate!',
-        text: 'Your account has been verified!\nEnjoy using our app!'
-    };
-    transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Email sent: ' + info.response);
-        }setTimeout(function () {
+        var mailOptions = {
+            /*from: 'apartmate123@gmail.com',
+             to: email.toString(),
+             subject: 'Welcome to ApartMate!',
+             text: 'Your account has been verified!\nEnjoy using our app!'*/
+        };
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+                //console.log(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }setTimeout(function () {
 
                 var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Email");
                 ref.set(email);
@@ -133,26 +166,28 @@ var processRegister = function (data,sock) {
                 ref.set("0");
                 var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Interests");
                 ref.set("I like reading books");
-            sock.write('REGISTER SUCCESS\n');
-            const dbLoginRef = firebase.database().ref("Login").orderByKey();
-            dbLoginRef.once("value")
-                .then(function (snapshot) {
-                    snapshot.forEach(function (childSnapshot) {
-                        var key = childSnapshot.key;
-                        loginMap.set(key, childSnapshot.val());
-                    })
-                });
+                sock.write('REGISTER SUCCESS\n');
+                const dbLoginRef = firebase.database().ref("Login").orderByKey();
+                dbLoginRef.once("value")
+                    .then(function (snapshot) {
+                        snapshot.forEach(function (childSnapshot) {
+                            var key = childSnapshot.key;
+                            loginMap.set(key, childSnapshot.val());
+                        })
+                    });
 
-        },200)
+            },200)
 
-    });
+        });
 
     },600);
 };
 
-/*======================================================================================================================
-                    Reset Password function to update teh database with the new password
- =======================================================================================================================*/
+/*
+ *==================================================================================================================
+ Reset Password function to update teh database with the new password
+ *==================================================================================================================
+ */
 var resetPassword = function (data,sock) {
     var email = data.toString().split(" ")[1];
     var newPassword = data.toString().split(" ")[2];
@@ -169,8 +204,9 @@ var resetPassword = function (data,sock) {
         });
 }
 /*
-*   Checks if a user exists in the database
-*
+ *==================================================================================================================
+ *   Checks if a user exists in the database
+ *==================================================================================================================
  */
 var checkUser = function (data,sock) {
     var email = data.toString().split(" ")[1];
@@ -182,20 +218,21 @@ var checkUser = function (data,sock) {
     });
 
     setTimeout(function () {
-    if(check == false){
-        sock.write('CHECK_USER ACCOUNT_DNE\n')
-    }
-    else
-    {
-        sock.write('CHECK_USER ACCOUNT_EXISTS\n');
-    }
+        if(check == false){
+            sock.write('CHECK_USER ACCOUNT_DNE\n')
+        }
+        else
+        {
+            sock.write('CHECK_USER ACCOUNT_EXISTS\n');
+        }
     },400);
 }
 
 /*
-*   Send message to the client for chatting
-*
-*/
+ *==================================================================================================================
+ *   Send message to the client for chatting
+ *==================================================================================================================
+ */
 
 var sendMessage = function (data,sock) {
     var senderEmail = data.toString().split(" ")[1];
@@ -211,8 +248,9 @@ var sendMessage = function (data,sock) {
     });
 }
 /*
-*
-* checks password against the actual password
+ *==================================================================================================================
+ * checks password against the actual password
+ *==================================================================================================================
  */
 var checkPassword = function (data,sock) {
     var email = data.toString().split(" ")[1];
@@ -237,8 +275,9 @@ var checkPassword = function (data,sock) {
     },580)
 }
 /*
-*
-* function to send an email with a randomly generated password and updates the database
+ *==================================================================================================================
+ * function to send an email with a randomly generated password and updates the database
+ *==================================================================================================================
  */
 var forgotPassword = function (data,sock) {
     var email = data.toString().split(" ")[1];
@@ -271,18 +310,18 @@ var forgotPassword = function (data,sock) {
                     })
                 });
             sock.write('FORGOT_PASSWORD SUCCESS\n');
-            }
+        }
 
     });
-        if(check == true){
-            sock.write('FORGOT_PASSWORD INVALID_EMAIL\n');
-        }
+    if(check == true){
+        sock.write('FORGOT_PASSWORD INVALID_EMAIL\n');
+    }
 
 }
 /*
-*
-*   Function to edit profile given input from the client. Updates fields in the database
-*
+ *==================================================================================================================
+ *   Function to edit profile given input from the client. Updates fields in the database
+ *==================================================================================================================
  */
 var editProfile = function (data,sock) {
     var email = data.toString().split(";")[1];
@@ -302,8 +341,8 @@ var editProfile = function (data,sock) {
     ref.set(latestA);
     var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/GreatestAchievement");
     ref.set(greatestA);
-     var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Interests");
-     ref.set(interests);
+    var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Interests");
+    ref.set(interests);
     var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/EmergencyContact");
     ref.set(emergencyContacts);
     var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Birthday");
@@ -311,8 +350,9 @@ var editProfile = function (data,sock) {
 
 }
 /*
-*
-* Returns profile to the client with First Name, Last Name, Email, Latest Achievement, and Greatest Achievement
+ *==================================================================================================================
+ * Returns profile to the client with First Name, Last Name, Email, Latest Achievement, and Greatest Achievement
+ *==================================================================================================================
  */
 var getProfile = function (data, sock) {
     var firstName;
@@ -347,16 +387,17 @@ var getProfile = function (data, sock) {
     },150)
 
     setTimeout(function () {
-    console.log('RECEIVE_PROFILE;'+email.toString()+';'+firstName.toString()+';'+lastName.toString()+';'+latestA.toString()+';'+greatestA)
-    sock.write('RECEIVE_PROFILE;'+email.toString()+';'+firstName.toString()+';'+lastName.toString()+';'+latestA.toString()+';'+greatestA+'\n');
+        console.log('RECEIVE_PROFILE;'+email.toString()+';'+firstName.toString()+';'+lastName.toString()+';'+latestA.toString()+';'+greatestA)
+        sock.write('RECEIVE_PROFILE;'+email.toString()+';'+firstName.toString()+';'+lastName.toString()+';'+latestA.toString()+';'+greatestA+'\n');
     },0000)
 
 }
 
 /*
- *
- *   Function to create group given input from the client. Updates fields in the database with  individual logins updated with emails
- *
+ *==================================================================================================================
+ *   Function to create group given input from the client.
+ *   Updates fields in the database with  individual logins updated with emails
+ *==================================================================================================================
  */
 var createGroup = function(data,sock){
     var email = data.toString().split(";")[1];
@@ -364,11 +405,11 @@ var createGroup = function(data,sock){
     var checkGroup = false;
     checkUser = false;
     groupMap.forEach(function (value,key) {
-       if(key == groupName)
-       {
-           console.log("equal")
-           checkGroup = true;
-       }
+        if(key == groupName)
+        {
+            console.log("equal")
+            checkGroup = true;
+        }
     });
     loginMap.forEach(function (value,key) {
         if(value.Email == email) {
@@ -378,22 +419,22 @@ var createGroup = function(data,sock){
     setTimeout(function () {
         if(checkGroup == false && checkUser == true) {
             /*
-            Initializing default fields in profile
+             Initializing default fields in profile
              */
             var ref = firebase.database().ref("Groups/" + groupName + "/Members");
             ref.set(email+";");
             var ref = firebase.database().ref("Groups/" + groupName + "/Chores");
-            ref.set("A:B:C:D:E");
+            ref.set("A:B:C:D:E;");
             var ref = firebase.database().ref("Groups/" + groupName + "/GroceryList");
-            ref.set("Bananas:1 dozen");
+            ref.set("Bananas:1 dozen;");
             var ref = firebase.database().ref("Groups/" + groupName + "/ShareablePossessions");
-            ref.set(email+":Refrigerator");
+            ref.set(email+":Refrigerator;");
             var ref = firebase.database().ref("Groups/" + groupName + "/UnshareablePossessions");
-            ref.set(email+":Clothing");
+            ref.set(email+":Clothing;");
             var ref = firebase.database().ref("Groups/" + groupName + "/Interests");
-            ref.set(email+":I like reading books and listening to music");
-            var ref = firebase.database().ref("Groups/" + groupName + "/EmergencyContact");
-            ref.set(email+":911");
+            ref.set(email+":I like reading books and listening to music;");
+            var ref = firebase.database().ref("Groups/" + groupName + "/EmergencyContacts");
+            ref.set(email+":911;");
             var ref = firebase.database().ref("Login/" + email.split("@")[0] + "/Group");
             ref.set(groupName);
             sock.write('CREATE_GROUP SUCCESS\n');
@@ -420,9 +461,10 @@ var createGroup = function(data,sock){
     //ref.set(email);
 }
 /*
- *
- *   Function to add members to a group given input from the client. Updates fields in the database
- *
+ *==================================================================================================================
+ *   Function to add members to a group given input from the client.
+ *   Updates fields in the database
+ *==================================================================================================================
  */
 var addToGroup = function(data,sock){
     var email = data.toString().split(";")[1];
@@ -453,9 +495,9 @@ var addToGroup = function(data,sock){
 
 }
 /*
- *
+ *==================================================================================================================
  *   Function to Send messages to member sockets in a group.
- *
+ *==================================================================================================================
  */
 var sendGroupMessage = function(data,sock)
 {
@@ -467,7 +509,7 @@ var sendGroupMessage = function(data,sock)
     groupMap.forEach(function (value,key) {
         console.log("Key: "+key)
         if(key == groupName) {
-             emails = value.val().Members.toString().split(";");
+            emails = value.val().Members.toString().split(";");
             console.log(emails)
         }
     });
@@ -484,9 +526,9 @@ var sendGroupMessage = function(data,sock)
     },300)
 }
 /*
- *
+ *==================================================================================================================
  *   Function to add a Chore
- *
+ *==================================================================================================================
  */
 var addChore = function (data,sock) {
     var groupName = data.toString().split(";")[1];
@@ -512,9 +554,9 @@ var addChore = function (data,sock) {
 
 }
 /*
- *
+ *==================================================================================================================
  *   Function to add grocery items to a grocery list
- *
+ *==================================================================================================================
  */
 var addGroceryItem = function (data,sock) {
     var groupName = data.toString().split(";")[1];
@@ -536,9 +578,9 @@ var addGroceryItem = function (data,sock) {
 
 }
 /*
- *
- *   Function to add grocery items to a grocery list
- *
+ *==================================================================================================================
+ *   Function to add a shareable possession
+ *==================================================================================================================
  */
 var addShareablePossession = function (data,sock) {
     var groupName = data.toString().split(";")[1];
@@ -559,6 +601,12 @@ var addShareablePossession = function (data,sock) {
 
 }
 
+/*
+ *==================================================================================================================
+ *   Function to add an interest to a users profile
+ *==================================================================================================================
+ */
+
 var addInterest = function (data,sock) {
     var groupName = data.toString().split(";")[1];
     var email = data.toString().split(";")[2];
@@ -577,6 +625,12 @@ var addInterest = function (data,sock) {
     sock.write('ADD_INTEREST SUCCESS\n');
 
 }
+
+/*
+ *==================================================================================================================
+ *   Function to add unsharable possesions to the group
+ *==================================================================================================================
+ */
 
 var addUnshareablePossessions = function (data,sock) {
     var groupName = data.toString().split(";")[1];
@@ -597,6 +651,12 @@ var addUnshareablePossessions = function (data,sock) {
 
 }
 
+/*
+ *==================================================================================================================
+ *   Function to add emergency contacts for a person to the group
+ *==================================================================================================================
+ */
+
 var addEmergency = function (data,sock) {
     var groupName = data.toString().split(";")[1];
     var email = data.toString().split(";")[2];
@@ -615,73 +675,11 @@ var addEmergency = function (data,sock) {
     sock.write('ADD_EMERGENCY SUCCESS\n');
 }
 
-var getChoresList = function (data,sock) {
-  //  var groupName = data.toString().split(";")[1];
- //   var msg = 'GET_CHORESLIST;SUCCESS;' +  '\n'
-   // setTimeout(function () {
-        sock.write('GET_CHORESLIST;SUCCESS;' + chores + '\n');
-    //},100);
-}
-
-var getGroceryList = function (data,sock) {
-    var groupName = data.toString().split(";")[1];
-    var ref1 = firebase.database().ref("Groups/" + groupName + "/GroceryList");
-    var groceryList;
-    ref1.on("value",function (snapshot) {
-        groceryList = snapshot.val();
-    });
-    setTimeout(function () {
-        if (groceryList == null) {
-            groceryList = "";
-        }
-        sock.write('GET_GROCERYLIST SUCCESS ' + groceryList + '\n');
-    },200);
-
-}
-
-var getTotalDue = function (data,scok) {
-    var email = data.toString().split(";")[1];
-    var ref1 = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/TotalAmountDue");
-    var totalAmount;
-    ref1.on("value",function (snapshot) {
-        totalAmount = snapshot.val();
-    });
-
-
-    setTimeout(function () {
-        sock.write('GET_TOTALDUE SUCCESS '+totalAmount+'\n')
-    },200)
-
-}
-
-var getInterests = function (data,sock) {
-    var email = data.toString().split(";")[1];
-    var ref1 = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Interests");
-    var interests;
-    ref1.on("value",function (snapshot) {
-        interests = snapshot.val();
-    });
-
-
-    setTimeout(function () {
-        sock.write('GET_INTERESTS;SUCCESS;'+interests+';\n')
-    },200)
-}
-
-var getGroupMembers = function (data,sock) {
-    var groupName = data.toString().split(";")[1];
-    var ref1 = firebase.database().ref("Groups/" + groupName + "/Members");
-    var members;
-    ref1.on("value",function (snapshot) {
-        members = snapshot.val();
-
-    });
-    setTimeout(function () {
-        sock.write('GET_GROUPMEMBERS;SUCCESS;'+members+'\n')
-
-    },100)
-    }
-
+/*
+ *==================================================================================================================
+ *   Function to add an event to the group
+ *==================================================================================================================
+ */
 
 var addEvent = function (data,sock) {
     var email = data.toString().split(";")[1];
@@ -704,19 +702,11 @@ var addEvent = function (data,sock) {
     },200)
 }
 
-var getEvents = function (data,sock) {
-    var email = data.toString().split(";")[1];
-    var ref1 = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Events");
-    var events;
-    ref1.on("value",function (snapshot) {
-        events = snapshot.val();
-    });
-
-
-    setTimeout(function () {
-        sock.write('GET_EVENTS;SUCCESS;'+events+'\n')
-    },200)
-}
+/*
+ *==================================================================================================================
+ *   Function to get the group a user is in
+ *==================================================================================================================
+ */
 
 var getGroup = function (data,sock) {
     var email = data.toString().split(";")[1];
@@ -735,6 +725,12 @@ var getGroup = function (data,sock) {
         });
     },200)
 }
+
+/*
+ *==================================================================================================================
+ * Function to add a reciept to the group
+ *==================================================================================================================
+ */
 
 var addReceipt = function (data,sock) {
     var groupName = data.toString().split(";")[1];
@@ -792,6 +788,12 @@ var addReceipt = function (data,sock) {
     //sock.write('ADD_CHORE SUCCESS\n');
 }
 
+/*
+ *==================================================================================================================
+ *   Function to send location as an email to group members
+ *==================================================================================================================
+ */
+
 var sendLocation = function (data,sock) {
     var senderEmail = data.toString().split(";")[1];
     var groupName = data.toString().split(";")[2];
@@ -826,16 +828,155 @@ var sendLocation = function (data,sock) {
     },300)
 }
 
+/*
+ *==================================================================================================================
+ *  Function to update a roommates rating
+ *==================================================================================================================
+ */
+
 var updateRoommateRating = function(data,sock){
     var email = data.toString().split(";")[1];
     var rating = data.toString().split(";")[2];
     var ref1 = firebase.database().ref("Login/" + email.toString().split("@")[0]+ "/Rating");
-   ref1.set(rating);
+    ref1.set(rating);
     sock.write('UPDATE_ROOMMATE_RATING SUCCESS\n');
 }
+
 /*
-*  Starts the server with sockets listening for different input commands
+ *==================================================================================================================
+ *  Function for a user to leave a group
+ *==================================================================================================================
  */
+
+var leaveGroup = function(data,sock) {
+    var group = data.toString().split(";")[1];
+    var email = data.toString().split(";")[2];
+
+    //remove group from user in firebase
+    var userGroup = firebase.database().ref("Login/" + email.split("@")[0] + "/Group");
+    userGroup.set("");
+
+    //remove user from emergency contact, interests, members, shared and unshared possessions
+    var refMembers = firebase.database().ref("Groups/" + group + "/Members");
+    var refInterests = firebase.database().ref("Groups/" + group + "/Interests");
+    var refContact = firebase.database().ref("Groups/" + group + "/EmergencyContacts");
+    var refShare = firebase.database().ref("Groups/" + group + "/ShareablePossessions");
+    var refUnshare = firebase.database().ref("Groups/" + group + "/UnshareablePossessions");
+    var Members;
+    var Interests;
+    var Contact;
+    var Share;
+    var Unshare;
+
+    //get the current database's information involving the group
+    refMembers.on("value", function (snapshot) {
+        Members = snapshot.val();
+    });
+    refInterests.on("value", function (snapshot) {
+        Interests = snapshot.val();
+    });
+    refContact.on("value", function (snapshot) {
+        Contact = snapshot.val();
+    });
+    refShare.on("value", function (snapshot) {
+        Share = snapshot.val();
+    });
+    refUnshare.on("value", function (snapshot) {
+        Unshare = snapshot.val();
+    });
+
+    //remove the user leaving the group from the database information and send back
+    setTimeout(function () {
+        var str = email.split(".")[0] + "\." + email.split(".")[1];
+        var replace1 = str + ";";
+        var replace2 = str + ":[^;]*;"
+        var regex1 = new RegExp(replace1, "g");
+        var regex2 = new RegExp(replace2, "g");
+        Members = Members.toString().replace(regex1, "");
+        refMembers.set(Members);
+        if (Interests !== null) {
+            Interests = Interests.toString().replace(regex2, "");
+            refInterests.set(Interests);
+        }
+        if (Contact !== null) {
+            Contact = Contact.toString().replace(regex2, "");
+            refContact.set(Contact);
+        }
+        if (Share !== null) {
+            Share = Share.toString().replace(regex2, "");
+            refShare.set(Share);
+        }
+        if (Unshare !== null) {
+            Unshare = Unshare.toString().replace(regex2, "");
+            refUnshare.set(Unshare);
+        }
+    }, 300);
+
+    //adjust the group map with the firebase data
+    var refGroups = firebase.database().ref("Groups/" + group);
+    refGroups.on("value", function (snapshot) {
+        groupMap.set(group, snapshot);
+    });
+    sock.write("LEAVE_GROUP SUCCESS\n");
+}
+
+/*
+ *==================================================================================================================
+ *  Returns to the socket the information inside of the group and
+ *==================================================================================================================
+ */
+
+var getSomething = function(data, sock) {
+    var group = data.toString().split(";")[1];
+    var item = data.toString().split(";")[2];
+    var ref = firebase.database().ref("Groups/" + group + "/" + item);
+
+    var response;
+    ref.on("value", function (snapshot) {
+        response = snapshot.val();
+    });
+    setTimeout(function () {
+        sock.write(response.toString() + "\n");
+    }, 300);
+}
+
+/*
+ *==================================================================================================================
+ *  Function to trigger sending FCM notification
+ *==================================================================================================================
+ */
+
+var sendNotification = function (data,sock) {
+    regToken = data.toString().split(";")[1];
+    var title = data.toString().split(";")[2];
+    var msg = data.toString().split(";")[3];
+    var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera)
+        notification: {
+            title: title,
+            body: msg
+        }
+    };
+    var options = {
+        priority: "high",
+        timeToLive: 60 * 60 *24
+    };
+    admin.messaging().sendToDevice(regToken, message, options)
+        .then(function(response) {
+            console.log("Successfully sent message:", response.results);
+        })
+        .catch(function(error) {
+            console.log("Error sending message:", error);
+        });
+}
+
+
+
+/*
+ *==================================================================================================================
+ *  Starts the server with sockets listening for different input commands
+ *==================================================================================================================
+ */
+
 var svr = net.createServer(function(sock) {
     function processRequest(data,sock){
         var command = data.toString().split(" ")[0];
@@ -845,10 +986,10 @@ var svr = net.createServer(function(sock) {
         }
         else if(command == "REGISTER")
         {
-           processRegister(data,sock)
+            processRegister(data,sock);
         }
         else if(command == "RESET_PASSWORD"){
-            resetPassword(data,sock)
+            resetPassword(data,sock);
         }
         else if(command == "CHECK_USER"){
             checkUser(data,sock);
@@ -867,7 +1008,7 @@ var svr = net.createServer(function(sock) {
         }
         else if(!(command.toString().indexOf(";") > -1))
         {
-        //    sock.write('INVALID_COMMAND\n')
+            //    sock.write('INVALID_COMMAND\n')
         }
         var command2 = data.toString().split(";")[0];
         if(command2 == "EDIT_PROFILE"){
@@ -894,18 +1035,6 @@ var svr = net.createServer(function(sock) {
         {
             addGroceryItem(data,sock);
         }
-        else if(command2 == "GET_CHORESLIST")
-        {
-            getChoresList(data,sock);
-        }
-        else if(command2 == "GET_GROCERYLIST")
-        {
-            getGroceryList(data,sock);
-        }
-        else if(command2 == "GET_TOTALDUE")
-        {
-            getTotalDue(data,sock);
-        }
         else if(command2 == "GET_INTERESTS")
         {
             getInterests(data,sock);
@@ -924,7 +1053,7 @@ var svr = net.createServer(function(sock) {
         }
         else if(command2 == "GET_GROUP")
         {
-            getGroup(data,sock)
+            getGroup(data,sock);
         }
         else if(command2 == "ADD_RECEIPT")
         {
@@ -954,8 +1083,16 @@ var svr = net.createServer(function(sock) {
         {
             updateRoommateRating(data,sock);
         }
-
-
+        else if(command2 == "LEAVE_GROUP") {
+            leaveGroup(data,sock);
+        }
+        else if(command2 == "SEND_NOTIFICATION")
+        {
+            sendNotification(data,sock);
+        }
+        else if(command2 == "GET_SOMETHING") {
+            getSomething(data,sock);
+        }
 
     }
     console.log('Connected: ' + sock.remoteAddress + ':' + sock.remotePort);
@@ -967,11 +1104,11 @@ var svr = net.createServer(function(sock) {
         console.log("received: " + data.toString())
         processRequest(data,sock);
         /* for (var i=0; i<sockets.length ; i++) {
-             if (sockets[i] != sock) {
-                 if (sockets[i]) {
-                     sockets[i].write(data);
-                 }
-             }
+         if (sockets[i] != sock) {
+         if (sockets[i]) {
+         sockets[i].write(data);
+         }
+         }
          }*/
     });
 
@@ -990,7 +1127,7 @@ var svr = net.createServer(function(sock) {
     });
 });
 
-var svraddr = '10.186.156.163';
+var svraddr = '10.186.81.137';
 var svrport = 9910;
 
 svr.listen(svrport, svraddr);
