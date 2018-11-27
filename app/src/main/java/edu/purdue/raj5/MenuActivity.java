@@ -79,7 +79,7 @@ public class MenuActivity extends AppCompatActivity {
         Date dateSpecified = calendar.getTime();
 
         // test your condition
-        if (!dateSpecified.before(today)) {
+        if (today.after(dateSpecified)) {
             //System.err.println("Date specified [" + dateSpecified + "] is before today [" + today + "]");
             createWeeklyReminders("EndOfLease",calendar);
         }
@@ -99,6 +99,7 @@ public class MenuActivity extends AppCompatActivity {
         // and get that as a Date
         Date today = calendar.getTime();
 
+
         // user-specified date which you are testing
         // let's say the components come from a form or something
         int year = 2019;
@@ -117,8 +118,9 @@ public class MenuActivity extends AppCompatActivity {
         Date dateSpecified = calendar.getTime();
 
         // test your condition
-        if (!dateSpecified.before(today)) {
+        if (today.after(dateSpecified)) {
             //System.err.println("Date specified [" + dateSpecified + "] is before today [" + today + "]");
+            //System.out.println("DS: "+dateSpecified.get(Calendar.DAY_OF_MONTH));
             createWeeklyReminders("RoommateSearch",calendar);
         }
 
@@ -137,7 +139,7 @@ public class MenuActivity extends AppCompatActivity {
         //calendar.set(Calendar.DAY_OF_WEEK,5);
         Intent intent = new Intent(getApplicationContext(),NotificationReceiver.class);
         intent.putExtra("Class",intentPurpose);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(),0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),/*AlarmManager.INTERVAL_DAY*7*/ AlarmManager.INTERVAL_FIFTEEN_MINUTES,pendingIntent);
     }
