@@ -70,6 +70,12 @@
             android:id="@+id/bt_emergency"
             android:text="@string/emergency_contact"
             android:ems="12"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bt_rateRoommate"
+            android:text="@string/rate_roommate"
+            android:ems="12"/>
     </LinearLayout>
 
 </RelativeLayout>

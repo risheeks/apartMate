@@ -1,13 +1,10 @@
 package edu.purdue.raj5.apartmate;
 
+
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-
-
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -20,22 +17,14 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-/*
-* Allows users to add a receipt in the group to be split amongst the users selected
-* 
-*
-*
-*/
 
 public class ReceiptActivity extends AppCompatActivity {
 
-    ArrayList<String> spinnerValues = new ArrayList<>();
-
+    ArrayList<String> spinnerValues = new ArrayList<>();// = { "Blur", "NFS", "Burnout","GTA IV", "Racing", };
     private View btnSend;
     private View btnCancel;
     private EditText title;
     private EditText amount;
-    //Displays the list of all users in the group to be selected in the receipt
     private MultiSelectionSpinner spinner;
     String groupName;
     String email;
@@ -46,7 +35,6 @@ public class ReceiptActivity extends AppCompatActivity {
         setContentView(R.layout.activity_receipt);
         groupName = getIntent().getExtras().getString("GroupName");
         email = getIntent().getExtras().getString("Email");
-
         btnSend = findViewById(R.id.btnSubmit);
         btnCancel = findViewById(R.id.btnCancel);
         title = findViewById(R.id.receiptTitle);
@@ -76,7 +64,6 @@ public class ReceiptActivity extends AppCompatActivity {
             }
         });
 
-        spinner.setItems(spinnerValues);
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,7 +77,6 @@ public class ReceiptActivity extends AppCompatActivity {
                 i.putExtra("GroupName",groupName);
                 i.putExtra("Email",email);
                 startActivity(i);
-                Toast.makeText(ReceiptActivity.this, mytitle + "\n" + myamount + "\n" + members, Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -105,4 +91,3 @@ public class ReceiptActivity extends AppCompatActivity {
         });
     }
 }
- 

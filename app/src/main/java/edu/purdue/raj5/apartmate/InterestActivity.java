@@ -21,10 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-/*
-* Displays interests of members in the group
-* Firebase call to get the group, members and their interests
-*/
+
 public class InterestActivity extends AppCompatActivity {
     RecyclerView rv_shareablePossessions;
     FloatingActionButton fab2;
@@ -44,7 +41,7 @@ public class InterestActivity extends AppCompatActivity {
         initiaizeAddButton();
         FirebaseDatabase storage = FirebaseDatabase.getInstance();
         DatabaseReference storageRef = storage.getReference("Groups/"+groupName+"/Interests");
-        //get interests of different members
+
         storageRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -74,7 +71,6 @@ public class InterestActivity extends AppCompatActivity {
             }
         });
     }
-    //initialize the RecyclerView
     private void initializeRecyclerView(){
         rv_shareablePossessions = (RecyclerView)findViewById(R.id.rv_interests);
         mTempInterests = new ArrayList<>(mInterests);
@@ -82,7 +78,6 @@ public class InterestActivity extends AppCompatActivity {
         rv_shareablePossessions.setAdapter(adapter);
         rv_shareablePossessions.setLayoutManager(new LinearLayoutManager(this));
     }
-    //Initialize the add button and toast when the interests are added
     private void initiaizeAddButton(){
         fab2 = (FloatingActionButton) findViewById(R.id.fabInterests);
         fab2.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +92,6 @@ public class InterestActivity extends AppCompatActivity {
                 final AlertDialog dialog = builder.create();
                 bt_interestAdd.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    //onClick for add interest button
                     public void onClick(View v) {
                         String interest = et_interestAdd.getText().toString();
                         Toast.makeText(InterestActivity.this, "An Interest has been added", Toast.LENGTH_SHORT).show();

@@ -21,7 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-// This is where all the group information goes.
+
 public class GroupTabsActivity extends AppCompatActivity {
 
     /**
@@ -58,10 +58,9 @@ public class GroupTabsActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        //Tablayout for our three tabs
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tl_group_tabs);
         tabLayout.setupWithViewPager(mViewPager,true);
-        // This moves to the right chat
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,14 +74,14 @@ public class GroupTabsActivity extends AppCompatActivity {
 
     }
 
-// This is menu settings
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_group_tabs, menu);
         return true;
     }
-// Code for if an item in options is selected
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -91,11 +90,9 @@ public class GroupTabsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        // We are not doing anything
         if (id == R.id.action_settings) {
             return true;
         }
-        //Code for add members
         if(id == R.id.action_add_to_group){
             final AlertDialog.Builder builder = new AlertDialog.Builder(GroupTabsActivity.this);
             View viewDialog = LayoutInflater.from(GroupTabsActivity.this).inflate(R.layout.add_member,null);
@@ -159,7 +156,7 @@ public class GroupTabsActivity extends AppCompatActivity {
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
-        // This is where we are attaching the three tabs to the activity
+
         @Override
         public Fragment getItem(int position) {
             switch (position){
@@ -184,7 +181,6 @@ public class GroupTabsActivity extends AppCompatActivity {
             // Show 3 total pages.
             return 3;
         }
-        // Title for each activities
         @Override
         public CharSequence getPageTitle( int position){
             switch (position){

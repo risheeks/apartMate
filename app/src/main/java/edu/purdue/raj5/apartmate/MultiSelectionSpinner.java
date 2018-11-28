@@ -1,4 +1,3 @@
-
 package edu.purdue.raj5.apartmate;
 
 import android.app.AlertDialog;
@@ -12,10 +11,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-/* Provides a list of all the users in a group with a checkbox beside them for the user to pick
- * to include in receipts
- *
- */
+
 public class MultiSelectionSpinner extends android.support.v7.widget.AppCompatSpinner implements DialogInterface.OnMultiChoiceClickListener
 {
     String[] _items = null;
@@ -191,7 +187,6 @@ public class MultiSelectionSpinner extends android.support.v7.widget.AppCompatSp
         for (int i = 0; i < _items.length; ++i) {
             if (mSelection[i]) {
                 if (foundOne) {
-
                     sb.append(",");
                 }
                 foundOne = true;

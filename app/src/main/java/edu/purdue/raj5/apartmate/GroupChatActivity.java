@@ -30,11 +30,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Scanner;
-/*
-* provides for the members within a group to chat with each other
-* very similar to individual chat but allows more than just 2 people
-*
-*/
+
 public class GroupChatActivity extends AppCompatActivity {
     private ListView listView;
     private View btnSend;

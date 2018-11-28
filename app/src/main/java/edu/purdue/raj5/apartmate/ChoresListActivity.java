@@ -22,8 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.net.Socket;
 import java.util.ArrayList;
-// This activity is where all the chores are shown.
-// It includes choreName, choreAssignee, choreDescription, choreDate, choreTime
+
 public class ChoresListActivity extends AppCompatActivity {
     RecyclerView rv_chores;
     FloatingActionButton fab2;
@@ -41,7 +40,6 @@ public class ChoresListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chores_list);
         Intent intent = getIntent();
         groupName = intent.getExtras().getString("GroupName");
-        
         mChoreNames.add("a");
         mChoreDescription.add("b");
         mChoreAssignee.add("l");
@@ -51,7 +49,7 @@ public class ChoresListActivity extends AppCompatActivity {
         initiaizeAddButton();
         FirebaseDatabase storage = FirebaseDatabase.getInstance();
         DatabaseReference storageRef = storage.getReference("Groups/"+groupName+"/Chores");
-//Database side of removing the chore
+
         storageRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -62,13 +60,12 @@ public class ChoresListActivity extends AppCompatActivity {
                     message = dataSnapshot.getValue().toString();
                 Log.e("Chores",message);
                 String chores[] = message.split(";");
-                // we are clearing everything because we adding all the chores that were not removed. 
                 mChoreNames.clear();
                 mChoreAssignee.clear();
                 mChoreDescription.clear();
                 mChoreDate.clear();
                 mChoreTime.clear();
-                //This is the place were the remaining chores are added back
+
                 for(int i = 0; i < chores.length;i++)
                 {
                     String[] chore = chores[i].split(":");
@@ -80,7 +77,6 @@ public class ChoresListActivity extends AppCompatActivity {
                 }
                 Log.e("Size",String.valueOf(mChoreNames.size()));
                 Log.e("val","change");
-                //We are letting the recyclerView know that we have made changes
                 initializeRecyclerView();
             }
             @Override
@@ -89,7 +85,6 @@ public class ChoresListActivity extends AppCompatActivity {
             }
         });
     }
-    // This is the code for adding a chore.
     private void initiaizeAddButton(){
         fab2 = (FloatingActionButton) findViewById(R.id.fabChoresAddItem);
         fab2.setOnClickListener(new View.OnClickListener() {
@@ -109,7 +104,7 @@ public class ChoresListActivity extends AppCompatActivity {
                 bt_choreItemAdd.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //Getting the chore values 
+
                         final String choreItem = et_choreName.getText().toString();
                         final String choreWho = et_choreWho.getText().toString();
                         final String choreDescription = et_choreDescription.getText().toString();
@@ -124,7 +119,10 @@ public class ChoresListActivity extends AppCompatActivity {
                         mChoreDate.add(choreDate);
                         mChoreTime.add(choreTime);
                         initializeRecyclerView();
-                        dialog.dismiss();                        
+                        dialog.dismiss();
+
+
+
                     }
                 });
 
@@ -132,7 +130,7 @@ public class ChoresListActivity extends AppCompatActivity {
             }
         });
     }
-    // This is where we initialize the recyclerView
+
     private void initializeRecyclerView(){
         rv_chores = (RecyclerView)findViewById(R.id.rv_choresItems);
         mTempChoreNames = new ArrayList<>(mChoreNames);
