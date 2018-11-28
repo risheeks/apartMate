@@ -21,6 +21,7 @@ public class FiltersActivity extends AppCompatActivity {
     private View btnSend;
     private View btnCancel;
     private EditText interests;
+    private EditText zip;
     private TextView dispage;
     Integer min = 18;
     Integer max = 22;
@@ -38,6 +39,7 @@ public class FiltersActivity extends AppCompatActivity {
         btnSend = findViewById(R.id.btnSubmit);
         btnCancel = findViewById(R.id.btnCancel);
         interests = findViewById(R.id.interests);
+        zip = findViewById(R.id.zip);
         dispage = findViewById(R.id.dispage);
         age.setRangeValues(18, 30);
         majorSpinner.setItems(majorvalues);
@@ -48,7 +50,8 @@ public class FiltersActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String myinterests = interests.getText().toString();
                 String majors = majorSpinner.getSelectedItemsAsString();
-                Toast.makeText(FiltersActivity.this, myinterests + "\n"  + min + "-" + max + "\n" + majors, Toast.LENGTH_LONG).show();
+                String myzip = zip.getText().toString();
+                Toast.makeText(FiltersActivity.this, myinterests + "\n" + myzip + "\n" + min + "-" + max + "\n" + majors, Toast.LENGTH_LONG).show();
 
 
             }

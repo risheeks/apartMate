@@ -25,5 +25,5 @@
     <string name="Age">Age:</string>
     <string name="age">Age:</string>
     <string name="major">Major:</string>
-
+    <string name="zip">Zip Code:</string>
 </resources>
