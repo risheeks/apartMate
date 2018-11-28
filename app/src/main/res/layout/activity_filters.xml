@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/filterll"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     xmlns:rsb="http://schemas.android.com/apk/res-auto"
@@ -12,6 +13,7 @@
         android:orientation="horizontal" >
 
         <TextView
+            android:id="@+id/interestsL"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
@@ -31,6 +33,7 @@
         android:orientation="horizontal" >
 
         <TextView
+            android:id="@+id/zipL"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
@@ -52,6 +55,7 @@
         android:layout_marginTop="20px" >
 
         <TextView
+            android:id="@+id/dispageL"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
@@ -90,6 +94,7 @@
         android:layout_marginTop="20px" >
 
         <TextView
+            android:id="@+id/majorL"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
