@@ -10,6 +10,20 @@ var loginMap = new Map();
 var groupMap = new Map();
 var app = firebase.initializeApp(    {databaseURL: "https://apartmate-3.firebaseio.com",}
 );
+var admin = require("firebase-admin");
+
+var serviceAccount = require("./apartmate-3-firebase-adminsdk-l73jh-8c59b5f699.json");
+var regToken = 'zzu@88fdbc9';
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://apartmate-3.firebaseio.com"
+});
+require("firebase/auth");
+require("firebase/storage");
+require("firebase/database");
+var FCM = require('fcm-node');
+var serverKey = 'AAAAuwY6jMA:APA91bE_v43c8ehxQvwvVrumU5RR-jFbK1LFeDdOkc8Vjksy6enjBau5orUNq6oKXTpN8z538IjQtgOQa0diT2BewkR7bZJjoN6P7iPP_kb_4VlcYXQifNLpi4_n4Q1eqiCqPx2tPjwP'; //put your server key here
+var fcm = new FCM(serverKey);
 var socketMap = new Map();
 var nodemailer = require('nodemailer')
 var chores = "";
@@ -1062,22 +1076,7 @@ var svr = net.createServer(function(sock) {
 }*/
 });
 
-sock.on('end', function() {
-  console.log('Disconnected: ' + sock.remoteAddress + ':' + sock.remotePort);
-  var idx = sockets.indexOf(sock);
-  socketMap.forEach(function (value, key) {
-    if(value == sock)
-    {
-      socketMap.delete(key);
-    }
-  })
-  if (idx != -1) {
-    delete sockets[idx];
-  }
-});
-});
-
-var svraddr = '127.0.0.1';
+var svraddr = '10.186.183.200';
 var svrport = 9910;
 
 svr.listen(svrport, svraddr);
