@@ -26,10 +26,12 @@ public class MenuActivity extends AppCompatActivity {
     ImageView optionsButton;
     private ArrayList<String> mNames = new ArrayList<>();
     private ArrayList<String> mImages = new ArrayList<>();
+    private ArrayList<String> mMatches = new ArrayList<>();
     ImageView iv_chatSearch;
     TextView tv_chatSearch;
     TextView tv_message;
     RecyclerView rv_groups;
+    RecyclerView rv_matches;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,12 +161,20 @@ public class MenuActivity extends AppCompatActivity {
     private void initializeBitMaps(){
         mImages.add("https://i.redd.it/tpsnoz5bzo501.jpg");
         mNames.add("Wassup fellas");
+        mMatches.add("");
     }
     private void initializeRecyclerView(){
         rv_groups = (RecyclerView)findViewById(R.id.rv_groupNames);
         MenuRecyclerViewAdaptor adaptor = new MenuRecyclerViewAdaptor(this, mNames, mImages);
         rv_groups.setAdapter(adaptor);
         rv_groups.setLayoutManager(new LinearLayoutManager(this));
+
+        rv_matches = (RecyclerView)findViewById(R.id.rv_groupNames);
+        MatchesAdapter adapter = new MatchesAdapter(this, mMatches);
+        rv_groups.setAdapter(adapter);
+        rv_groups.setLayoutManager(new LinearLayoutManager(this));
+
+
     }
     private void initializeOptions(){
         optionsButton = (ImageView)findViewById(R.id.iv_menuOptions);
