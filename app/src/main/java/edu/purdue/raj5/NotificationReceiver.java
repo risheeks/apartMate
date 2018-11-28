@@ -1,6 +1,7 @@
 package com.example.dell.apartmate;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -8,6 +9,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
@@ -33,7 +35,9 @@ public class NotificationReceiver extends BroadcastReceiver {
     }
     @TargetApi(26)
     public void createNotification(String aMessage, Context context, String smallSizeText) {
-        final int NOTIFY_ID = 0; // ID of notification
+        //final int NOTIFY_ID = 0; // ID of notification
+        SharedPreferences prefs = context.getSharedPreferences(Activity.class.getSimpleName(), Context.MODE_PRIVATE);
+        int notificationNumber = prefs.getInt("notificationNumber", 0);
         String id = context.getString(R.string.app_name); // default_channel_id
         String title = context.getString(R.string.app_name); // Default Channel
         Intent intent;
@@ -88,6 +92,11 @@ public class NotificationReceiver extends BroadcastReceiver {
                     .setPriority(Notification.PRIORITY_HIGH);
         }
         Notification notification = builder.build();
-        notifManager.notify(NOTIFY_ID, notification);
+        //notifManager.notify(NOTIFY_ID, notification);
+        notifManager.notify(notificationNumber , notification);
+        SharedPreferences.Editor editor = prefs.edit();
+        notificationNumber++;
+        editor.putInt("notificationNumber", notificationNumber);
+        editor.commit(); // may be try apply
     }
 }
