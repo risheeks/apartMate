@@ -437,6 +437,14 @@ var createGroup = function(data,sock){
             ref.set(email+":911;");
             var ref = firebase.database().ref("Login/" + email.split("@")[0] + "/Group");
             ref.set(groupName);
+
+            //initialize the rating and count for the group creater
+            var rateTotal = firebase.database().ref("Login/" + email.split("@")[0]+"/Rating/Total");
+            var rateCount = firebase.database().ref("Login/" + email.split("@")[0]+"/Rating/Count");
+            rateTotal.set("0");
+            rateCount.set("0");
+
+
             sock.write('CREATE_GROUP SUCCESS\n');
             dbGroupRef.once("value")
                 .then(function (snapshot) {
@@ -475,8 +483,7 @@ var addToGroup = function(data,sock){
         ids = snapshot.val();
     });
     setTimeout(function () {
-        var r =  firebase.database().ref("Groups/" + groupName + "/Members");
-        r.set(ids+email+";");
+        ref1.set(ids+email+";");
         var ref2 = firebase.database().ref("Login/" + email.split("@")[0] + "/Group");
         ref2.set(groupName);
         dbGroupRef.once("value")
@@ -490,21 +497,25 @@ var addToGroup = function(data,sock){
 
     },300);
 
-
-
-    ref1.on("value", function (snapshot) {
-      var gMembers= snapshot.val().toString().split(";");
-      int i;
-      for (i = 0; i < gMembers.length; i++) {
-        if (gMembers[i].split("@")[0] != email.split("@")) {
-          var gRating = firebase.database().ref(email+"/gRating/"+gMembers[i].split("@"));
-          gRating.set("0");
-          var gRating2 = firebase.database().ref(gMembers[i]+"/gRating/"+email.split("@"));
-          gRating2.set("0";)
+    setTimeout(function () {
+      ref1.on("value", function (snapshot) {
+        var gMembers = snapshot.val().toString().split(";");
+        var i;
+        for (i = 0; i < gMembers.length - 1; i++) {
+          if (!(email === gMembers[i])) {
+            var gRating = firebase.database().ref("Login/" + email.split("@")[0]+"/gRating/"+gMembers[i].split("@")[0]);
+            gRating.set("0");
+            var gRating2 = firebase.database().ref("Login/" + gMembers[i].split("@")[0]+"/gRating/"+email.split("@")[0]);
+            gRating2.set("0");
+          }
         }
-      }
+      })
+    }, 500)
 
-    })
+    var rateTotal = firebase.database().ref("Login/" + email.split("@")[0]+"/Rating/Total");
+    var rateCount = firebase.database().ref("Login/" + email.split("@")[0]+"/Rating/Count");
+    rateTotal.set("0");
+    rateCount.set("0");
 
 
     sock.write('ADD_GROUP SUCCESS\n')
