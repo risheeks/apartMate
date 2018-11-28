@@ -166,6 +166,20 @@ var processRegister = function (data,sock) {
                 ref.set("0");
                 var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Interests");
                 ref.set("I like reading books");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Age");
+                ref.set("0");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Birthday");
+                ref.set("0000-00-00");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Drink");
+                ref.set("No");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Major");
+                ref.set("");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Matches");
+                ref.set("");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Smoke");
+                ref.set("No");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/LikedUsers");
+                ref.set("");
                 sock.write('REGISTER SUCCESS\n');
                 const dbLoginRef = firebase.database().ref("Login").orderByKey();
                 dbLoginRef.once("value")
