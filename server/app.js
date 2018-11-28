@@ -491,6 +491,22 @@ var addToGroup = function(data,sock){
     },300);
 
 
+
+    ref1.on("value", function (snapshot) {
+      var gMembers= snapshot.val().toString().split(";");
+      int i;
+      for (i = 0; i < gMembers.length; i++) {
+        if (gMembers[i].split("@")[0] != email.split("@")) {
+          var gRating = firebase.database().ref(email+"/gRating/"+gMembers[i].split("@"));
+          gRating.set("0");
+          var gRating2 = firebase.database().ref(gMembers[i]+"/gRating/"+email.split("@"));
+          gRating2.set("0";)
+        }
+      }
+
+    })
+
+
     sock.write('ADD_GROUP SUCCESS\n')
 
 }
