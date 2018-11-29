@@ -8,13 +8,13 @@
         android:orientation="vertical"
         android:layout_centerInParent="true">
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/et_groceryNameAdd"
             android:ems="8"
             android:hint="@string/grocery_name_add"/>
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/et_groceryNumItemsAdd"
             android:ems="8"
