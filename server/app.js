@@ -14,7 +14,7 @@ var app = firebase.initializeApp(    {databaseURL: "https://apartmate-3.firebase
 );
 var admin = require("firebase-admin");
 
-var serviceAccount = require("C:\\Users\\Adrian Gerard Raj\\WebstormProjects\\ApartMate_Server\\apartmate-3-firebase-adminsdk-l73jh-8c59b5f699.json");
+var serviceAccount = require("./apartmate-3-firebase-adminsdk-l73jh-8c59b5f699.json");
 var regToken = 'zzu@88fdbc9';
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -167,12 +167,27 @@ var processRegister = function (data,sock) {
                 ref.set("0");
                 var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Interests");
                 ref.set("I like reading books");
-                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Gender");
-                ref.set("");
                 var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Age");
-                ref.set("");
+                ref.set("0");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Birthday");
+                ref.set("0000-00-00");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Drink");
+                ref.set("No");
                 var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Major");
                 ref.set("");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Matches");
+                ref.set("");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Smoke");
+                ref.set("No");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/LikedUsers");
+                ref.set("");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Gender");
+                //initialize the rating and count for the group creater
+                var rateTotal = firebase.database().ref("Login/" + email.toString().split("@")[0]+"/Rating/Total");
+                var rateCount = firebase.database().ref("Login/" + email.toString().split("@")[0]+"/Rating/Count");
+                rateTotal.set("0");
+                rateCount.set("0");
+
                 sock.write('REGISTER SUCCESS\n');
                 const dbLoginRef = firebase.database().ref("Login").orderByKey();
                 dbLoginRef.once("value")
@@ -453,6 +468,9 @@ var createGroup = function(data,sock){
             ref.set(email+":911;");
             var ref = firebase.database().ref("Login/" + email.split("@")[0] + "/Group");
             ref.set(groupName);
+
+
+
             sock.write('CREATE_GROUP SUCCESS\n');
             dbGroupRef.once("value")
                 .then(function (snapshot) {
@@ -491,8 +509,7 @@ var addToGroup = function(data,sock){
         ids = snapshot.val();
     });
     setTimeout(function () {
-        var r =  firebase.database().ref("Groups/" + groupName + "/Members");
-        r.set(ids+email+";");
+        ref1.set(ids+email+";");
         var ref2 = firebase.database().ref("Login/" + email.split("@")[0] + "/Group");
         ref2.set(groupName);
         dbGroupRef.once("value")
@@ -505,6 +522,21 @@ var addToGroup = function(data,sock){
             });
 
     },300);
+
+    setTimeout(function () {
+      ref1.on("value", function (snapshot) {
+        var gMembers = snapshot.val().toString().split(";");
+        var i;
+        for (i = 0; i < gMembers.length - 1; i++) {
+          if (!(email === gMembers[i])) {
+            var gRating = firebase.database().ref("Login/" + email.split("@")[0]+"/gRating/"+gMembers[i].split("@")[0]);
+            gRating.set("0");
+            var gRating2 = firebase.database().ref("Login/" + gMembers[i].split("@")[0]+"/gRating/"+email.split("@")[0]);
+            gRating2.set("0");
+          }
+        }
+      })
+    }, 500)
 
 
     sock.write('ADD_GROUP SUCCESS\n')
@@ -1191,7 +1223,7 @@ var svr = net.createServer(function(sock) {
     });
 });
 
-var svraddr = '10.186';
+var svraddr = '10.186.103.251';
 var svrport = 9910;
 
 svr.listen(svrport, svraddr);
