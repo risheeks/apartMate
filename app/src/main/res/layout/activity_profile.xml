@@ -16,6 +16,7 @@
         android:layout_alignParentTop="true"/>
 
     <FrameLayout
+        android:id="@+id/fl_picture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -39,71 +40,121 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"
+        android:layout_below="@+id/fl_picture">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
+
             <ToggleButton
+                android:id="@+id/tb_theme"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tb_theme"/>
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/tv_profile_firstName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="10"
                 android:layout_gravity="center"
+                android:ems="10"
                 android:hint="@string/register_first_Name"
-                android:padding="10dp"
-                />
+                android:padding="10dp" />
 
             <TextView
                 android:id="@+id/tv_profile_lastName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="10"
                 android:layout_gravity="center"
+                android:ems="10"
                 android:hint="@string/register_last_Name"
-                android:padding="10dp"
-                />
+                android:padding="10dp" />
+
+            <TextView
+                android:id="@+id/tv_age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ems="10"
+                android:hint="@string/register_age"
+                android:padding="10dp" />
+
+            <TextView
+                android:id="@+id/tv_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ems="10"
+                android:hint="@string/register_gender"
+                android:padding="10dp" />
+
             <TextView
                 android:id="@+id/tv_profile_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="10"
                 android:layout_gravity="center"
+                android:ems="10"
                 android:hint="@string/register_email"
-                android:padding="10dp"
-                />
+                android:padding="10dp" />
+
             <TextView
                 android:id="@+id/tv_latestAchievement"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="10"
                 android:layout_gravity="center"
+                android:ems="10"
                 android:hint="@string/latest_achievement"
-                android:padding="10dp"
-                />
+                android:padding="10dp" />
+
             <TextView
                 android:id="@+id/tv_greatestAchievement"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="10"
                 android:layout_gravity="center"
+                android:ems="10"
                 android:hint="@string/greatest_achievement"
-                android:padding="10dp"/>
+                android:padding="10dp" />
+
+            <TextView
+                android:id="@+id/tv_Major"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ems="10"
+                android:hint="@string/register_major"
+                android:padding="10dp" />
+
+            <TextView
+                android:id="@+id/tv_interests"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ems="10"
+                android:hint="@string/register_interests"
+                android:padding="10dp" />
+
+            <TextView
+                android:id="@+id/tv_birthday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ems="10"
+                android:hint="@string/register_birthday"
+                android:padding="10dp" />
+
+
+
 
             <Button
                 android:id="@+id/bt_profileChenge"
-                android:text="@string/edit_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:ems="10"
-                android:layout_gravity="center"/>
+                android:text="@string/edit_profile" />
 
         </LinearLayout>
 

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.IOException;
@@ -47,9 +48,10 @@ public class LoginActivity extends AppCompatActivity {
                     new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-        sock = new Client("10.186.156.163", 9910);
+        sock = new Client("10.3.78.240", 9910);
 
         super.onCreate(savedInstanceState);
+
         FirebaseMessaging.getInstance().subscribeToTopic("NEWS");
 
         setContentView(R.layout.activity_login);
@@ -96,6 +98,7 @@ public class LoginActivity extends AppCompatActivity {
         if(mess.contains("LOGIN SUCCESS"))
         {
             Log.e("h","h");
+            sock.send("ADD_REG_TOKEN;"+email.getText().toString()+";"+FirebaseInstanceId.getInstance().getToken());
             Intent i = new Intent(getBaseContext(), MenuActivity.class);
             i.putExtra("Email",email.getText().toString());
             startActivity(i);

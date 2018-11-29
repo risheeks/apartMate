@@ -4,6 +4,7 @@ app/.DS_Store
 app/src/main/java/edu/purdue/raj5/.DS_Store
 app/src/main/java/edu/purdue/raj5/apartmate/.DS_Store
 app/src/main/res/.DS_Store
+.idea/workspace.xml
 
 server/node_modules/\.bin/
 
