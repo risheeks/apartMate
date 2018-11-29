@@ -181,6 +181,13 @@ var processRegister = function (data,sock) {
                 ref.set("No");
                 var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/LikedUsers");
                 ref.set("");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Gender");
+                //initialize the rating and count for the group creater
+                var rateTotal = firebase.database().ref("Login/" + email.toString().split("@")[0]+"/Rating/Total");
+                var rateCount = firebase.database().ref("Login/" + email.toString().split("@")[0]+"/Rating/Count");
+                rateTotal.set("0");
+                rateCount.set("0");
+
                 sock.write('REGISTER SUCCESS\n');
                 const dbLoginRef = firebase.database().ref("Login").orderByKey();
                 dbLoginRef.once("value")
@@ -462,11 +469,6 @@ var createGroup = function(data,sock){
             var ref = firebase.database().ref("Login/" + email.split("@")[0] + "/Group");
             ref.set(groupName);
 
-            //initialize the rating and count for the group creater
-            var rateTotal = firebase.database().ref("Login/" + email.split("@")[0]+"/Rating/Total");
-            var rateCount = firebase.database().ref("Login/" + email.split("@")[0]+"/Rating/Count");
-            rateTotal.set("0");
-            rateCount.set("0");
 
 
             sock.write('CREATE_GROUP SUCCESS\n');
@@ -535,11 +537,6 @@ var addToGroup = function(data,sock){
         }
       })
     }, 500)
-
-    var rateTotal = firebase.database().ref("Login/" + email.split("@")[0]+"/Rating/Total");
-    var rateCount = firebase.database().ref("Login/" + email.split("@")[0]+"/Rating/Count");
-    rateTotal.set("0");
-    rateCount.set("0");
 
 
     sock.write('ADD_GROUP SUCCESS\n')
@@ -1226,7 +1223,7 @@ var svr = net.createServer(function(sock) {
     });
 });
 
-var svraddr = '10.186';
+var svraddr = '10.186.103.251';
 var svrport = 9910;
 
 svr.listen(svrport, svraddr);
