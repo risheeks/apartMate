@@ -530,9 +530,9 @@ var addToGroup = function(data,sock){
         for (i = 0; i < gMembers.length - 1; i++) {
           if (!(email === gMembers[i])) {
             var gRating = firebase.database().ref("Login/" + email.split("@")[0]+"/gRating/"+gMembers[i].split("@")[0]);
-            gRating.set("0");
+            gRating.set("0;f");
             var gRating2 = firebase.database().ref("Login/" + gMembers[i].split("@")[0]+"/gRating/"+email.split("@")[0]);
-            gRating2.set("0");
+            gRating2.set("0;f");
           }
         }
       })
@@ -883,11 +883,43 @@ var sendLocation = function (data,sock) {
  */
 
 var updateRoommateRating = function(data,sock){
-    var email = data.toString().split(";")[1];
-    var rating = data.toString().split(";")[2];
-    var ref1 = firebase.database().ref("Login/" + email.toString().split("@")[0]+ "/Rating");
-    ref1.set(rating);
-    sock.write('UPDATE_ROOMMATE_RATING SUCCESS\n');
+    var useremail = data.toString().split(";")[1];
+    var rateemail = data.toString().split(";")[2];
+    var newrate = parseInt(data.toString().split(";")[3]);
+    var ref1 = firebase.database().ref("Login/" + useremail.split("@")[0]+ "/gRating/" + rateemail.split("@")[0] + "/");
+    var oldrate;
+    var bool;
+    var num;
+    var rating;
+
+    ref1.on("value", function(snapshot) {
+      oldrate = parseInt(snapshot.val().toString().split(";")[0]);
+      bool = snapshot.val().toString().split(";")[1];
+    });
+
+    var numRef = firebase.database().ref("Login/" + rateemail.split("@")[0] + "/Rating/Count");
+    numRef.on("value", function(snapshot) {
+      num = parseInt(snapshot.val().toString());
+    });
+
+    var totalRef = firebase.database().ref("Login/" + rateemail.split("@")[0] + "/Rating/Total");
+    totalRef.on("value", function(snapshot) {
+      rating = parseInt(snapshot.val().toString());
+    });
+
+    setTimeout(function () {
+      if (bool === "f") {
+          var num = parseInt(snapshot.val().toString());
+          num = num + 1;
+          numRef.set(num);
+      }
+
+      var finalrate = newrate - oldrate;
+      var setrating = rating + finalrate;
+      totalRef.set(setrating + ";t");
+
+      sock.write('UPDATE_ROOMMATE_RATING SUCCESS\n');
+  }, 300);
 }
 
 /*
