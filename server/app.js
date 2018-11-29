@@ -9,6 +9,7 @@ const firebase = require('firebase/app');
 var sockets = [];
 var loginMap = new Map();
 var groupMap = new Map();
+var regTokenMap = new Map();
 var app = firebase.initializeApp(    {databaseURL: "https://apartmate-3.firebaseio.com",}
 );
 var admin = require("firebase-admin");
@@ -166,6 +167,12 @@ var processRegister = function (data,sock) {
                 ref.set("0");
                 var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Interests");
                 ref.set("I like reading books");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Gender");
+                ref.set("");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Age");
+                ref.set("");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Major");
+                ref.set("");
                 sock.write('REGISTER SUCCESS\n');
                 const dbLoginRef = firebase.database().ref("Login").orderByKey();
                 dbLoginRef.once("value")
@@ -329,25 +336,34 @@ var editProfile = function (data,sock) {
     var lastName = data.toString().split(";")[3];
     var latestA = data.toString().split(";")[4];
     var greatestA = data.toString().split(";")[5];
-    var interests = data.toString().split(";")[6];
-    var emergencyContacts = data.toString().split(";")[7];
-    var birthday = data.toString().split(";")[8];
+    var birthday = data.toString().split(";")[6];
+    var gender = data.toString().split(";")[7];
+    var major = data.toString().split(";")[8];
+    var age = data.toString().split(";")[9];
 
-    var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/FirstName");
-    ref.set(firstName);
-    var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/LastName");
-    ref.set(lastName);
-    var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/LatestAchievement");
-    ref.set(latestA);
-    var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/GreatestAchievement");
-    ref.set(greatestA);
-    var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Interests");
-    ref.set(interests);
-    var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/EmergencyContact");
-    ref.set(emergencyContacts);
-    var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Birthday");
-    ref.set(birthday);
 
+
+
+    setTimeout(function () {
+        var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/FirstName");
+        ref.set(firstName);
+        var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/LastName");
+        ref.set(lastName);
+        var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/LatestAchievement");
+        ref.set(latestA);
+        var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/GreatestAchievement");
+        ref.set(greatestA);
+        var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Birthday");
+        ref.set(birthday);
+        var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Gender");
+        ref.set(gender);
+        var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Major");
+        console.log(major)
+        ref.set(major);
+        var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Age");
+        ref.set(age);
+
+    },200)
 }
 /*
  *==================================================================================================================
@@ -384,12 +400,12 @@ var getProfile = function (data, sock) {
                 greatestA = value.GreatestAchievement;
             }
         });
-    },150)
+    },450)
 
     setTimeout(function () {
         console.log('RECEIVE_PROFILE;'+email.toString()+';'+firstName.toString()+';'+lastName.toString()+';'+latestA.toString()+';'+greatestA)
         sock.write('RECEIVE_PROFILE;'+email.toString()+';'+firstName.toString()+';'+lastName.toString()+';'+latestA.toString()+';'+greatestA+'\n');
-    },0000)
+    },890)
 
 }
 
@@ -969,7 +985,70 @@ var sendNotification = function (data,sock) {
         });
 }
 
+var addLikedUsers = function(data,sock){
+    var user1 = data.toString().split(";")[1];
+    var user2 = data.toString().split(";")[2];
 
+    var ref2 = firebase.database().ref("Login/" + user1.split("@")[0] + "/LikedUsers");
+    var likedUsers;
+    ref2.on("value",function (snapshot) {
+        likedUsers = snapshot.val();
+    });
+
+    setTimeout(function () {
+        if(likedUsers == null)
+            likedUsers = "";
+        if(!(likedUsers.toString().indexOf(user2.toString()) > -1))
+        {
+            ref2.set(likedUsers+user2.toString()+";");
+            var ref3 = firebase.database().ref("Login/" + user2.split("@")[0] + "/LikedUsers");
+            ref3.on("value",function (snapshot) {
+                var newLikedUsers = snapshot.val();
+                if(newLikedUsers.toString().indexOf(user1.toString())>-1)
+                {
+                    var ref4 = firebase.database().ref("Login/" + user1.split("@")[0] + "/Matches");
+                    ref4.set(user2);
+                    var ref5 = firebase.database().ref("Login/" + user2.split("@")[0] + "/Matches");
+                    ref5.set(user1);
+                    //  send notification after getting regtoken
+                    regTokenMap.forEach(function (value,key) {
+                        console.log(key+"  "+user1+"  "+user2)
+                        if(key == user1 || key == user2) {
+                            console.log("equallll");
+                            var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera)
+                                notification: {
+                                    title: "You have a new Roommate Match",
+                                    body: "Check the app to find out"
+                                }
+                            };
+                            var options = {
+                                priority: "high",
+                                timeToLive: 60 * 60 *24
+                            };
+                            admin.messaging().sendToDevice(value, message, options)
+                                .then(function(response) {
+                                    console.log("Successfully sent message:", response.results);
+                                })
+                                .catch(function(error) {
+                                    console.log("Error sending message:", error);
+                                });
+                        }
+                    });
+
+                }
+
+            });
+        }
+    },200)
+
+}
+
+var addRegToken = function(data,sock)
+{
+    var email = data.toString().split(";")[1];
+    var token = data.toString().split(";")[2];
+    regTokenMap.set(email,token);
+}
 
 /*
  *==================================================================================================================
@@ -978,120 +1057,105 @@ var sendNotification = function (data,sock) {
  */
 
 var svr = net.createServer(function(sock) {
-    function processRequest(data,sock){
+    function processRequest(data,sock) {
         var command = data.toString().split(" ")[0];
-        if(command == "LOGIN")
-        {
-            processLogin(data,sock);
+        if (command == "LOGIN") {
+            processLogin(data, sock);
         }
-        else if(command == "REGISTER")
-        {
-            processRegister(data,sock);
+        else if (command == "REGISTER") {
+            processRegister(data, sock);
         }
-        else if(command == "RESET_PASSWORD"){
-            resetPassword(data,sock);
+        else if (command == "RESET_PASSWORD") {
+            resetPassword(data, sock);
         }
-        else if(command == "CHECK_USER"){
-            checkUser(data,sock);
+        else if (command == "CHECK_USER") {
+            checkUser(data, sock);
         }
-        else if(command == "SEND_MESSAGE"){
-            sendMessage(data,sock);
+        else if (command == "SEND_MESSAGE") {
+            sendMessage(data, sock);
         }
-        else if(command == "CHECK_PASSWORD"){
-            checkPassword(data,sock);
+        else if (command == "CHECK_PASSWORD") {
+            checkPassword(data, sock);
         }
-        else if(command == "FORGOT_PASSWORD"){
-            forgotPassword(data,sock);
+        else if (command == "FORGOT_PASSWORD") {
+            forgotPassword(data, sock);
         }
-        else if(command == "GET_PROFILE"){
-            getProfile(data,sock);
+        else if (command == "GET_PROFILE") {
+            getProfile(data, sock);
         }
-        else if(!(command.toString().indexOf(";") > -1))
-        {
+        else if (!(command.toString().indexOf(";") > -1)) {
             //    sock.write('INVALID_COMMAND\n')
         }
         var command2 = data.toString().split(";")[0];
-        if(command2 == "EDIT_PROFILE"){
-            editProfile(data,sock);
+        if (command2 == "EDIT_PROFILE") {
+            editProfile(data, sock);
 
         }
-        else if(command2 == "CREATE_GROUP")
-        {
-            createGroup(data,sock);
+        else if (command2 == "CREATE_GROUP") {
+            createGroup(data, sock);
         }
-        else if(command2 == "ADD_GROUP")
-        {
-            addToGroup(data,sock);
+        else if (command2 == "ADD_GROUP") {
+            addToGroup(data, sock);
         }
-        else if(command2 == "SEND_GROUPM")
-        {
-            sendGroupMessage(data,sock);
+        else if (command2 == "SEND_GROUPM") {
+            sendGroupMessage(data, sock);
         }
-        else if(command2 == "ADD_CHORE")
-        {
-            addChore(data,sock);
+        else if (command2 == "ADD_CHORE") {
+            addChore(data, sock);
         }
-        else if(command2 == "ADD_GROCERYITEM")
-        {
-            addGroceryItem(data,sock);
+        else if (command2 == "ADD_GROCERYITEM") {
+            addGroceryItem(data, sock);
         }
-        else if(command2 == "GET_INTERESTS")
-        {
-            getInterests(data,sock);
+        else if (command2 == "GET_INTERESTS") {
+            getInterests(data, sock);
         }
-        else if(command2 == "GET_GROUPMEMBERS")
-        {
-            getGroupMembers(data,sock);
+        else if (command2 == "GET_GROUPMEMBERS") {
+            getGroupMembers(data, sock);
         }
-        else if(command2 == "ADD_EVENT")
-        {
-            addEvent(data,sock);
+        else if (command2 == "ADD_EVENT") {
+            addEvent(data, sock);
         }
-        else if(command2 == "GET_EVENTS")
-        {
-            getEvents(data,sock);
+        else if (command2 == "GET_EVENTS") {
+            getEvents(data, sock);
         }
-        else if(command2 == "GET_GROUP")
-        {
-            getGroup(data,sock);
+        else if (command2 == "GET_GROUP") {
+            getGroup(data, sock);
         }
-        else if(command2 == "ADD_RECEIPT")
-        {
-            addReceipt(data,sock);
+        else if (command2 == "ADD_RECEIPT") {
+            addReceipt(data, sock);
         }
-        else if(command2 == "ADD_SHAREABLEPOSSESSION")
-        {
-            addShareablePossession(data,sock);
+        else if (command2 == "ADD_SHAREABLEPOSSESSION") {
+            addShareablePossession(data, sock);
         }
-        else if(command2 == "ADD_UNSHAREABLEPOSSESSION")
-        {
-            addUnshareablePossessions(data,sock);
+        else if (command2 == "ADD_UNSHAREABLEPOSSESSION") {
+            addUnshareablePossessions(data, sock);
         }
-        else if(command2 == "ADD_INTEREST")
-        {
-            addInterest(data,sock);
+        else if (command2 == "ADD_INTEREST") {
+            addInterest(data, sock);
         }
-        else if(command2 == "ADD_EMERGENCY")
-        {
-            addEmergency(data,sock);
+        else if (command2 == "ADD_EMERGENCY") {
+            addEmergency(data, sock);
         }
-        else if(command2 == "SEND_LOCATION")
-        {
-            sendLocation(data,sock);
+        else if (command2 == "SEND_LOCATION") {
+            sendLocation(data, sock);
         }
-        else if(command2 == "UPDATE_ROOMMATE_RATING")
-        {
-            updateRoommateRating(data,sock);
+        else if (command2 == "UPDATE_ROOMMATE_RATING") {
+            updateRoommateRating(data, sock);
         }
-        else if(command2 == "LEAVE_GROUP") {
-            leaveGroup(data,sock);
+        else if (command2 == "LEAVE_GROUP") {
+            leaveGroup(data, sock);
         }
-        else if(command2 == "SEND_NOTIFICATION")
-        {
-            sendNotification(data,sock);
+        else if (command2 == "SEND_NOTIFICATION") {
+            sendNotification(data, sock);
         }
-        else if(command2 == "GET_SOMETHING") {
-            getSomething(data,sock);
+        else if (command2 == "GET_SOMETHING") {
+            getSomething(data, sock);
+        }
+        else if (command2 == "ADD_LIKED_USERS") {
+            addLikedUsers(data, sock);
+        }
+        else if (command2 == "ADD_REG_TOKEN"){
+            addRegToken(data,sock);
         }
 
     }
@@ -1127,7 +1191,7 @@ var svr = net.createServer(function(sock) {
     });
 });
 
-var svraddr = '10.186.81.137';
+var svraddr = '10.186';
 var svrport = 9910;
 
 svr.listen(svrport, svraddr);
