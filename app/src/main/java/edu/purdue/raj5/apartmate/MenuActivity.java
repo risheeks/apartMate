@@ -2,6 +2,8 @@ package edu.purdue.raj5.apartmate;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -39,11 +42,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
@@ -105,6 +111,8 @@ public class MenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+     //   LoginActivity.sock.send("SEND_NOTIFICATION;"+FirebaseInstanceId.getInstance().getToken()+";Welcome to ApartMate;Login Successful;");
+
         DummyTestActivity.mIsInForegroundMode = true;
         Log.e("Yo: ", "onCreate: Menu ");
         initializeTheme();
@@ -197,12 +205,137 @@ public class MenuActivity extends AppCompatActivity {
 
             }
         });
-        LoginActivity.sock.send("GET_GROUP;" + email);
+       // LoginActivity.sock.send("GET_GROUP;" + email);
+        initializeGroup();
         initializeBitMaps();
         initializeRecyclerView();
         initializeOptions();
         initializeChatSearchComponents();
+        createGroceryReminder();
+        createRoommateSearchReminder();
+        createEndOfLeaseReminder();
     }
+
+    private void initializeGroup() {
+        FirebaseDatabase storage = FirebaseDatabase.getInstance();
+        DatabaseReference storageRef = storage.getReference("Login/"+email.split("@")[0]+"/Group");
+
+        storageRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                if(dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                mImages.add("https://i.redd.it/tpsnoz5bzo501.jpg");
+                mNames.add(message);
+                initializeRecyclerView();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void createEndOfLeaseReminder() {
+
+        Calendar calendar = Calendar.getInstance();
+
+        // set the calendar to start of today
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        // and get that as a Date
+        Date today = calendar.getTime();
+
+        // user-specified date which you are testing
+        // let's say the components come from a form or something
+        int year = 2019;
+        int month = 5;
+        int dayOfMonth = 20;
+
+        if(month == 1){
+            month = 13;
+        }
+        // reuse the calendar to set user specified date
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month-1);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+        // and get that as a Date
+        Date dateSpecified = calendar.getTime();
+
+        // test your condition
+        if (today.after(dateSpecified)) {
+            //System.err.println("Date specified [" + dateSpecified + "] is before today [" + today + "]");
+            createWeeklyReminders("EndOfLease",calendar);
+        }
+
+
+    }
+
+    private void createRoommateSearchReminder() {
+        Calendar calendar = Calendar.getInstance();
+
+        // set the calendar to start of today
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        // and get that as a Date
+        Date today = calendar.getTime();
+
+
+        // user-specified date which you are testing
+        // let's say the components come from a form or something
+        int year = 2019;
+        int month = 5;
+        int dayOfMonth = 20;
+
+        if(month == 1){
+            month = 13;
+        }
+        // reuse the calendar to set user specified date
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month-1);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+        // and get that as a Date
+        Date dateSpecified = calendar.getTime();
+
+        // test your condition
+        if (today.after(dateSpecified)) {
+            //System.err.println("Date specified [" + dateSpecified + "] is before today [" + today + "]");
+            //System.out.println("DS: "+dateSpecified.get(Calendar.DAY_OF_MONTH));
+            createWeeklyReminders("RoommateSearch",calendar);
+        }
+
+    }
+
+    private void createGroceryReminder() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY,22);
+        calendar.set(Calendar.MINUTE, 37);
+        calendar.set(Calendar.SECOND,30);
+        createWeeklyReminders("Grocery",calendar);
+    }
+
+    private void createWeeklyReminders(String intentPurpose, Calendar calendar) {
+
+        //calendar.set(Calendar.DAY_OF_WEEK,5);
+        Intent intent = new Intent(getApplicationContext(),NotificationReceiver.class);
+        intent.putExtra("Class",intentPurpose);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(),0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),/*AlarmManager.INTERVAL_DAY*7*/ 60000,pendingIntent);
+    }
+
+
 
     // This method is called in the onCreate. This is used to set theme according to the user's preferences.
     private void initializeTheme() {
@@ -329,6 +462,11 @@ public class MenuActivity extends AppCompatActivity {
                                 LoginActivity.sock.send("SEND_LOCATION;" +email+";"+groupName+";"+fullAddress);
 
                             }
+                        }
+                        if (item.getTitle().toString().equals("Roommate Search")) {
+                            Intent i = new Intent(getBaseContext(), FiltersActivity.class);
+                            i.putExtra("Email",email);
+                            startActivity(i);
                         }
                         return true;
                     }

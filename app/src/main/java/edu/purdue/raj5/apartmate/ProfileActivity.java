@@ -33,6 +33,11 @@ import android.widget.ToggleButton;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -44,6 +49,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import java.sql.Connection;
 import java.util.Calendar;
 import java.util.Scanner;
 
@@ -73,7 +79,13 @@ public class ProfileActivity extends AppCompatActivity {
     TextView tv_GreatestAchievement;
     Button bt_changeProfile;
     TextView tv_changePassword;
-     Client socket = LoginActivity.sock;
+    TextView tv_age;
+    TextView tv_gender;
+    TextView tv_major;
+    TextView tv_birthday;
+
+
+    Client socket = LoginActivity.sock;
      EditText et_newPassword;
     EditText et_oldPassword;
     ToggleButton tb_theme;
@@ -85,6 +97,7 @@ public class ProfileActivity extends AppCompatActivity {
     *
     *
      */
+    final FirebaseDatabase dbStorage = FirebaseDatabase.getInstance();
     public void getAppTheme(String theme) { //theme is "light" or "dark"
 
         //call this inside every activity
@@ -109,8 +122,9 @@ public class ProfileActivity extends AppCompatActivity {
             tv_LatestAachievement.setTextColor(Color.WHITE);
             tv_GreatestAchievement.setTextColor(Color.WHITE);
             tv_changePassword.setTextColor(Color.WHITE);
-
-
+            tv_age.setTextColor(Color.WHITE);
+            tv_gender.setTextColor(Color.WHITE);
+            tv_major.setTextColor(Color.WHITE);
         }else {
             RelativeLayout rl = (RelativeLayout)findViewById(R.id.rl);
             rl.setBackgroundColor(Color.WHITE);
@@ -126,7 +140,9 @@ public class ProfileActivity extends AppCompatActivity {
             tv_LatestAachievement.setTextColor(Color.BLACK);
             tv_GreatestAchievement.setTextColor(Color.BLACK);
             tv_changePassword.setTextColor(Color.BLACK);
-
+            tv_age.setTextColor(Color.BLACK);
+            tv_gender.setTextColor(Color.BLACK);
+            tv_major.setTextColor(Color.BLACK);
         }
 
 
@@ -141,7 +157,9 @@ public class ProfileActivity extends AppCompatActivity {
         if ((keyCode == KeyEvent.KEYCODE_BACK))
         {
             finish();
-            startActivity(new Intent(ProfileActivity.this, MenuActivity.class));
+            Intent i = new Intent(ProfileActivity.this, MenuActivity.class);
+            i.putExtra("Email",email);
+            startActivity(i);
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -151,7 +169,9 @@ public class ProfileActivity extends AppCompatActivity {
  */
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(ProfileActivity.this, MenuActivity.class));
+        Intent i = new Intent(ProfileActivity.this, MenuActivity.class);
+        i.putExtra("Email",email);
+        startActivity(i);
 
     }
     @Override
@@ -236,7 +256,8 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
-        socket.send("GET_PROFILE");
+        //socket.send("GET_PROFILE");
+
 
         initializeButton();
         takePhoto();
@@ -287,6 +308,13 @@ public class ProfileActivity extends AppCompatActivity {
                 final EditText et_lastName = (EditText) view.findViewById(R.id.et_profile_lastName);
                 final EditText et_latestAchievement = (EditText) view.findViewById(R.id.et_latestAchievement);
                 final EditText et_greatestAchievement = (EditText) view.findViewById(R.id.et_greatestAchievement);
+                final EditText et_age = (EditText) view.findViewById(R.id.et_age);
+                final EditText et_gender = (EditText) view.findViewById(R.id.et_gender);
+                final EditText et_major = (EditText) view.findViewById(R.id.et_major);
+                final EditText et_birthday = (EditText) view.findViewById(R.id.et_birthday);
+
+
+
                 final Button bt_applyChanges = (Button) view.findViewById(R.id.bt_profileEdit);
                 builder.setView(view);
                 final AlertDialog dialog = builder.create();
@@ -297,6 +325,10 @@ public class ProfileActivity extends AppCompatActivity {
                         String lName = et_lastName.getText().toString();
                         String lAchievement = et_latestAchievement.getText().toString();
                         String gAchievement = et_greatestAchievement.getText().toString();
+                        String age = et_age.getText().toString();
+                        String gender = et_gender.getText().toString();
+                        String major = et_major.getText().toString();
+                        String birthday = et_birthday.getText().toString();
                         if(fName.isEmpty())
                             fName = tv_firstName.getText().toString();
                         else
@@ -313,7 +345,23 @@ public class ProfileActivity extends AppCompatActivity {
                             gAchievement = tv_GreatestAchievement.getText().toString();
                         else
                             tv_GreatestAchievement.setText(gAchievement);
-                        socket.send("EDIT_PROFILE;"+email+";"+fName+";"+lName+";"+lAchievement+";"+gAchievement);
+                        if(age.isEmpty())
+                            age = tv_age.getText().toString();
+                        else
+                            tv_age.setText(age);
+                        if(gender.isEmpty())
+                            gender = tv_gender.getText().toString();
+                        else
+                            tv_gender.setText(gender);
+                        if(major.isEmpty())
+                            major = tv_major.getText().toString();
+                        else
+                            tv_major.setText(major);
+                        if(birthday.isEmpty())
+                            birthday = tv_birthday.getText().toString();
+                        else
+                            tv_birthday.setText(birthday);
+                        socket.send("EDIT_PROFILE;"+email+";"+fName+";"+lName+";"+lAchievement+";"+gAchievement+";"+birthday+";"+gender+";"+major+";"+age);
                         dialog.dismiss();
 
                     }
@@ -349,9 +397,227 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-
-
+        displayFirstName();
+        displayLastName();
+        displayAge();
+        displayGender();
+        displayEmail();
+        displaylatestAchievement();
+        displayGreatestAchievement();
+        displayMajor();
+        displayPicture();
+        displayBirthday();
     }
+
+    private void displayBirthday() {
+
+        DatabaseReference storageRef = dbStorage.getReference("Login/" + email.split("@")[0] + "/Birthday");
+        storageRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                if (dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                tv_birthday.setText(message);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void displayPicture() {
+        StorageReference islandRef = storageRef.child("profile"+tv_email.getText().toString()+".jpg");
+
+        final long ONE_MEGABYTE = 1024 * 1024;
+        islandRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                // Data for "images/island.jpg" is returns, use this as needed
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inMutable = true;
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+                profilePhoto.setImageBitmap(bmp);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+    }
+
+    private void displayMajor()
+    {
+        DatabaseReference storageRef = dbStorage.getReference("Login/" + email.split("@")[0] + "/Major");
+        storageRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                if (dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                tv_major.setText(message);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void displayGreatestAchievement()
+    {
+        DatabaseReference storageRef = dbStorage.getReference("Login/" + email.split("@")[0] + "/GreatestAchievement");
+        storageRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                if (dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                tv_GreatestAchievement.setText(message);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void displaylatestAchievement()
+    {
+        DatabaseReference storageRef = dbStorage.getReference("Login/" + email.split("@")[0] + "/LatestAchievement");
+        storageRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                if (dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                tv_LatestAachievement.setText(message);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void displayEmail()
+    {
+        DatabaseReference storageRef = dbStorage.getReference("Login/" + email.split("@")[0] + "/Email");
+        storageRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                if (dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                tv_email.setText(message);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void displayAge()
+    {
+        DatabaseReference storageRef = dbStorage.getReference("Login/" + email.split("@")[0] + "/Age");
+        storageRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                if (dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                tv_age.setText(message);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void displayGender() {
+        DatabaseReference storageRef = dbStorage.getReference("Login/" + email.split("@")[0] + "/Gender");
+        storageRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                if (dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                tv_gender.setText(message);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void displayLastName() {
+        DatabaseReference storageRef = dbStorage.getReference("Login/" + email.split("@")[0] + "/LastName");
+        storageRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                if (dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                tv_lastName.setText(message);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+
+    private void displayFirstName()
+    {
+         DatabaseReference storageRef = dbStorage.getReference("Login/" + email.split("@")[0] + "/FirstName");
+        storageRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                if (dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                tv_firstName.setText(message);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
 
 /*
 *
@@ -369,7 +635,10 @@ public class ProfileActivity extends AppCompatActivity {
         tv_GreatestAchievement = (TextView)findViewById(R.id.tv_greatestAchievement);
         tv_changePassword = (TextView)findViewById(R.id.tv_changePassword);
         tv_message = (TextView) findViewById(R.id.tv_profileMessage);
-
+        tv_age = (TextView) findViewById(R.id.tv_age);
+        tv_gender = (TextView) findViewById(R.id.tv_gender);
+        tv_major = (TextView) findViewById(R.id.tv_Major);
+        tv_birthday = (TextView) findViewById(R.id.tv_birthday);
     }
     private void takePhoto(){
         ib_camera_profile = (ImageButton)findViewById(R.id.ib_profilePhotoCamera);
