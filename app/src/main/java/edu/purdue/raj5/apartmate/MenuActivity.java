@@ -3,6 +3,7 @@ package edu.purdue.raj5.apartmate;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -54,6 +55,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
+
 // This acts as the home page in the project. 
 
 public class MenuActivity extends AppCompatActivity {
@@ -66,6 +68,8 @@ public class MenuActivity extends AppCompatActivity {
     TextView tv_bill;
     String email;
     String groupName="a";
+    private ArrayList<String> mMatches = new ArrayList<>();
+    static final FirebaseDatabase dbStorage = FirebaseDatabase.getInstance();
 
     public void getAppTheme(String theme) { //theme is "light" or "dark"
 
@@ -122,6 +126,7 @@ public class MenuActivity extends AppCompatActivity {
         tv_bill = (TextView) findViewById(R.id.list_size);
         //  Toolbar mToolBar = (Toolbar)findViewById(R.id.tb_menu);
         //  setSupportActionBar(mToolBar);
+        initializeMatchesList();
         final FirebaseDatabase storage = FirebaseDatabase.getInstance();
         final DatabaseReference storageRef = storage.getReference("Login/" + email.split("@")[0] + "/TotalAmountDue");
         Log.e("GN", email);
@@ -212,8 +217,9 @@ public class MenuActivity extends AppCompatActivity {
         initializeOptions();
         initializeChatSearchComponents();
         createGroceryReminder();
-        createRoommateSearchReminder();
         createEndOfLeaseReminder();
+        createRoommateSearchReminder();
+
     }
 
     private void initializeGroup() {
@@ -254,7 +260,7 @@ public class MenuActivity extends AppCompatActivity {
 
         // user-specified date which you are testing
         // let's say the components come from a form or something
-        int year = 2019;
+        int year = 2018;
         int month = 5;
         int dayOfMonth = 20;
 
@@ -272,7 +278,11 @@ public class MenuActivity extends AppCompatActivity {
         // test your condition
         if (today.after(dateSpecified)) {
             //System.err.println("Date specified [" + dateSpecified + "] is before today [" + today + "]");
-            createWeeklyReminders("EndOfLease",calendar);
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.HOUR_OF_DAY,23);
+            cal.set(Calendar.MINUTE, 16);
+            cal.set(Calendar.SECOND,30);
+            createWeeklyReminders("EndOfLease",cal);
         }
 
 
@@ -293,7 +303,7 @@ public class MenuActivity extends AppCompatActivity {
 
         // user-specified date which you are testing
         // let's say the components come from a form or something
-        int year = 2019;
+        int year = 2018;
         int month = 5;
         int dayOfMonth = 20;
 
@@ -312,15 +322,19 @@ public class MenuActivity extends AppCompatActivity {
         if (today.after(dateSpecified)) {
             //System.err.println("Date specified [" + dateSpecified + "] is before today [" + today + "]");
             //System.out.println("DS: "+dateSpecified.get(Calendar.DAY_OF_MONTH));
-            createWeeklyReminders("RoommateSearch",calendar);
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.HOUR_OF_DAY,23);
+            cal.set(Calendar.MINUTE, 15);
+            cal.set(Calendar.SECOND,25);
+            createWeeklyReminders("RoommateSearch",cal);
         }
 
     }
 
     private void createGroceryReminder() {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY,22);
-        calendar.set(Calendar.MINUTE, 37);
+        calendar.set(Calendar.HOUR_OF_DAY,23);
+        calendar.set(Calendar.MINUTE, 14);
         calendar.set(Calendar.SECOND,30);
         createWeeklyReminders("Grocery",calendar);
     }
@@ -330,9 +344,10 @@ public class MenuActivity extends AppCompatActivity {
         //calendar.set(Calendar.DAY_OF_WEEK,5);
         Intent intent = new Intent(getApplicationContext(),NotificationReceiver.class);
         intent.putExtra("Class",intentPurpose);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(),0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        int x = (int)System.currentTimeMillis();
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(),x/Integer.MAX_VALUE,intent,PendingIntent.FLAG_ONE_SHOT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),/*AlarmManager.INTERVAL_DAY*7*/ 60000,pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),/*AlarmManager.INTERVAL_DAY*7*/ 90000,pendingIntent);
     }
 
 
@@ -374,15 +389,45 @@ public class MenuActivity extends AppCompatActivity {
     // This is an item in the recyclerView. It will include all the groups the user is part of.
     private void initializeBitMaps() {
         mImages.add("https://i.redd.it/tpsnoz5bzo501.jpg");
-        mNames.add("Wassup fellas");
-    }
+        mNames.add("Groups");
+        mMatches.add("Matches");
 
+    }
+    private void initializeMatchesList()
+    {
+        final DatabaseReference majorRef = dbStorage.getReference("Login/"+email.split("@")[0]+"/Matches");
+        majorRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                if (dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                String[] arr = message.split(";");
+                for(int i = 0; i < arr.length; i++)
+                {
+                    mMatches.add(arr[i]);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
     // This initializes all the recyclerViews.
     private void initializeRecyclerView() {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_groupNames);
         MenuRecyclerViewAdaptor adaptor = new MenuRecyclerViewAdaptor(this, mNames, mImages, email);
         recyclerView.setAdapter(adaptor);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        RecyclerView rv_matches = (RecyclerView)findViewById(R.id.rv_matches);
+        MatchesAdapter adapter = new MatchesAdapter(this, mMatches);
+        rv_matches.setAdapter(adapter);
+        rv_matches.setMinimumHeight(10);
+        rv_matches.setLayoutManager(new LinearLayoutManager(this));
     }
 
     // This initializes all the options. A pop-up menu is included in this.

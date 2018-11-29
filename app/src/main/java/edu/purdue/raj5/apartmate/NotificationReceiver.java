@@ -1,6 +1,7 @@
 package edu.purdue.raj5.apartmate;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -8,6 +9,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -22,7 +24,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         Log.e("NotifR","start");
         if(mainMessage.equalsIgnoreCase("Grocery")){
             createNotification("Grocery Shopping",context,"Check Whether you have any grocery items");
-            LoginActivity.sock.send("SEND_NOTIFICATION;"+FirebaseInstanceId.getInstance().getToken()+";Grocery Shopping;Check Whether you have any grocery items;");
+          //  LoginActivity.sock.send("SEND_NOTIFICATION;"+FirebaseInstanceId.getInstance().getToken()+";Grocery Shopping;Check Whether you have any grocery items;");
         }
         else if(mainMessage.equalsIgnoreCase("RoommateSearch")){
             createNotification("Roommate Search",context,"You need to look for a new roommate");
@@ -38,7 +40,8 @@ public class NotificationReceiver extends BroadcastReceiver {
     }
     @TargetApi(26)
     public void createNotification(String aMessage, Context context, String smallSizeText) {
-        final int NOTIFY_ID = 0; // ID of notification
+        SharedPreferences prefs = context.getSharedPreferences(Activity.class.getSimpleName(), Context.MODE_PRIVATE);
+        int notificationNumber = prefs.getInt("notificationNumber", 0);
         String id = context.getString(R.string.app_name); // default_channel_id
         String title = context.getString(R.string.app_name); // Default Channel
         Intent intent;
@@ -92,6 +95,10 @@ public class NotificationReceiver extends BroadcastReceiver {
                     .setPriority(Notification.PRIORITY_HIGH);
         }
         Notification notification = builder.build();
-        notifManager.notify(NOTIFY_ID, notification);
+        notifManager.notify(notificationNumber , notification);
+        SharedPreferences.Editor editor = prefs.edit();
+        notificationNumber++;
+        editor.putInt("notificationNumber", notificationNumber);
+        editor.commit(); // may be try apply
     }
 }

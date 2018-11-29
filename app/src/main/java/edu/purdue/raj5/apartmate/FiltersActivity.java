@@ -34,11 +34,13 @@ public class FiltersActivity extends AppCompatActivity {
     private View btnCancel;
     private EditText interests;
     private EditText zip;
+    private EditText gender;
     private TextView dispage;
     private TextView interestL;
     private TextView majorL;
     private TextView dispageL;
     private TextView zipL;
+    private TextView genderL;
     Integer min = 18;
     Integer max = 22;
 
@@ -62,6 +64,7 @@ public class FiltersActivity extends AppCompatActivity {
             ll.setBackgroundColor(Color.DKGRAY);
             interests.setTextColor(Color.WHITE);
             zip.setTextColor(Color.WHITE);
+            gender.setTextColor(Color.WHITE);
             dispage.setTextColor(Color.WHITE);
             majorSpinner.setBackgroundColor(Color.GRAY);
             //age.setBackgroundColor(Color.WHITE);
@@ -69,12 +72,14 @@ public class FiltersActivity extends AppCompatActivity {
             dispageL.setTextColor(Color.WHITE);
             majorL.setTextColor(Color.WHITE);
             zipL.setTextColor(Color.WHITE);
+            genderL.setTextColor(Color.WHITE);
             age.setBackgroundColor(Color.DKGRAY);
 
         } else {
             ll.setBackgroundColor(Color.WHITE);
             interests.setTextColor(Color.BLACK);
             zip.setTextColor(Color.BLACK);
+            gender.setTextColor(Color.BLACK);
             dispage.setTextColor(Color.BLACK);
             majorSpinner.setBackgroundColor(Color.WHITE);
             //age.setBackgroundColor(Color.WHITE);
@@ -82,6 +87,7 @@ public class FiltersActivity extends AppCompatActivity {
             dispageL.setTextColor(Color.BLACK);
             majorL.setTextColor(Color.BLACK);
             zipL.setTextColor(Color.BLACK);
+            genderL.setTextColor(Color.BLACK);
             age.setBackgroundColor(Color.WHITE);
         }
 
@@ -102,9 +108,11 @@ public class FiltersActivity extends AppCompatActivity {
         btnCancel = findViewById(R.id.btnCancel);
         interests = findViewById(R.id.interests);
         zip = findViewById(R.id.zip);
+        gender = findViewById(R.id.gender);
         dispage = findViewById(R.id.dispage);
         interestL = findViewById(R.id.interestsL);
         zipL = findViewById(R.id.zipL);
+        genderL = findViewById(R.id.genderL);
         dispageL = findViewById(R.id.dispageL);
         majorL = findViewById(R.id.majorL);
         age.setRangeValues(18, 30);
@@ -135,7 +143,8 @@ public class FiltersActivity extends AppCompatActivity {
                 String myinterests = interests.getText().toString();
                 String majors = majorSpinner.getSelectedItemsAsString();
                 String myzip = zip.getText().toString();
-                Toast.makeText(FiltersActivity.this, myinterests + "\n" + myzip + "\n" + min + "-" + max + "\n" + majors, Toast.LENGTH_LONG).show();
+                String gend = gender.getText().toString();
+                Toast.makeText(FiltersActivity.this, myinterests + "\n" + myzip + "\n" + min + "-" + max + "\n" + majors +" "+gend, Toast.LENGTH_LONG).show();
                 Log.e("Filters",myinterests + "\n" + myzip + "\n" + min + "-" + max + "\n" + majors);
                 InputMethodManager inputManager = (InputMethodManager)
                         getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -149,6 +158,7 @@ public class FiltersActivity extends AppCompatActivity {
                 i.putExtra("AgeMin",min);
                 i.putExtra("AgeMax",max);
                 i.putExtra("Majors",majors);
+                i.putExtra("Gender",gend);
                 startActivity(i);
             }
         });

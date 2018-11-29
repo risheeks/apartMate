@@ -42,6 +42,12 @@ public class GroupTabsActivity extends AppCompatActivity {
     public String email;
     public Client sock = LoginActivity.sock;
     @Override
+    public void onBackPressed() {
+        Intent i = new Intent(getApplicationContext(), MenuActivity.class);
+        i.putExtra("Email",email);
+        startActivity(i);
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_tabs);

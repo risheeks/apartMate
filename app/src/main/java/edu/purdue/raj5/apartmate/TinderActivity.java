@@ -29,8 +29,12 @@ import com.google.firebase.storage.StorageReference;
 import com.mindorks.placeholderview.SwipeDecor;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 
+import java.net.Socket;
+
+import static edu.purdue.raj5.apartmate.LoginActivity.sock;
+
 public class TinderActivity extends AppCompatActivity {
-    final FirebaseDatabase dbStorage = FirebaseDatabase.getInstance();
+    static final FirebaseDatabase dbStorage = FirebaseDatabase.getInstance();
     private SwipePlaceHolderView mSwipeView;
     private Context mContext;
     static String currentCardEmail;
@@ -40,8 +44,15 @@ public class TinderActivity extends AppCompatActivity {
     int filterAgeMax;
     String filterZipcode;
     String filterMajors;
+    String filterGenders;
     Bitmap bmp;
     static String major;
+    static String interests;
+    static String gender;
+
+    static String currentCardSmoke;
+    static String currentCardDrink;
+    static String currentCardInterests;
     //private Profile profile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +65,7 @@ public class TinderActivity extends AppCompatActivity {
         filterAgeMax = intent.getExtras().getInt("AgeMax");
         filterZipcode = intent.getExtras().getString("Zipcode");
         filterMajors = intent.getExtras().getString("Majors");
+        filterGenders = intent.getExtras().getString("Gender");
         mSwipeView = (SwipePlaceHolderView)findViewById(R.id.swipeView);
         mContext = getApplicationContext();
 
@@ -126,6 +138,9 @@ public class TinderActivity extends AppCompatActivity {
                             else
                                 message = dataSnapshot.getValue().toString();
                             profile.setEmail(message);
+                            getMajor(profile);
+                            getInterests(profile);
+                            getGender(profile);
                             FirebaseStorage storage = FirebaseStorage.getInstance();
                             // Create a storage reference from our app
                             StorageReference storageRef = storage.getReference();
@@ -139,7 +154,7 @@ public class TinderActivity extends AppCompatActivity {
                                     BitmapFactory.Options options = new BitmapFactory.Options();
                                     options.inMutable = true;
                                      bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
-                                    if(applyFilters(profile))
+                                    if(applyFilters(profile) )//&& !currentUserEmail.equals(profile.getEmail()))
                                     {
                                         mSwipeView.addView(new TinderCard(mContext, profile, mSwipeView,bmp));
                                     }
@@ -198,14 +213,37 @@ public class TinderActivity extends AppCompatActivity {
         });
     }
 
-    private boolean applyFilters(final Profile profile) {
-        boolean age=false;
+    private void getGender(Profile profile) {
+        final DatabaseReference majorRef = dbStorage.getReference("Login/"+profile.getEmail().split("@")[0]+"/Gender");
+        majorRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                if (dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                gender = message;
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private boolean applyAgeFilter(final Profile profile)
+    {
         if((filterAgeMin<= profile.getAge() &&  profile.getAge() <=filterAgeMax))
         {
-            age=true;
+            return true;
         }
+        return false;
+    }
+
+    private void getMajor(final Profile profile)
+    {
         final DatabaseReference majorRef = dbStorage.getReference("Login/"+profile.getEmail().split("@")[0]+"/Major");
-        final boolean finalAge = age;
         majorRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -215,33 +253,70 @@ public class TinderActivity extends AppCompatActivity {
                 else
                     message = dataSnapshot.getValue().toString();
                 major = message;
-                if(major.contains(filterMajors) || filterMajors.contains(major) && finalAge)
-                {
-                    //mSwipeView.addView(new TinderCard(mContext, profile, mSwipeView,bmp));
-                }
-
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
-        if(age)
-            return true;
-        else
-            return false;
     }
 
-    public void alerV() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("About Me");
+    private boolean applyMajorFilter(final Profile profile)
+    {
+       getMajor(profile);
+        return major.contains(filterMajors) || filterMajors.contains(major);
+    }
 
-        final LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
+    private boolean applyFilters(final Profile profile) {
+        boolean age = applyAgeFilter(profile);
+        boolean major;
+        boolean interests;
+        boolean gender;
+        if(filterMajors.isEmpty())
+        {
+            major = true;
+        }
+        else
+        {
+            major = applyMajorFilter(profile);
+        }
 
-        DatabaseReference smokeRef = dbStorage.getReference("Login/"+currentCardEmail.split("@")[0]+"/Smoke");
-        smokeRef.addValueEventListener(new ValueEventListener() {
+        if(filterInterests.isEmpty())
+        {
+            interests = true;
+        }
+        else
+        {
+            interests = applyInterestsFilter(profile);
+        }
+
+        if(filterGenders.isEmpty())
+        {
+            gender = true;
+        }
+        else
+        {
+            gender = applyGenderFilter(profile);
+        }
+        Log.e("age: ",String.valueOf(age));
+        Log.e("major: ",String.valueOf(major));
+        Log.e("interests: ",String.valueOf(interests));
+        Log.e("gender: ",String.valueOf(gender));
+
+
+
+        return age && major && interests && gender;
+    }
+
+    private boolean applyGenderFilter(Profile profile) {
+        getGender(profile);
+        return gender.contains(filterGenders) || filterGenders.contains(gender);
+    }
+
+    private void getInterests(final Profile profile)
+    {
+        final DatabaseReference majorRef = dbStorage.getReference("Login/"+profile.getEmail().split("@")[0]+"/Interests");
+        majorRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String message;
@@ -249,21 +324,24 @@ public class TinderActivity extends AppCompatActivity {
                     message = "";
                 else
                     message = dataSnapshot.getValue().toString();
-                TextView smoke_text = new TextView(getApplicationContext() );
-                smoke_text.setText("Smoke: " + message);
-                smoke_text.setTextSize(15);
-                smoke_text.setPadding(10,10,0,0);
-                layout.addView(smoke_text);
+                interests = message;
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
+    }
+    private boolean applyInterestsFilter(Profile profile) {
+        getInterests(profile);
+        Log.e("INT",interests+"  "+filterInterests);
+        return interests.contains(filterInterests) || filterInterests.contains(interests);
+    }
 
-        DatabaseReference drinkRef = dbStorage.getReference("Login/"+currentCardEmail.split("@")[0]+"/Drink");
-        drinkRef.addValueEventListener(new ValueEventListener() {
+    public static void updateSmoke()
+    {
+        DatabaseReference interestRef = dbStorage.getReference("Login/"+currentCardEmail.split("@")[0]+"/Smoke");
+        interestRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String message;
@@ -271,11 +349,8 @@ public class TinderActivity extends AppCompatActivity {
                     message = "";
                 else
                     message = dataSnapshot.getValue().toString();
-                TextView drink_text = new TextView(mContext );
-                drink_text.setText("Drink: "+message);
-                drink_text.setTextSize(15);
-                drink_text.setPadding(10,10,0,0);
-                layout.addView(drink_text);
+                currentCardSmoke = message;
+
             }
 
             @Override
@@ -283,7 +358,31 @@ public class TinderActivity extends AppCompatActivity {
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
+    }
+    public static void updateDrink()
+    {
+        DatabaseReference interestRef = dbStorage.getReference("Login/"+currentCardEmail.split("@")[0]+"/Drink");
+        interestRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                if (dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                currentCardDrink = message;
 
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    public static void updateInterests()
+    {
         DatabaseReference interestRef = dbStorage.getReference("Login/"+currentCardEmail.split("@")[0]+"/Interests");
         interestRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -293,11 +392,8 @@ public class TinderActivity extends AppCompatActivity {
                     message = "";
                 else
                     message = dataSnapshot.getValue().toString();
-                TextView interest_text = new TextView(getApplicationContext() );
-                interest_text.setText("Interests: "+message);
-                interest_text.setTextSize(15);
-                interest_text.setPadding(10,10,0,0);
-                layout.addView(interest_text);
+                currentCardInterests = message;
+
             }
 
             @Override
@@ -305,6 +401,32 @@ public class TinderActivity extends AppCompatActivity {
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
+    }
+
+    public void alerV() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("About Me");
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        TextView smoke_text = new TextView(this );
+        smoke_text.setText("Smoke: "+currentCardSmoke);
+        smoke_text.setTextSize(15);
+        smoke_text.setPadding(10,10,0,0);
+        layout.addView(smoke_text);
+
+        TextView drink_text = new TextView(this );
+        drink_text.setText("Drink: "+currentCardDrink);
+        drink_text.setTextSize(15);
+        drink_text.setPadding(10,10,0,0);
+        layout.addView(drink_text);
+
+        TextView interest_text = new TextView(this );
+        interest_text.setText("Interests: "+currentCardInterests);
+        interest_text.setTextSize(15);
+        interest_text.setPadding(10,10,0,0);
+        layout.addView(interest_text);
 
         builder.setView(layout);
 
@@ -314,6 +436,7 @@ public class TinderActivity extends AppCompatActivity {
                 dialog.cancel();
             }
         });
+
         builder.show();
     }
 }

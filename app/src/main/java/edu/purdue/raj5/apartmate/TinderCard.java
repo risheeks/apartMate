@@ -83,7 +83,9 @@ public class TinderCard {
     private void onSwipeInState(){
         Log.d("EVENT", "onSwipeInState");
         TinderActivity.currentCardEmail = this.mProfile.getEmail();
-
+        TinderActivity.updateSmoke();
+        TinderActivity.updateDrink();
+        TinderActivity.updateInterests();
     }
 
     @SwipeOutState
