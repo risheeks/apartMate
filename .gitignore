@@ -25,3 +25,5 @@ server/node_modules/
 server/npm-debug\.log
 
 tests/\.idea/workspace\.xml
+
+\.settings/org\.eclipse\.buildship\.core\.prefs
