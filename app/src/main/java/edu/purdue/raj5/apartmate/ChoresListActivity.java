@@ -100,6 +100,7 @@ public class ChoresListActivity extends AppCompatActivity {
                 final EditText et_choreTime = (EditText) viewDialog.findViewById(R.id.et_choreTimeAdd);
                 final Button bt_choreItemAdd = (Button) viewDialog.findViewById(R.id.bt_choreAdd);
                 builder.setView(viewDialog);
+                builder.setTitle("Add Chore");
                 final AlertDialog dialog = builder.create();
                 bt_choreItemAdd.setOnClickListener(new View.OnClickListener() {
                     @Override
