@@ -214,6 +214,7 @@ public class MenuActivity extends AppCompatActivity {
         createGroceryReminder();
         createRoommateSearchReminder();
         createEndOfLeaseReminder();
+        initializeTheme();
     }
 
     private void initializeGroup() {

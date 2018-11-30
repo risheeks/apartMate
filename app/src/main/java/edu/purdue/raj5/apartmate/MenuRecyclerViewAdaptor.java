@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
-
+import java.awt.Color;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -47,6 +47,7 @@ public class MenuRecyclerViewAdaptor extends RecyclerView.Adapter<MenuRecyclerVi
         Log.d(TAG, "onBindViewHolder: called");
         Glide.with(mContext).asBitmap().load(mGroupPhotos.get(i)).into(viewHolder.groupPhoto);
         viewHolder.groupName.setText(mGroupNames.get(i));
+        
         viewHolder.llMenuGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,6 +77,14 @@ public class MenuRecyclerViewAdaptor extends RecyclerView.Adapter<MenuRecyclerVi
             groupPhoto = itemView.findViewById(R.id.iv_groupPhoto);
             groupName = itemView.findViewById(R.id.tv_groupName);
             llMenuGroup = itemView.findViewById(R.id.ll_menuGroup);
+            String s = preferences.getString("theme", "");
+            if (s.equals("dark")) {
+                llMenuGroup.setBackgroundColor(Color.DKGRAY);
+                groupName.setTextColor(Color.WHITE);
+            } else {
+                llMenuGroup.setBackgroundColor(Color.WHITE);
+                groupName.setTextColor(Color.BLACK);
+            }
         }
     }
 }
