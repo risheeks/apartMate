@@ -42,7 +42,7 @@ public class FiltersActivity extends AppCompatActivity {
     private TextView zipL;
     private TextView genderL;
     Integer min = 18;
-    Integer max = 22;
+    Integer max = 30;
 
     String[] agevalues = {"<18", "19", "20", "21", "22", ">22"};
     String[] majorvalues = {"Computer Science", "Engineering", "CGT", "Construction Management", "Philosophy", "English", "Philosophy", "Business Management", "Accounting", "Communication Sciecnce", "Nursing", "History", "Math", "Economics", "Marketing", "Music", "Physics", "Political Science", "Theatre"};
@@ -95,6 +95,13 @@ public class FiltersActivity extends AppCompatActivity {
     }
 
     String email;
+
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(getApplicationContext(), MenuActivity.class);
+        i.putExtra("Email",email);
+        startActivity(i);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

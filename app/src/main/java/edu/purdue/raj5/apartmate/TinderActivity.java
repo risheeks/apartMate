@@ -46,9 +46,7 @@ public class TinderActivity extends AppCompatActivity {
     String filterMajors;
     String filterGenders;
     Bitmap bmp;
-    static String major;
-    static String interests;
-    static String gender;
+
 
     static String currentCardSmoke;
     static String currentCardDrink;
@@ -90,7 +88,10 @@ public class TinderActivity extends AppCompatActivity {
                 for(int i = 0; i < users.length; i++)
                 {
                     final Profile profile = new Profile();
-
+                    getMajor(users[i],profile);
+                    getInterests(users[i],profile);
+                    getGender(users[i],profile);
+                    getCity(users[i],profile);
                     DatabaseReference usersNameRef = dbStorage.getReference("Login/"+users[i]+"/FirstName");
                     usersNameRef.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -108,6 +109,11 @@ public class TinderActivity extends AppCompatActivity {
                             System.out.println("The read failed: " + databaseError.getCode());
                         }
                     });
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     Log.e("Check","Login/"+message+"/Age");
                     DatabaseReference usersInterestRef = dbStorage.getReference("Login/"+users[i]+"/Age");
                     usersInterestRef.addValueEventListener(new ValueEventListener() {
@@ -138,9 +144,6 @@ public class TinderActivity extends AppCompatActivity {
                             else
                                 message = dataSnapshot.getValue().toString();
                             profile.setEmail(message);
-                            getMajor(profile);
-                            getInterests(profile);
-                            getGender(profile);
                             FirebaseStorage storage = FirebaseStorage.getInstance();
                             // Create a storage reference from our app
                             StorageReference storageRef = storage.getReference();
@@ -156,6 +159,7 @@ public class TinderActivity extends AppCompatActivity {
                                      bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
                                     if(applyFilters(profile) )//&& !currentUserEmail.equals(profile.getEmail()))
                                     {
+                                        Log.e("Added",profile.getEmail());
                                         mSwipeView.addView(new TinderCard(mContext, profile, mSwipeView,bmp));
                                     }
 
@@ -174,14 +178,9 @@ public class TinderActivity extends AppCompatActivity {
                         }
                     });
 
+
+
                 }
-                if(mSwipeView.getChildCount() == 0)
-                {
-                    Toast.makeText(getApplicationContext(),"No users with current filters",Toast.LENGTH_SHORT).show();
-                }
-
-
-
             }
 
             @Override
@@ -213,8 +212,8 @@ public class TinderActivity extends AppCompatActivity {
         });
     }
 
-    private void getGender(Profile profile) {
-        final DatabaseReference majorRef = dbStorage.getReference("Login/"+profile.getEmail().split("@")[0]+"/Gender");
+    private void getCity(String user, final Profile profile) {
+        final DatabaseReference majorRef = dbStorage.getReference("Login/"+user+"/City");
         majorRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -223,7 +222,26 @@ public class TinderActivity extends AppCompatActivity {
                     message = "";
                 else
                     message = dataSnapshot.getValue().toString();
-                gender = message;
+                profile.setLocation( message);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void getGender(String user,final Profile profile) {
+        final DatabaseReference majorRef = dbStorage.getReference("Login/"+user+"/Gender");
+        majorRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                if (dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                profile.setGender( message);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -241,9 +259,9 @@ public class TinderActivity extends AppCompatActivity {
         return false;
     }
 
-    private void getMajor(final Profile profile)
+    private void getMajor(final String user, final Profile profile)
     {
-        final DatabaseReference majorRef = dbStorage.getReference("Login/"+profile.getEmail().split("@")[0]+"/Major");
+        final DatabaseReference majorRef = dbStorage.getReference("Login/"+user+"/Major");
         majorRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -252,7 +270,7 @@ public class TinderActivity extends AppCompatActivity {
                     message = "";
                 else
                     message = dataSnapshot.getValue().toString();
-                major = message;
+                profile.setMajor(message);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -263,15 +281,23 @@ public class TinderActivity extends AppCompatActivity {
 
     private boolean applyMajorFilter(final Profile profile)
     {
-       getMajor(profile);
-        return major.contains(filterMajors) || filterMajors.contains(major);
+     //  getMajor(profile);
+        return profile.getMajor().toLowerCase().contains(filterMajors.toLowerCase()) || filterMajors.toLowerCase().contains(profile.getMajor().toLowerCase());
     }
+
+    private boolean applyCityFilter(final Profile profile)
+    {
+        //  getMajor(profile);
+        return profile.getLocation().trim().equalsIgnoreCase(filterZipcode.trim()) ;
+    }
+
 
     private boolean applyFilters(final Profile profile) {
         boolean age = applyAgeFilter(profile);
         boolean major;
         boolean interests;
         boolean gender;
+        boolean city;
         if(filterMajors.isEmpty())
         {
             major = true;
@@ -298,24 +324,32 @@ public class TinderActivity extends AppCompatActivity {
         {
             gender = applyGenderFilter(profile);
         }
+        if(filterZipcode.isEmpty())
+        {
+            city = true;
+        }
+        else
+        {
+            city = applyCityFilter(profile);
+        }
         Log.e("age: ",String.valueOf(age));
-        Log.e("major: ",String.valueOf(major));
+        Log.e("major: ",String.valueOf(major)+"   "+profile.getMajor());
         Log.e("interests: ",String.valueOf(interests));
-        Log.e("gender: ",String.valueOf(gender));
+        Log.e("gender: ",String.valueOf(gender)+"  "+profile.getGender());
 
 
 
-        return age && major && interests && gender;
+        return age && major && interests && gender && city;
     }
 
     private boolean applyGenderFilter(Profile profile) {
-        getGender(profile);
-        return gender.contains(filterGenders) || filterGenders.contains(gender);
+       // getGender(profile);
+        return profile.getGender().toLowerCase().equalsIgnoreCase(filterGenders);
     }
 
-    private void getInterests(final Profile profile)
+    private void getInterests(final String user,final Profile profile)
     {
-        final DatabaseReference majorRef = dbStorage.getReference("Login/"+profile.getEmail().split("@")[0]+"/Interests");
+        final DatabaseReference majorRef = dbStorage.getReference("Login/"+user+"/Interests");
         majorRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -324,7 +358,7 @@ public class TinderActivity extends AppCompatActivity {
                     message = "";
                 else
                     message = dataSnapshot.getValue().toString();
-                interests = message;
+                profile.setInterests(message);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -333,9 +367,7 @@ public class TinderActivity extends AppCompatActivity {
         });
     }
     private boolean applyInterestsFilter(Profile profile) {
-        getInterests(profile);
-        Log.e("INT",interests+"  "+filterInterests);
-        return interests.contains(filterInterests) || filterInterests.contains(interests);
+        return profile.getInterests().toLowerCase().contains(filterInterests.toLowerCase()) || filterInterests.toLowerCase().contains(profile.getInterests());
     }
 
     public static void updateSmoke()

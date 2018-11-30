@@ -29,6 +29,8 @@ public class GroceryListActivity extends AppCompatActivity {
     private ArrayList<String> mNumItems = new ArrayList<>();
     private ArrayList<String> mTempName = new ArrayList<>();
     FloatingActionButton fab2;
+    FloatingActionButton fab;
+
     String groupName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +73,35 @@ public class GroceryListActivity extends AppCompatActivity {
         });
 
     }
+
     private void initiaizeAddButton(){
+        fab = (FloatingActionButton) findViewById(R.id.fabGroceryReminderTime);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(GroceryListActivity.this, "Set Time for reminder",Toast.LENGTH_SHORT).show();
+                final AlertDialog.Builder builder = new AlertDialog.Builder(GroceryListActivity.this);
+                View viewDialog = LayoutInflater.from(GroceryListActivity.this).inflate(R.layout.add_grocery_reminder_time,null);
+                //final TextView tv_groceryItem = (EditText) viewDialog.findViewById(R.id.et_groceryNameAdd);
+                final EditText et_groceryReminder = (EditText) viewDialog.findViewById(R.id.et_groceryReminderTimeAdd);
+                final Button bt_groceryItemAdd = (Button) viewDialog.findViewById(R.id.bt_groceryReminderTimeAdd);
+                builder.setView(viewDialog);
+                builder.setTitle("Reminder Time");
+                final AlertDialog dialog = builder.create();
+                bt_groceryItemAdd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String groceryRemainderTime = et_groceryReminder.getText().toString();
+                        Toast.makeText(GroceryListActivity.this, groceryRemainderTime, Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+
+                    }
+                });
+
+                dialog.show();
+            }
+        });
+
         fab2 = (FloatingActionButton) findViewById(R.id.fabGroceryAddItem);
         fab2.setOnClickListener(new View.OnClickListener() {
             @Override

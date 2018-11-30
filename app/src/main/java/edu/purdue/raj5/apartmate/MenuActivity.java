@@ -164,6 +164,13 @@ public class MenuActivity extends AppCompatActivity {
                     mNames.add(groupName);
                     initializeRecyclerView();
                 }
+                else
+                {
+                    Intent i = new Intent(MenuActivity.this, ChatActivity.class);
+                    i.putExtra("ToEmail",et_chatSearch.getText().toString());
+                    i.putExtra("MyEmail",email);
+                    startActivity(i);
+                }
             }
 
             @Override

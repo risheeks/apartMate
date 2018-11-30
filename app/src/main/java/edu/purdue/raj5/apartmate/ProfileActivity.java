@@ -83,6 +83,8 @@ public class ProfileActivity extends AppCompatActivity {
     TextView tv_gender;
     TextView tv_major;
     TextView tv_birthday;
+    TextView tv_city;
+
 
 
     Client socket = LoginActivity.sock;
@@ -125,6 +127,7 @@ public class ProfileActivity extends AppCompatActivity {
             tv_age.setTextColor(Color.WHITE);
             tv_gender.setTextColor(Color.WHITE);
             tv_major.setTextColor(Color.WHITE);
+            tv_city.setTextColor(Color.WHITE);
         }else {
             RelativeLayout rl = (RelativeLayout)findViewById(R.id.rl);
             rl.setBackgroundColor(Color.WHITE);
@@ -143,6 +146,8 @@ public class ProfileActivity extends AppCompatActivity {
             tv_age.setTextColor(Color.BLACK);
             tv_gender.setTextColor(Color.BLACK);
             tv_major.setTextColor(Color.BLACK);
+            tv_city.setTextColor(Color.BLACK);
+
         }
 
 
@@ -312,7 +317,7 @@ public class ProfileActivity extends AppCompatActivity {
                 final EditText et_gender = (EditText) view.findViewById(R.id.et_gender);
                 final EditText et_major = (EditText) view.findViewById(R.id.et_major);
                 final EditText et_birthday = (EditText) view.findViewById(R.id.et_birthday);
-
+                final EditText et_city = (EditText) view.findViewById(R.id.et_city);
 
 
                 final Button bt_applyChanges = (Button) view.findViewById(R.id.bt_profileEdit);
@@ -329,6 +334,7 @@ public class ProfileActivity extends AppCompatActivity {
                         String gender = et_gender.getText().toString();
                         String major = et_major.getText().toString();
                         String birthday = et_birthday.getText().toString();
+                        String city = et_city.getText().toString();
                         if(fName.isEmpty())
                             fName = tv_firstName.getText().toString();
                         else
@@ -361,7 +367,11 @@ public class ProfileActivity extends AppCompatActivity {
                             birthday = tv_birthday.getText().toString();
                         else
                             tv_birthday.setText(birthday);
-                        socket.send("EDIT_PROFILE;"+email+";"+fName+";"+lName+";"+lAchievement+";"+gAchievement+";"+birthday+";"+gender+";"+major+";"+age);
+                        if(city.isEmpty())
+                            city = tv_city.getText().toString();
+                        else
+                            tv_city.setText(city);
+                        socket.send("EDIT_PROFILE;"+email+";"+fName+";"+lName+";"+lAchievement+";"+gAchievement+";"+birthday+";"+gender+";"+major+";"+age+";"+city);
                         dialog.dismiss();
 
                     }
@@ -407,6 +417,7 @@ public class ProfileActivity extends AppCompatActivity {
         displayMajor();
         displayPicture();
         displayBirthday();
+        displayCity();
     }
 
     private void displayBirthday() {
@@ -576,6 +587,25 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    private void displayCity() {
+        DatabaseReference storageRef = dbStorage.getReference("Login/" + email.split("@")[0] + "/City");
+        storageRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                if (dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                tv_city.setText(message);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
     private void displayLastName() {
         DatabaseReference storageRef = dbStorage.getReference("Login/" + email.split("@")[0] + "/LastName");
         storageRef.addValueEventListener(new ValueEventListener() {
@@ -628,6 +658,7 @@ public class ProfileActivity extends AppCompatActivity {
         bt_changeProfile = (Button)findViewById(R.id.bt_profileChenge);
     }
     private void initializeTextViews(){
+        tv_city = (TextView) findViewById(R.id.tv_city);
         tv_firstName = (TextView)findViewById(R.id.tv_profile_firstName);
         tv_lastName = (TextView)findViewById(R.id.tv_profile_lastName);
         tv_email = (TextView)findViewById(R.id.tv_profile_email);

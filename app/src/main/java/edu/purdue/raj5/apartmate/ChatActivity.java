@@ -19,6 +19,11 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -40,154 +45,10 @@ import java.util.Scanner;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /*
-*   The Java class that supports the chat component
-*/
+ *   The Java class that supports the chat component
+ */
 public class ChatActivity extends AppCompatActivity {
 
-    /*private ListView listView;
-    private View btnSend;
-    private EditText editText;
-    boolean myMessage = true;
-    private List<ChatBubble> ChatBubbles;
-    private ArrayAdapter<ChatBubble> adapter;
-    private String sdefault = "Hey! How's Life?";
-    FirebaseStorage storage = FirebaseStorage.getInstance();
-    // Create a storage reference from our app
-    StorageReference storageRef = storage.getReference();
-    //FileOutputStream outputStream;
-    BufferedWriter bw;
-    FileWriter fw;
-    String friendName;
-    CircleImageView profilePhoto;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
-        Bundle b = new Bundle();
-        b = getIntent().getExtras();
-        profilePhoto = (CircleImageView)findViewById(R.id.civ_chatImage);
-        friendName = b.getString("Email");
-        StorageReference ref = storageRef.child("profile"+friendName+".jpg");
-
-        final long ONE_MEGABYTE = 1024 * 1024;
-        ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                // Data for "images/island.jpg" is returns, use this as needed
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inMutable = true;
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
-                profilePhoto.setImageBitmap(bmp);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-            }
-        });
-        ChatBubbles = new ArrayList<>();
-        LoginActivity.sock.setClientCallback(new Client.ClientCallback(){
-
-            @Override
-            public void onMessage(String mess) {
-                try {
-                    if(mess.contains("CHECK_USER ACCOUNT_EXISTS")){
-                        Intent i = new Intent(ChatActivity.this,ChatActivity.class);
-                        i.putExtra("Email",friendName);
-                        startActivity(i);
-                    }
-                    FileOutputStream fos = openFileOutput(friendName, Context.MODE_APPEND);
-                    fos.write((friendName + Calendar.getInstance().getTime().toString()+" "+ mess.substring(15) +"\n").getBytes());
-                    fos.flush();
-                    fos.close();
-                    FileInputStream fis = openFileInput(friendName);
-                    Scanner scanner = new Scanner(fis);
-                    ChatBubble chatBubble;
-                    String sender;
-                    String message;
-                    while (scanner.hasNext()) {
-                        sender = scanner.next();
-                        message = scanner.nextLine();
-                        chatBubble = new ChatBubble(sender, message);
-                        ChatBubbles.add(chatBubble);}
-                    adapter.notifyDataSetChanged();
-
-                }catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void onConnect(Socket socket) throws IOException {
-
-            }
-
-            @Override
-            public void onDisconnect(Socket socket, String message) throws IOException {
-
-            }
-
-            @Override
-            public void onConnectError(Socket socket, String message) {
-
-            }
-        });
-
-        listView = (ListView) findViewById(R.id.list_msg);
-        btnSend = findViewById(R.id.btn_chat_send);
-        editText = (EditText) findViewById(R.id.msg_type);
-
-        //set ListView adapter first
-        adapter = new MessageAdapter(this, R.layout.left_chat_bubble, ChatBubbles);
-        listView.setAdapter(adapter);
-        File directory = getFilesDir();
-        File[] files = directory.listFiles();
-        new File(friendName).delete();
-
-        ChatBubbles.add(new ChatBubble(friendName, sdefault));
-        adapter.notifyDataSetChanged();
-        //event for button SEND
-        btnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (editText.getText().toString().trim().equals("")) {
-                    Toast.makeText(ChatActivity.this, "Message is empty", Toast.LENGTH_SHORT).show();
-                } else {
-                    ChatBubbles.clear();
-                    try {
-                        FileOutputStream fos = openFileOutput(friendName, Context.MODE_APPEND);
-                        Toast.makeText(getBaseContext(), LoginActivity.currentUser, Toast.LENGTH_LONG).show();
-                        LoginActivity.sock.send("SEND_MESSAGE "+ LoginActivity.currentUser + " " + friendName+" "+editText.getText().toString());
-                        Thread.sleep(150);
-                        fos.write(("Myself " + Calendar.getInstance().getTime().toString()+" "+ editText.getText().toString() + "\n").getBytes());
-                        fos.flush();
-                        fos.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        FileInputStream fis = openFileInput(friendName);
-                        Scanner scanner = new Scanner(fis);
-                        ChatBubble chatBubble;
-                        String sender;
-                        String message;
-                        while (scanner.hasNext()) {
-                            sender = scanner.next();
-                            message = scanner.nextLine();
-                            chatBubble = new ChatBubble(sender, message);
-                            ChatBubbles.add(chatBubble);
-                        }
-                    }catch(Exception e) {
-                        e.printStackTrace();
-                    }
-                    adapter.notifyDataSetChanged();
-                    editText.setText("");
-                }
-            }
-        });
-    }*/
 
     private ListView listView;
     private View btnSend;
@@ -195,21 +56,29 @@ public class ChatActivity extends AppCompatActivity {
     boolean myMessage = true;
     private List<ChatBubble> ChatBubbles;
     private ArrayAdapter<ChatBubble> adapter;
-    private String sdefault = "Hey! How's Life?";
+
     //FileOutputStream outputStream;
     BufferedWriter bw;
     FileWriter fw;
     //String groupName;
     String email;
-    //GroupTabsActivity groupTabsActivity;
-    String friend1 = "friend1";
-    String friend2 = "friend2";
+    String myEmail;
+
+
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(getApplicationContext(), MenuActivity.class);
+        i.putExtra("Email",myEmail);
+        startActivity(i);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ChatBubbles = new ArrayList<>();
-        email = getIntent().getExtras().getString("Email");
+        email = getIntent().getExtras().getString("ToEmail");
+        myEmail = getIntent().getExtras().getString("MyEmail");
         listView = (ListView) findViewById(R.id.list_msg);
         btnSend = findViewById(R.id.btn_chat_send);
         editText = (EditText) findViewById(R.id.msg_type);
@@ -217,74 +86,33 @@ public class ChatActivity extends AppCompatActivity {
         //set ListView adapter first
         adapter = new MessageAdapter(this, R.layout.left_chat_bubble, ChatBubbles);
         listView.setAdapter(adapter);
-        LoginActivity.sock.setClientCallback(new Client.ClientCallback(){
-
-            @Override
-            public void onMessage(String mess) {
-                Log.e("Redcd",mess);
-                try {
-
-                    FileOutputStream fos = openFileOutput(email, Context.MODE_APPEND);
-                    fos.write((mess.split(";")[1] + Calendar.getInstance().getTime().toString()+" "+ mess.substring(15) +"\n").getBytes());
-                    fos.flush();
-                    fos.close();
-                    FileInputStream fis = openFileInput(email);
-                    Scanner scanner = new Scanner(fis);
-                    ChatBubble chatBubble;
-                    String sender;
-                    String message;
-                    while (scanner.hasNext()) {
-                        sender = scanner.next();
-                        message = scanner.nextLine();
-                        chatBubble = new ChatBubble(sender, message);
-                        ChatBubbles.add(chatBubble);}
-                    adapter.notifyDataSetChanged();
-
-                }catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-
+        FileInputStream fis = null;
+        try {
+            fis = openFileInput(email);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if(fis != null) {
+            Scanner scanner = new Scanner(fis);
+            ChatBubble chatBubble;
+            String sender;
+            String mess;
+            while (scanner.hasNext()) {
+                sender = scanner.next();
+                mess = scanner.nextLine();
+                chatBubble = new ChatBubble(sender, mess);
+                ChatBubbles.add(chatBubble);
             }
-
-            @Override
-            public void onConnect(Socket socket) throws IOException {
-
-            }
-
-            @Override
-            public void onDisconnect(Socket socket, String message) throws IOException {
-
-            }
-
-            @Override
-            public void onConnectError(Socket socket, String message) {
-
-            }
-        });
+            adapter.notifyDataSetChanged();
+        }
         /*File directory = getFilesDir();
         File[] files = directory.listFiles();
         new File(groupName).delete();*/
-        try {
-            FileOutputStream fos = openFileOutput(email, Context.MODE_APPEND);
-            fos.write((friend1 + " Hello!\n").getBytes());
-            fos.write((friend2 + " Hello other friend!\n").getBytes());
-            fos.flush();
-            fos.close();
-//            FileInputStream fis = openFileInput(friendName);
-//            Scanner scanner = new Scanner(fis);
-//            String sender = scanner.next();
-//            scanner.close();
-//            Toast.makeText(ChatActivity.this, sender, Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        ChatBubbles.add(new ChatBubble(friend1, sdefault));
-        ChatBubbles.add(new ChatBubble(friend2, sdefault));
-        adapter.notifyDataSetChanged();
+
         //event for button SEND
         FirebaseDatabase stor = FirebaseDatabase.getInstance();
-        DatabaseReference storageRe = stor.getReference(email);
+        DatabaseReference storageRe = stor.getReference("Login/"+email.split("@")[0]+"/To"+myEmail.split("@")[0]);
+        storageRe.setValue("");
         storageRe.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -318,28 +146,70 @@ public class ChatActivity extends AppCompatActivity {
 
             }
 
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
+
+        FirebaseDatabase stor1 = FirebaseDatabase.getInstance();
+        DatabaseReference storageRe1 = stor1.getReference("Login/"+myEmail.split("@")[0]+"/To"+email.split("@")[0]);
+        storageRe1.setValue("");
+        storageRe1.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                if(dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                try {
+
+                    FileOutputStream fos = openFileOutput(email, Context.MODE_APPEND);
+                    fos.write((message.split(";")[0] + Calendar.getInstance().getTime().toString()+" "+ message.substring(15) +"\n").getBytes());
+                    fos.flush();
+                    fos.close();
+                    FileInputStream fis = openFileInput(email);
+                    Scanner scanner = new Scanner(fis);
+                    ChatBubble chatBubble;
+                    String sender;
+                    String mess;
+                    while (scanner.hasNext()) {
+                        sender = scanner.next();
+                        mess = scanner.nextLine();
+                        chatBubble = new ChatBubble(sender, mess);
+                        ChatBubbles.add(chatBubble);}
+                    adapter.notifyDataSetChanged();
+
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (editText.getText().toString().trim().equals("")) {
                     Log.e("msg","Message is empty");//, Toast.LENGTH_SHORT).show();
                 } else {
-                    ChatBubbles.clear();
                     try {
-                        FileOutputStream fos = openFileOutput(email, Context.MODE_APPEND);
-                      //  LoginActivity.sock.send("SEND_GROUPM "+ email+ " " + groupName+" "+editText.getText().toString());
+                        //  LoginActivity.sock.send("SEND_GROUPM "+ email+ " " + groupName+" "+editText.getText().toString());
                         FirebaseDatabase storage = FirebaseDatabase.getInstance();
-                        DatabaseReference storageRef = storage.getReference(email);
-                        storageRef.setValue(email+";"+editText.getText().toString() + "\n");
+                        DatabaseReference storageRef = storage.getReference("Login/"+myEmail.split("@")[0]+"/To"+email.split("@")[0]);
+                        storageRef.setValue(myEmail+";"+editText.getText().toString() + "\n");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    adapter.notifyDataSetChanged();
                     editText.setText("");
                 }
             }

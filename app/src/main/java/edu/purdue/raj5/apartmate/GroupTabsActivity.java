@@ -1,5 +1,6 @@
 package edu.purdue.raj5.apartmate;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -120,36 +121,36 @@ public class GroupTabsActivity extends AppCompatActivity {
             dialog.show();
         }
         if (id == R.id.action_leave_group) {
-          AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
 
-                builder.setTitle("Confirm");
-                builder.setMessage("Are you sure you want to leave group?");
+            builder.setTitle("Confirm");
+            builder.setMessage("Are you sure you want to leave group?");
 
-                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
-                    public void onClick(DialogInterface dialog, int which) {
-                        //server call to leave group. switch intent
-                        LoginActivity.sock.send("LEAVE_GROUP;"+groupName + ";" + email);
+                public void onClick(DialogInterface dialog, int which) {
+                    //server call to leave group. switch intent
+                    LoginActivity.sock.send("LEAVE_GROUP;" + groupName + ";" + email);
 
-                        Intent i = new Intent(getActivity(), MenuActivity.class);
-                        startActivity(i);
-                    }
-                });
+                    Intent i = new Intent(getApplicationContext(), MenuActivity.class);
+                    i.putExtra("Email",email);
+                    startActivity(i);
+                }
+            });
 
-                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
 
-                        // Do nothing
-                        dialog.dismiss();
-                    }
-                });
+                    // Do nothing
+                    dialog.dismiss();
+                }
+            });
 
-                AlertDialog alert = builder.create();
-                alert.show();
+            AlertDialog alert = builder.create();
+            alert.show();
         }
-
         return super.onOptionsItemSelected(item);
     }
 

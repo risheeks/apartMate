@@ -3,10 +3,14 @@ package edu.purdue.raj5.apartmate;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os. Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import java.util.ArrayList;
 
 public class GroupOtherFragment extends Fragment{
     Button chores;
@@ -29,144 +33,42 @@ public class GroupOtherFragment extends Fragment{
         groupTabsActivity = (GroupTabsActivity) getActivity();
         groupName = groupTabsActivity.groupName;
         email = groupTabsActivity.email;
-        initializationChores(rootView);
-        initializationGroceries(rootView);
-        initializationSchedules(rootView);
-        initializeReceipt(rootView);
-        initializationBirthdays(rootView);
-        initializationInterests(rootView);
-        initializationShareablePossessions(rootView);
-        initializationUnShareablePosessions(rootView);
-        initializeEmergencyContact(rootView);
-        initializationRoommateRating(rootView);
+       // initializationChores(rootView);
+        // initializationGroceries(rootView);
+        //initializationSchedules(rootView);
+        //initializeReceipt(rootView);
+        //initializationBirthdays(rootView);
+        //initializationInterests(rootView);
+        //initializationShareablePossessions(rootView);
+        //initializationUnShareablePosessions(rootView);
+        //initializeEmergencyContact(rootView);
+        //initializationRoommateRating(rootView);
+        initializationRecyclerView(rootView);
         return rootView;
     }
 
-    private void initializationRoommateRating(View rootView) {
-        roommateRating = (Button) rootView.findViewById(R.id.bt_rateRoommate);
-        roommateRating.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity(), RoommateRatingActivity.class);
-                i.putExtra("GroupName",groupName);
-                i.putExtra("Email", email);
-                startActivity(i);
-            }
-        });
+    private void initializationRecyclerView(View view) {
+        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_otherTab);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this.getActivity());
+        //Log.d("debugMode", "The application stopped after this");
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        OtherFragmentAdapter mAdapter = new OtherFragmentAdapter(getActivity(), getNames(),groupName,email);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
-    private void initializeEmergencyContact(View rootView) {
-        emergencyContact = (Button) rootView.findViewById(R.id.bt_emergency);
-        emergencyContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity(), EmergencyContactActivity.class);
-                i.putExtra("GroupName",groupName);
-                i.putExtra("Email", email);
-                startActivity(i);
-            }
-        });
-    }
-
-    public void initializationInterests(View v){
-        interest = (Button) v.findViewById(R.id.bt_interest);
-        interest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity(), InterestActivity.class);
-                i.putExtra("GroupName",groupName);
-                i.putExtra("Email", email);
-                startActivity(i);
-            }
-        });
-    }
-    public void initializationBirthdays(View v){
-        birthday = (Button) v.findViewById(R.id.bt_birthdays);
-        birthday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity(), BirthdayActivity.class);
-                i.putExtra("GroupName",groupName);
-                startActivity(i);
-            }
-        });
-    }
-    public void initializationShareablePossessions(View v){
-        shareablePossessions = (Button) v.findViewById(R.id.bt_sharePossessions);
-        shareablePossessions.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity(), ShareablePossessionsActivity.class);
-                i.putExtra("GroupName",groupName);
-                i.putExtra("Email", email);
-                startActivity(i);
-            }
-        });
-    }
-    public void initializationUnShareablePosessions(View v){
-        unshareablePossessions = (Button) v.findViewById(R.id.bt_sharePossessionsNo);
-        unshareablePossessions.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity(), UnshareablePossessionsActivity.class);
-                i.putExtra("GroupName",groupName);
-                i.putExtra("Email", email);
-                startActivity(i);
-            }
-        });
-    }
-
-    private void initializeReceipt(View rootView) {
-        receipt = (Button) rootView.findViewById(R.id.bt_receipt);
-        receipt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getActivity(), ReceiptActivity.class);
-                i.putExtra("GroupName",groupName);
-                i.putExtra("Email", email);
-                startActivity(i);
-            }
-        });
-    }
-
-    private void initializationSchedules(View rootView) {
-        schedules = (Button) rootView.findViewById(R.id.bt_schedules);
-        schedules.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getActivity(), RoommateScheduleActivity.class);
-                i.putExtra("GroupName",groupName);
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                startActivity(i);
-            }
-        });
-    }
-
-    public void initializationChores(View v){
-        chores = (Button) v.findViewById(R.id.bt_chores);
-        chores.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity(), ChoresListActivity.class);
-                i.putExtra("GroupName",groupName);
-                startActivity(i);
-            }
-        });
-    }
-
-    public void initializationGroceries(View v){
-        grocery = (Button) v.findViewById(R.id.bt_grocery);
-        grocery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity(), GroceryListActivity.class);
-                i.putExtra("GroupName",groupName);
-                startActivity(i);
-            }
-        });
+    private ArrayList<String> getNames() {
+        ArrayList<String> names =new ArrayList<>();
+        names.add("Chores");
+        names.add("Grocery");
+        names.add("Interest");
+        names.add("Shareable Possessions");
+        names.add("Unshareable Possessions");
+        names.add("Birthdays");
+        names.add("Schedule");
+        names.add("Receipt");
+        names.add("Emergency Contact");
+        names.add("Rate Roommate");
+        return names;
     }
 }

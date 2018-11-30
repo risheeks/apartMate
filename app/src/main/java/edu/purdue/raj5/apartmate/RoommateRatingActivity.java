@@ -57,7 +57,7 @@ public class RoommateRatingActivity extends AppCompatActivity {
                 for(int i = 0; i < members.length; i++) {
                     final int x = i;
                     FirebaseDatabase storage = FirebaseDatabase.getInstance();
-                    DatabaseReference storageRef = storage.getReference("Login/" + members[i].split("@")[0] + "/Rating"); //remove
+                    DatabaseReference storageRef = storage.getReference("Login/" + members[i].split("@")[0] + "/Rating");
                     storageRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {

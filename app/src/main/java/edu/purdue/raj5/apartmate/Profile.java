@@ -12,11 +12,39 @@ public class Profile {
 
     private String imageUrl;
 
+    private String interests;
 
+    public String getInterests() {
+        return interests;
+    }
+
+    public void setInterests(String interests) {
+        this.interests = interests;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    private String gender;
     private Integer age;
 
 
     private String location;
+
+    public String getMajor() {
+        return major;
+    }
+
+    public void setMajor(String major) {
+        this.major = major;
+    }
+
+    private String major;
 
     public String getName() {
         return name;
