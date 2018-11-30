@@ -35,6 +35,48 @@ public class RoommateScheduleActivity extends AppCompatActivity {
     //TODO get roommates
     ArrayList<String> mTextofButton = new ArrayList<>();// = { "Risheek", "Adrian", "Ian", "Akshay", "Sid" };
     String groupName;
+
+    public void getAppTheme(String theme) { //theme is "light" or "dark"
+
+        //call this inside every activity
+        SharedPreferences preferences = this.getSharedPreferences("MyTheme", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("theme", theme);
+        editor.commit();
+
+        ScrollView sv = (ScrollView) findViewById(R.id.scrollView1);
+
+
+        String s = preferences.getString("theme", "");
+        if (s.equals("dark")) {
+            sv.setBackgroundColor(Color.DKGRAY);
+
+        } else {
+            sv.setBackgroundColor(Color.WHITE);
+
+        }
+
+
+    }
+    private void initializeTheme() {
+        String theme = "";
+        try {
+            FileInputStream fis = openFileInput("theme");
+            Scanner scanner = new Scanner(fis);
+            theme = scanner.next();
+            scanner.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        theme = "dark";
+        if (theme.contains("dark"))
+            getAppTheme("dark");
+
+        else
+            getAppTheme("light");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +140,7 @@ public class RoommateScheduleActivity extends AppCompatActivity {
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
-
+        initializeTheme();
         //init();
 
 
