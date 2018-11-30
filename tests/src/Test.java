@@ -7,7 +7,7 @@ public class Test {
     private static String ip;
     public static void main(String[] args)  throws InterruptedException{
         //System.out.printf("This is a test\n");
-        ip = "localhost";
+        ip = "192.168.43.85";
         port = 9910;
 //        test1_1();
 //        test1_2();
@@ -19,14 +19,14 @@ public class Test {
 //        Thread.sleep(1500);
 //        test3();
 //        Thread.sleep(1500);
-//        test4_1();
+        test4_1();
 //        test4_2();
 //        Thread.sleep(1500);
 //        test5();
-//        Thread.sleep(1500);
-        testCommand("irettig@purdue.edu", "12345", "ADD_GROUP;corruptsoul13@gmail.com;a");
-        //prepTest6();
-        //test6();
+        Thread.sleep(1500);
+        //testCommand("irettig@purdue.edu", "12345", "ADD_GROUP;corruptsoul13@gmail.com;a");
+        prepTest6();
+        test6();
     }
 
     //Adds user patel716
@@ -701,6 +701,8 @@ public class Test {
             //leave the group
             String leave = "LEAVE_GROUP;test group 1;patel716@purdue.edu";
             sendServer(leave, out, in);
+
+            Thread.sleep(2000);
 
             //view the information on database to see that patel716 is out of the group
             getGroupInfo(out, in);
