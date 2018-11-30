@@ -63,13 +63,56 @@ public class ChatActivity extends AppCompatActivity {
     //String groupName;
     String email;
     String myEmail;
-
+    static String s;
 
     @Override
     public void onBackPressed() {
         Intent i = new Intent(getApplicationContext(), MenuActivity.class);
         i.putExtra("Email",myEmail);
         startActivity(i);
+    }
+
+    public void getAppTheme(String theme) { //theme is "light" or "dark"
+
+        //call this inside every activity
+        SharedPreferences preferences = this.getSharedPreferences("MyTheme", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("theme", theme);
+        editor.commit();
+//        interests = (EditText) findViewById(R.id.Interests);
+//        et_chatSearch = (TextView) findViewById(R.id.et_chatSearch);
+//        optionsButton = (ImageView) findViewById(R.id.iv_menuOptions);
+        LinearLayout ll = (LinearLayout) findViewById(R.id.filterll);
+        // The following code is used for theme preferences.
+        s = preferences.getString("theme", "");
+        if (s.equals("dark")) {
+            listView.setBackgroundColor(Color.DKGRAY);
+            interests.setTextColor(Color.WHITE);
+            zip.setTextColor(Color.WHITE);
+            dispage.setTextColor(Color.WHITE);
+            majorSpinner.setBackgroundColor(Color.GRAY);
+            //age.setBackgroundColor(Color.WHITE);
+            interestL.setTextColor(Color.WHITE);
+            dispageL.setTextColor(Color.WHITE);
+            majorL.setTextColor(Color.WHITE);
+            zipL.setTextColor(Color.WHITE);
+            age.setBackgroundColor(Color.DKGRAY);
+
+        } else {
+            ll.setBackgroundColor(Color.WHITE);
+            interests.setTextColor(Color.BLACK);
+            zip.setTextColor(Color.BLACK);
+            dispage.setTextColor(Color.BLACK);
+            majorSpinner.setBackgroundColor(Color.WHITE);
+            //age.setBackgroundColor(Color.WHITE);
+            interestL.setTextColor(Color.BLACK);
+            dispageL.setTextColor(Color.BLACK);
+            majorL.setTextColor(Color.BLACK);
+            zipL.setTextColor(Color.BLACK);
+            age.setBackgroundColor(Color.WHITE);
+        }
+
+
     }
 
     @Override

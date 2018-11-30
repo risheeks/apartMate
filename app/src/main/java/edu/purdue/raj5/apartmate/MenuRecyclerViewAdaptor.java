@@ -76,6 +76,13 @@ public class MenuRecyclerViewAdaptor extends RecyclerView.Adapter<MenuRecyclerVi
             groupPhoto = itemView.findViewById(R.id.iv_groupPhoto);
             groupName = itemView.findViewById(R.id.tv_groupName);
             llMenuGroup = itemView.findViewById(R.id.ll_menuGroup);
+            if (MenuActivity.s.equals("dark")) {
+                llMenuGroup.setBackgroundColor(Color.DKGRAY);
+                groupName.setTextColor(Color.WHITE);
+            } else {
+                llMenuGroup.setBackgroundColor(Color.WHITE);
+                groupName.setTextColor(Color.BLACK);
+            }
         }
     }
 }
