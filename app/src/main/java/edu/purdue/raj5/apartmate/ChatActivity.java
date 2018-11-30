@@ -72,6 +72,24 @@ public class ChatActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+    private void initializeTheme() {
+        String theme = "";
+        try {
+            FileInputStream fis = openFileInput("theme");
+            Scanner scanner = new Scanner(fis);
+            theme = scanner.next();
+            scanner.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (theme.contains("dark"))
+            getAppTheme("dark");
+
+        else
+            getAppTheme("light");
+    }
+
     public void getAppTheme(String theme) { //theme is "light" or "dark"
 
         //call this inside every activity
@@ -82,34 +100,20 @@ public class ChatActivity extends AppCompatActivity {
 //        interests = (EditText) findViewById(R.id.Interests);
 //        et_chatSearch = (TextView) findViewById(R.id.et_chatSearch);
 //        optionsButton = (ImageView) findViewById(R.id.iv_menuOptions);
-        LinearLayout ll = (LinearLayout) findViewById(R.id.filterll);
+        LinearLayout ll = (LinearLayout) findViewById(R.id.ll_chat);
         // The following code is used for theme preferences.
         s = preferences.getString("theme", "");
         if (s.equals("dark")) {
+            ll.setBackgroundColor(Color.DKGRAY);
             listView.setBackgroundColor(Color.DKGRAY);
-            interests.setTextColor(Color.WHITE);
-            zip.setTextColor(Color.WHITE);
-            dispage.setTextColor(Color.WHITE);
-            majorSpinner.setBackgroundColor(Color.GRAY);
-            //age.setBackgroundColor(Color.WHITE);
-            interestL.setTextColor(Color.WHITE);
-            dispageL.setTextColor(Color.WHITE);
-            majorL.setTextColor(Color.WHITE);
-            zipL.setTextColor(Color.WHITE);
-            age.setBackgroundColor(Color.DKGRAY);
-
+            editText.setBackgroundColor(Color.DKGRAY);
+            editText.setHintTextColor(Color.WHITE);
+            editText.setTextColor(Color.WHITE);
         } else {
             ll.setBackgroundColor(Color.WHITE);
-            interests.setTextColor(Color.BLACK);
-            zip.setTextColor(Color.BLACK);
-            dispage.setTextColor(Color.BLACK);
-            majorSpinner.setBackgroundColor(Color.WHITE);
-            //age.setBackgroundColor(Color.WHITE);
-            interestL.setTextColor(Color.BLACK);
-            dispageL.setTextColor(Color.BLACK);
-            majorL.setTextColor(Color.BLACK);
-            zipL.setTextColor(Color.BLACK);
-            age.setBackgroundColor(Color.WHITE);
+            listView.setBackgroundColor(Color.WHITE);
+            editText.setBackgroundColor(Color.DKGRAY);
+            editText.setTextColor(Color.BLACK);
         }
 
 

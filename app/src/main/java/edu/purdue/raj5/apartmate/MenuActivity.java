@@ -70,6 +70,7 @@ public class MenuActivity extends AppCompatActivity {
     String groupName="a";
     private ArrayList<String> mMatches = new ArrayList<>();
     static final FirebaseDatabase dbStorage = FirebaseDatabase.getInstance();
+    static String s;
 
     public void getAppTheme(String theme) { //theme is "light" or "dark"
 
@@ -83,7 +84,7 @@ public class MenuActivity extends AppCompatActivity {
         optionsButton = (ImageView) findViewById(R.id.iv_menuOptions);
         LinearLayout ll = (LinearLayout) findViewById(R.id.ll);
 // The following code is used for theme preferences.
-        String s = preferences.getString("theme", "");
+        s = preferences.getString("theme", "");
         if (s.equals("dark")) {
             ll.setBackgroundColor(Color.DKGRAY);
             iv_chatSearch.setBackgroundColor(Color.WHITE);
