@@ -12,7 +12,7 @@
             android:layout_height="wrap_content"
             android:ems="8"
             android:id="@+id/et_groceryReminderDateAdd"
-            android:text="Date: DD:MM:YYYY"/>
+            android:text="Day"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
