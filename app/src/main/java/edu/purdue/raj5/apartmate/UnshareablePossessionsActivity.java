@@ -32,7 +32,41 @@ public class UnshareablePossessionsActivity extends AppCompatActivity {
     String groupName;
     String email;
 
+    public void getAppTheme(String theme) { //theme is "light" or "dark"
 
+     //call this inside every activity
+     SharedPreferences preferences = this.getSharedPreferences("MyTheme", Context.MODE_PRIVATE);
+     SharedPreferences.Editor editor = preferences.edit();
+     editor.putString("theme", theme);
+     editor.commit();
+
+     RelativeLayout rl = (RelativeLayout)findViewById(R.id.rl_unshareablePossessions);
+
+     String s = preferences.getString("theme", "");
+     if (s.equals("dark")) {
+        rl.setBackgroundColor(Color.DKGRAY);
+     } else {
+        rl.setBackgroundColor(Color.WHITE);
+     }
+ }
+ private void initializeTheme() {
+     String theme = "";
+     try {
+         FileInputStream fis = openFileInput("theme");
+         Scanner scanner = new Scanner(fis);
+         theme = scanner.next();
+         scanner.close();
+
+     } catch (Exception e) {
+         e.printStackTrace();
+     }
+     //theme = "light";
+     if (theme.contains("dark"))
+         getAppTheme("dark");
+
+     else
+         getAppTheme("light");
+ }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +106,8 @@ public class UnshareablePossessionsActivity extends AppCompatActivity {
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
+
+        initializeTheme();
 
     }
     private void initializeRecyclerView(){
