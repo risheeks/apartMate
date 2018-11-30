@@ -48,6 +48,48 @@ public class GroupTabsActivity extends AppCompatActivity {
         i.putExtra("Email",email);
         startActivity(i);
     }
+
+    static String s;
+
+    public void getAppTheme(String theme) { //theme is "light" or "dark"
+
+        //call this inside every activity
+        SharedPreferences preferences = this.getSharedPreferences("MyTheme", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("theme", theme);
+        editor.commit();
+        RelativeLayout ll = (RelativeLayout) findViewById(R.id.main_content);
+// The following code is used for theme preferences.
+        s = preferences.getString("theme", "");
+        if (s.equals("dark")) {
+            ll.setBackgroundColor(Color.DKGRAY);
+
+        } else {
+            ll.setBackgroundColor(Color.WHITE);
+        }
+
+
+    }
+
+    // This method is called in the onCreate. This is used to set theme according to the user's preferences.
+    private void initializeTheme() {
+        String theme = "";
+        try {
+            FileInputStream fis = openFileInput("theme");
+            Scanner scanner = new Scanner(fis);
+            theme = scanner.next();
+            scanner.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (theme.contains("dark"))
+            getAppTheme("dark");
+
+        else
+            getAppTheme("light");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +111,7 @@ public class GroupTabsActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tl_group_tabs);
         tabLayout.setupWithViewPager(mViewPager,true);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        initializeTheme();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

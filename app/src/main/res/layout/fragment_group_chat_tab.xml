@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    tools:context="edu.purdue.raj5.apartmate.GroupTabsActivity$PlaceholderFragment">
+    tools:context="edu.purdue.raj5.apartmate.GroupTabsActivity$PlaceholderFragment"
+    android:id="@+id/chat_tab">
 
     <Button
         android:layout_width="wrap_content"

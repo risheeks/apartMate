@@ -33,6 +33,7 @@ public class GroupOtherFragment extends Fragment{
         groupTabsActivity = (GroupTabsActivity) getActivity();
         groupName = groupTabsActivity.groupName;
         email = groupTabsActivity.email;
+        initializeTheme();
        // initializationChores(rootView);
         // initializationGroceries(rootView);
         //initializationSchedules(rootView);
@@ -45,6 +46,40 @@ public class GroupOtherFragment extends Fragment{
         //initializationRoommateRating(rootView);
         initializationRecyclerView(rootView);
         return rootView;
+    }
+
+    public void getAppTheme(String theme) { //theme is "light" or "dark"
+
+        //call this inside every activity
+        RelativeLayout ll = (RelativeLayout) findViewById(R.id.other_tab);
+        // The following code is used for theme preferences.
+        if (groupTabsActivity.s.equals("dark")) {
+            ll.setBackgroundColor(Color.DKGRAY);
+
+        } else {
+            ll.setBackgroundColor(Color.WHITE);
+        }
+
+
+    }
+
+    // This method is called in the onCreate. This is used to set theme according to the user's preferences.
+    private void initializeTheme() {
+        String theme = "";
+        try {
+            FileInputStream fis = openFileInput("theme");
+            Scanner scanner = new Scanner(fis);
+            theme = scanner.next();
+            scanner.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (theme.contains("dark"))
+            getAppTheme("dark");
+
+        else
+            getAppTheme("light");
     }
 
     private void initializationRecyclerView(View view) {

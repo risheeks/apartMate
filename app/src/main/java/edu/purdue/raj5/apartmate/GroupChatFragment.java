@@ -41,12 +41,14 @@ public class GroupChatFragment extends Fragment {
     //String friend1 = "friend1";
     //String friend2 = "friend2";
     private Button b;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_group_chat_tab, container, false);
         b = (Button) rootView.findViewById(R.id.bt_groupChat);
+        initializeTheme();
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -55,6 +57,40 @@ public class GroupChatFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    public void getAppTheme(String theme) { //theme is "light" or "dark"
+
+        //call this inside every activity
+        RelativeLayout ll = (RelativeLayout) findViewById(R.id.chat_tab);
+        // The following code is used for theme preferences.
+        if (groupTabsActivity.s.equals("dark")) {
+            ll.setBackgroundColor(Color.DKGRAY);
+
+        } else {
+            ll.setBackgroundColor(Color.WHITE);
+        }
+
+
+    }
+
+    // This method is called in the onCreate. This is used to set theme according to the user's preferences.
+    private void initializeTheme() {
+        String theme = "";
+        try {
+            FileInputStream fis = openFileInput("theme");
+            Scanner scanner = new Scanner(fis);
+            theme = scanner.next();
+            scanner.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (theme.contains("dark"))
+            getAppTheme("dark");
+
+        else
+            getAppTheme("light");
     }
 
 }
