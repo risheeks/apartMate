@@ -983,6 +983,9 @@ var leaveGroup = function(data,sock) {
           gRateRef.remove();
         }
 
+        var usergRating = firebase.database().ref("Login/" + email.split("@")[0] + "/gRating");
+        usergRating.remove();
+
 
         if (Interests !== null) {
             Interests = Interests.toString().replace(regex2, "");
