@@ -48,6 +48,54 @@ public class TinderActivity extends AppCompatActivity {
     Bitmap bmp;
     static String major;
     //private Profile profile;
+
+    public void getAppTheme(String theme) { //theme is "light" or "dark"
+
+     //call this inside every activity
+     SharedPreferences preferences = this.getSharedPreferences("MyTheme", Context.MODE_PRIVATE);
+     SharedPreferences.Editor editor = preferences.edit();
+     editor.putString("theme", theme);
+     editor.commit();
+
+     CardView cv = (CardView)findViewById(R.id.tinder_cv);
+     TextView tv = (TextView)findViewById(R.id.nameAgeTxt);
+     TextView tv1 = (TextView)findViewById(R.id.locationNameTxt);
+     FrameLayout fl = (FrameLayout)findViewById(R.id.tinder_fl);
+
+     String s = preferences.getString("theme", "");
+     if (s.equals("dark")) {
+         cv.setCardBackgroundColor(Color.DKGRAY);
+         tv.setTextColor(Color.WHITE);
+         tv1.setTextColor(Color.WHITE);
+         fl.setBackgroundColor(Color.parseColor("#D3D3D3"));
+     } else {
+         tv.setTextColor(Color.DKGRAY);
+         cv.setCardBackgroundColor(Color.WHITE);
+         tv1.setTextColor(Color.DKGRAY);
+         fl.setBackgroundColor(Color.WHITE);
+     }
+
+
+ }
+ private void initializeTheme() {
+     String theme = "";
+     try {
+         FileInputStream fis = openFileInput("theme");
+         Scanner scanner = new Scanner(fis);
+         theme = scanner.next();
+         scanner.close();
+
+     } catch (Exception e) {
+         e.printStackTrace();
+     }
+     //theme = "light";
+     if (theme.contains("dark"))
+         getAppTheme("dark");
+
+     else
+         getAppTheme("light");
+ }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -210,6 +258,8 @@ public class TinderActivity extends AppCompatActivity {
                 alerV();
             }
         });
+
+        initializeTheme();
     }
     /*
     * Apply filters to the potential roommate search
