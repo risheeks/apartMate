@@ -23,13 +23,15 @@ public class RoommateRatingAdapter extends RecyclerView.Adapter<RoommateRatingAd
     private ArrayList<String> mRatings = new ArrayList<>();
     private ArrayList<String> mComments = new ArrayList<>();
     String groupName;
+    String email;
 
-    public RoommateRatingAdapter(Context mContext, ArrayList<String> mNames, ArrayList<String> mRatings, ArrayList<String> mComments, String groupName) {
+    public RoommateRatingAdapter(Context mContext, ArrayList<String> mNames, ArrayList<String> mRatings, ArrayList<String> mComments, String groupName, String email) {
         this.mContext = mContext;
         this.mNames = mNames;
         this.mRatings = mRatings;
         this.mComments = mComments;
         this.groupName = groupName;
+        this.email = email;
     }
 
     @NonNull
@@ -63,10 +65,13 @@ public class RoommateRatingAdapter extends RecyclerView.Adapter<RoommateRatingAd
                         String rating = String.valueOf(rb_roommateRatingAdd.getRating());
                         Toast.makeText(mContext, "The rating of this roommate is "+rating, Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
-                        LoginActivity.sock.send("UPDATE_ROOMMATE_RATING;"+mNames.get(i)+";"+rating);
-                        Intent i = new Intent(mContext, RoommateRatingActivity.class);
+                        LoginActivity.sock.send("UPDATE_ROOMMATE_RATING;" + email + ";" + mNames.get(i) + ";" + rating);
+                        mRatings.set(i,rating);
+                        notifyDataSetChanged();
+                      /*  Intent i = new Intent(mContext, RoommateRatingActivity.class);
                         i.putExtra("GroupName",groupName);
-                        mContext.startActivity(i);
+                        i.putExtra("Email",email);
+                        mContext.startActivity(i);*/
 
                     }
                 });

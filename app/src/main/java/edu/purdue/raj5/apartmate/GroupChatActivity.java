@@ -2,6 +2,8 @@ package edu.purdue.raj5.apartmate;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.os. Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -39,6 +42,7 @@ public class GroupChatActivity extends AppCompatActivity {
     private List<ChatBubble> ChatBubbles;
     private ArrayAdapter<ChatBubble> adapter;
     private String sdefault = "Hey! How's Life?";
+    static String s;
     //FileOutputStream outputStream;
     BufferedWriter bw;
     FileWriter fw;
@@ -106,11 +110,11 @@ public class GroupChatActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.list_msg);
         btnSend = findViewById(R.id.btn_chat_send);
         editText = (EditText) findViewById(R.id.msg_type);
-
-        getAppTheme("dark");
         //set ListView adapter first
         adapter = new MessageAdapter(this, R.layout.left_chat_bubble, ChatBubbles);
         listView.setAdapter(adapter);
+
+        initializeTheme();
         LoginActivity.sock.setClientCallback(new Client.ClientCallback(){
 
             @Override

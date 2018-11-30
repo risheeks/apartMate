@@ -2,8 +2,10 @@ package edu.purdue.raj5.apartmate;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -56,6 +59,7 @@ public class ChatActivity extends AppCompatActivity {
     boolean myMessage = true;
     private List<ChatBubble> ChatBubbles;
     private ArrayAdapter<ChatBubble> adapter;
+    static String s;
 
     //FileOutputStream outputStream;
     BufferedWriter bw;
@@ -63,13 +67,30 @@ public class ChatActivity extends AppCompatActivity {
     //String groupName;
     String email;
     String myEmail;
-    static String s;
+
 
     @Override
     public void onBackPressed() {
         Intent i = new Intent(getApplicationContext(), MenuActivity.class);
         i.putExtra("Email",myEmail);
         startActivity(i);
+    }
+    private void initializeTheme() {
+        String theme = "";
+        try {
+            FileInputStream fis = openFileInput("theme");
+            Scanner scanner = new Scanner(fis);
+            theme = scanner.next();
+            scanner.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (theme.contains("dark"))
+            getAppTheme("dark");
+
+        else
+            getAppTheme("light");
     }
 
     private void initializeTheme() {
@@ -112,13 +133,12 @@ public class ChatActivity extends AppCompatActivity {
         } else {
             ll.setBackgroundColor(Color.WHITE);
             listView.setBackgroundColor(Color.WHITE);
-            editText.setBackgroundColor(Color.DKGRAY);
+            editText.setBackgroundColor(Color.WHITE);
             editText.setTextColor(Color.BLACK);
         }
 
 
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,6 +153,7 @@ public class ChatActivity extends AppCompatActivity {
         //set ListView adapter first
         adapter = new MessageAdapter(this, R.layout.left_chat_bubble, ChatBubbles);
         listView.setAdapter(adapter);
+        initializeTheme();
         FileInputStream fis = null;
         try {
             fis = openFileInput(email);
@@ -145,8 +166,8 @@ public class ChatActivity extends AppCompatActivity {
             String sender;
             String mess;
             while (scanner.hasNext()) {
-                sender = scanner.next().split("@")[0];
-                mess = scanner.nextLine().split(";")[1];
+                sender = scanner.next();
+                mess = scanner.nextLine();
                 chatBubble = new ChatBubble(sender, mess);
                 ChatBubbles.add(chatBubble);
             }
@@ -180,8 +201,8 @@ public class ChatActivity extends AppCompatActivity {
                     String sender;
                     String mess;
                     while (scanner.hasNext()) {
-                        sender = scanner.next().split("@")[0];
-                        mess = scanner.nextLine().split(";")[1];
+                        sender = scanner.next();
+                        mess = scanner.nextLine();
                         chatBubble = new ChatBubble(sender, mess);
                         ChatBubbles.add(chatBubble);}
                     adapter.notifyDataSetChanged();
@@ -223,8 +244,8 @@ public class ChatActivity extends AppCompatActivity {
                     String sender;
                     String mess;
                     while (scanner.hasNext()) {
-                        sender = scanner.next().split("@")[0];
-                        mess = scanner.nextLine().split(";")[1];
+                        sender = scanner.next();
+                        mess = scanner.nextLine();
                         chatBubble = new ChatBubble(sender, mess);
                         ChatBubbles.add(chatBubble);}
                     adapter.notifyDataSetChanged();

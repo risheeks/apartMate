@@ -63,6 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
                 {
                     Log.e("h","h");
                     Intent i = new Intent(getBaseContext(), MenuActivity.class);
+                    i.putExtra("Email",email.getText().toString());
                     startActivity(i);
                 }else if(mess.contains("LOGIN FAILURE")){
                    // Toast.makeText(getBaseContext(),"Inalid Email or Password", Toast.LENGTH_SHORT).show();

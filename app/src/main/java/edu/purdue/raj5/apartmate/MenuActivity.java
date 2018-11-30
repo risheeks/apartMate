@@ -71,7 +71,6 @@ public class MenuActivity extends AppCompatActivity {
     private ArrayList<String> mMatches = new ArrayList<>();
     static final FirebaseDatabase dbStorage = FirebaseDatabase.getInstance();
     static String s;
-
     public void getAppTheme(String theme) { //theme is "light" or "dark"
 
         //call this inside every activity
@@ -82,18 +81,23 @@ public class MenuActivity extends AppCompatActivity {
         iv_chatSearch = (ImageView) findViewById(R.id.iv_menuChatSearch);
         et_chatSearch = (TextView) findViewById(R.id.et_chatSearch);
         optionsButton = (ImageView) findViewById(R.id.iv_menuOptions);
+        tv_bill = (TextView) findViewById(R.id.list_size) ;
         LinearLayout ll = (LinearLayout) findViewById(R.id.ll);
 // The following code is used for theme preferences.
-        s = preferences.getString("theme", "");
+         s = preferences.getString("theme", "");
         if (s.equals("dark")) {
             ll.setBackgroundColor(Color.DKGRAY);
             iv_chatSearch.setBackgroundColor(Color.WHITE);
+            et_chatSearch.setTextColor(Color.WHITE);
             optionsButton.setBackgroundColor(Color.WHITE);
+            tv_bill.setTextColor(Color.WHITE);
 
         } else {
             ll.setBackgroundColor(Color.WHITE);
+            et_chatSearch.setTextColor(Color.BLACK);
             iv_chatSearch.setBackgroundColor(Color.GRAY);
             optionsButton.setBackgroundColor(Color.GRAY);
+            tv_bill.setTextColor(Color.BLACK);
         }
 
 
@@ -161,11 +165,13 @@ public class MenuActivity extends AppCompatActivity {
                     startActivity(i);
                 } else if (message.contains("GET_GROUP;SUCCESS")) {
                     String groupName = message.split(";")[2];
-                    mImages.add("https://i.redd.it/tpsnoz5bzo501.jpg");
-                    mNames.add(groupName);
+                    if(groupName.isEmpty()) {
+                        mImages.add("https://i.redd.it/tpsnoz5bzo501.jpg");
+                        mNames.add(groupName);
+                    }
                     initializeRecyclerView();
                 }
-                else
+                else if(message.contains("CHECK_USER ACCOUNT_EXISTS"))
                 {
                     Intent i = new Intent(MenuActivity.this, ChatActivity.class);
                     i.putExtra("ToEmail",et_chatSearch.getText().toString());
@@ -225,9 +231,8 @@ public class MenuActivity extends AppCompatActivity {
         initializeOptions();
         initializeChatSearchComponents();
         createGroceryReminder();
-        createEndOfLeaseReminder();
         createRoommateSearchReminder();
-
+        createEndOfLeaseReminder();
     }
 
     private void initializeGroup() {
@@ -242,8 +247,12 @@ public class MenuActivity extends AppCompatActivity {
                     message = "";
                 else
                     message = dataSnapshot.getValue().toString();
-                mImages.add("https://i.redd.it/tpsnoz5bzo501.jpg");
-                mNames.add(message);
+                if(!message.isEmpty())
+
+                {
+                    mImages.add("https://i.redd.it/tpsnoz5bzo501.jpg");
+                    mNames.add(message);
+                }
                 initializeRecyclerView();
             }
             @Override
@@ -255,43 +264,70 @@ public class MenuActivity extends AppCompatActivity {
 
     private void createEndOfLeaseReminder() {
 
-        Calendar calendar = Calendar.getInstance();
-
-        // set the calendar to start of today
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-
         // and get that as a Date
-        Date today = calendar.getTime();
 
         // user-specified date which you are testing
         // let's say the components come from a form or something
-        int year = 2018;
-        int month = 5;
-        int dayOfMonth = 20;
+        DatabaseReference storageRef = dbStorage.getReference("Login/" + email.split("@")[0] + "/LeaseDate");
+        storageRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int year;
+                int month;
+                int dayOfMonth;
+                Calendar calendar = Calendar.getInstance();
 
-        if(month == 1){
-            month = 13;
-        }
-        // reuse the calendar to set user specified date
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month-1);
-        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                // set the calendar to start of today
+                calendar.set(Calendar.HOUR_OF_DAY, 0);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+                calendar.set(Calendar.MILLISECOND, 0);
 
-        // and get that as a Date
-        Date dateSpecified = calendar.getTime();
+                Date today = calendar.getTime();
 
-        // test your condition
-        if (today.after(dateSpecified)) {
-            //System.err.println("Date specified [" + dateSpecified + "] is before today [" + today + "]");
-            Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.HOUR_OF_DAY,23);
-            cal.set(Calendar.MINUTE, 16);
-            cal.set(Calendar.SECOND,30);
-            createWeeklyReminders("EndOfLease",cal);
-        }
+                String message;
+                if (dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                if(message == "")
+                {
+                     year = calendar.get(Calendar.YEAR)+5;
+                     month = calendar.get(Calendar.MONTH);
+                     dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+                }
+                else
+                {
+                    year = Integer.parseInt(message.split("-")[0]);
+                    month = Integer.parseInt(message.split("-")[1]);
+                    dayOfMonth = Integer.parseInt(message.split("-")[2]);
+                }
+                if(month == 1){
+                    month = 13;
+                }
+                // reuse the calendar to set user specified date
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, month-1);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                // and get that as a Date
+                Date dateSpecified = calendar.getTime();
+
+                // test your condition
+                if (today.after(dateSpecified)) {
+                    //System.err.println("Date specified [" + dateSpecified + "] is before today [" + today + "]");
+                    Calendar cal = Calendar.getInstance();
+                    cal.set(Calendar.HOUR_OF_DAY,23);
+                    cal.set(Calendar.MINUTE, 16);
+                    cal.set(Calendar.SECOND,30);
+                    createWeeklyReminders("EndOfLease",cal);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
 
 
     }
@@ -340,11 +376,84 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     private void createGroceryReminder() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY,23);
-        calendar.set(Calendar.MINUTE, 14);
-        calendar.set(Calendar.SECOND,30);
-        createWeeklyReminders("Grocery",calendar);
+        FirebaseDatabase storage = FirebaseDatabase.getInstance();
+        DatabaseReference storageRef = storage.getReference("Groups/"+groupName+"/GroceryReminderDay");
+        storageRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final Calendar calendar = Calendar.getInstance();
+                String message;
+                if(dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                int day=0;
+
+                if(message == "")
+                {
+                    calendar.set(Calendar.DAY_OF_WEEK,Calendar.SATURDAY);
+                }
+                else
+                {
+                    switch(message.toLowerCase())
+                    {
+                        case "monday": day = Calendar.MONDAY;
+                                        break;
+                        case "tuesday": day = Calendar.TUESDAY;
+                                        break;
+                        case "wednesday": day = Calendar.WEDNESDAY;
+                                        break;
+                        case "thursday": day = Calendar.THURSDAY;
+                                        break;
+                        case "friday": day = Calendar.FRIDAY;
+                                        break;
+                        case "saturday": day = Calendar.SATURDAY;
+                                        break;
+                        case "sunday": day = Calendar.SUNDAY;
+                                        break;
+                        default:    day = Calendar.SATURDAY;
+
+                    }
+                }
+                FirebaseDatabase storage = FirebaseDatabase.getInstance();
+                DatabaseReference storageRef = storage.getReference("Groups/"+groupName+"/GroceryReminderTime");
+
+                final int finalDay = day;
+                storageRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String message;
+                        if(dataSnapshot.getValue() == null)
+                            message = "";
+                        else
+                            message = dataSnapshot.getValue().toString();
+                        calendar.set(Calendar.DAY_OF_WEEK, finalDay);
+                        if(message == "")
+                        {
+                            calendar.set(Calendar.HOUR_OF_DAY,9);
+                            calendar.set(Calendar.MINUTE, 0);
+                            calendar.set(Calendar.SECOND,0);
+                        }
+                        else
+                        {
+                            calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(message.split(":")[0]));
+                            calendar.set(Calendar.MINUTE, Integer.parseInt(message.split(":")[1]));
+                            calendar.set(Calendar.SECOND,0);
+                        }
+                        createWeeklyReminders("Grocery",calendar);
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        System.out.println("The read failed: " + databaseError.getCode());
+                    }
+                });
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
     }
 
     private void createWeeklyReminders(String intentPurpose, Calendar calendar) {
@@ -352,10 +461,9 @@ public class MenuActivity extends AppCompatActivity {
         //calendar.set(Calendar.DAY_OF_WEEK,5);
         Intent intent = new Intent(getApplicationContext(),NotificationReceiver.class);
         intent.putExtra("Class",intentPurpose);
-        int x = (int)System.currentTimeMillis();
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(),x/Integer.MAX_VALUE,intent,PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(),0,intent,PendingIntent.FLAG_ONE_SHOT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),/*AlarmManager.INTERVAL_DAY*7*/ 90000,pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY*7 ,pendingIntent);
     }
 
 
@@ -481,40 +589,6 @@ public class MenuActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                             startActivity(i);
-                        }
-                        if (item.getTitle().toString().equals("Location")) {
-                            LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
-
-                            @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                            if (location != null) {
-                                double latitude=location.getLatitude();
-                                double longitude=location.getLongitude();
-                                Log.e("GPS","lat :  "+latitude);
-                                Log.e("GPS","long :  "+longitude);
-                                Geocoder geocoder;
-                                List<Address> addresses = null;
-                                geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
-
-                                try {
-                                    addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-
-                                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-                                String city = addresses.get(0).getLocality();
-                                String state = addresses.get(0).getAdminArea();
-                                String country = addresses.get(0).getCountryName();
-                                String postalCode = addresses.get(0).getPostalCode();
-                                String knownName = addresses.get(0).getFeatureName();
-                                String fullAddress =  address+", "+city+", "+state+", "+country+" "+postalCode;
-                                Toast.makeText(
-                                        MenuActivity.this, "Address: "+fullAddress,
-                                        Toast.LENGTH_SHORT
-                                ).show();
-                                LoginActivity.sock.send("SEND_LOCATION;" +email+";"+groupName+";"+fullAddress);
-
-                            }
                         }
                         if (item.getTitle().toString().equals("Roommate Search")) {
                             Intent i = new Intent(getBaseContext(), FiltersActivity.class);

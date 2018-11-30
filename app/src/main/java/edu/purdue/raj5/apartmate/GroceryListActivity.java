@@ -84,6 +84,7 @@ public class GroceryListActivity extends AppCompatActivity {
                 View viewDialog = LayoutInflater.from(GroceryListActivity.this).inflate(R.layout.add_grocery_reminder_time,null);
                 //final TextView tv_groceryItem = (EditText) viewDialog.findViewById(R.id.et_groceryNameAdd);
                 final EditText et_groceryReminder = (EditText) viewDialog.findViewById(R.id.et_groceryReminderTimeAdd);
+                final EditText et_day = (EditText) viewDialog.findViewById(R.id.et_groceryReminderDateAdd);
                 final Button bt_groceryItemAdd = (Button) viewDialog.findViewById(R.id.bt_groceryReminderTimeAdd);
                 builder.setView(viewDialog);
                 builder.setTitle("Reminder Time");
@@ -93,6 +94,7 @@ public class GroceryListActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         String groceryRemainderTime = et_groceryReminder.getText().toString();
                         Toast.makeText(GroceryListActivity.this, groceryRemainderTime, Toast.LENGTH_SHORT).show();
+                        LoginActivity.sock.send("UPDATE_GROCERY_REMINDER;"+groupName+";"+et_day.getText().toString()+";"+et_groceryReminder.getText().toString());
                         dialog.dismiss();
 
                     }

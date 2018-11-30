@@ -45,61 +45,61 @@ public class OtherFragmentAdapter extends RecyclerView.Adapter<OtherFragmentAdap
             public void onClick(View v) {
                 Intent intent;
                 switch (i) {
-                    case 1:
+                    case 0:
                         intent = new Intent(mContext, ChoresListActivity.class);
                         intent.putExtra("Email",email);
                         intent.putExtra("GroupName",groupName);
                         mContext.startActivity(intent);
                         break;
-                    case 2:
+                    case 1:
                         intent = new Intent(mContext, GroceryListActivity.class);
                         intent.putExtra("Email",email);
                         intent.putExtra("GroupName",groupName);
                         mContext.startActivity(intent);
                         break;
-                    case 3:
+                    case 2:
                         intent = new Intent(mContext, InterestActivity.class);
                         intent.putExtra("Email",email);
                         intent.putExtra("GroupName",groupName);
                         mContext.startActivity(intent);
                         break;
-                    case 4:
+                    case 3:
                         intent = new Intent(mContext, ShareablePossessionsActivity.class);
                         intent.putExtra("Email",email);
                         intent.putExtra("GroupName",groupName);
                         mContext.startActivity(intent);
                         break;
-                    case 5:
+                    case 4:
                         intent = new Intent(mContext, UnshareablePossessionsActivity.class);
                         intent.putExtra("Email",email);
                         intent.putExtra("GroupName",groupName);
                         mContext.startActivity(intent);
                         break;
-                    case 6:
+                    case 5:
                         intent = new Intent(mContext, BirthdayActivity.class);
                         intent.putExtra("Email",email);
                         intent.putExtra("GroupName",groupName);
                         mContext.startActivity(intent);
                         break;
-                    case 7:
+                    case 6:
                         intent = new Intent(mContext, ScheduleActivity.class);
                         intent.putExtra("Email",email);
                         intent.putExtra("GroupName",groupName);
                         mContext.startActivity(intent);
                         break;
-                    case 8:
+                    case 7:
                         intent = new Intent(mContext, ReceiptActivity.class);
                         intent.putExtra("Email",email);
                         intent.putExtra("GroupName",groupName);
                         mContext.startActivity(intent);
                         break;
-                    case 9:
+                    case 8:
                         intent = new Intent(mContext, EmergencyContactActivity.class);
                         intent.putExtra("Email",email);
                         intent.putExtra("GroupName",groupName);
                         mContext.startActivity(intent);
                         break;
-                    case 10:
+                    case 9:
                         intent = new Intent(mContext, RoommateRatingActivity.class);
                         intent.putExtra("Email",email);
                         intent.putExtra("GroupName",groupName);

@@ -51,6 +51,7 @@ public class TinderActivity extends AppCompatActivity {
     static String currentCardSmoke;
     static String currentCardDrink;
     static String currentCardInterests;
+    static String currentCardRating;
     //private Profile profile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,9 +178,6 @@ public class TinderActivity extends AppCompatActivity {
                             System.out.println("The read failed: " + databaseError.getCode());
                         }
                     });
-
-
-
                 }
             }
 
@@ -435,6 +433,55 @@ public class TinderActivity extends AppCompatActivity {
         });
     }
 
+    public static void updateRating()
+    {
+        DatabaseReference interestRef = dbStorage.getReference("Login/"+currentCardEmail.split("@")[0]+"/Rating/Count");
+        interestRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                if (dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                String countS = message;
+                final int count = Integer.parseInt(countS); //
+                if(count == 0)
+                {
+                    currentCardRating = "No ratings available";
+                }
+                else
+                {
+                    DatabaseReference interestRef = dbStorage.getReference("Login/"+currentCardEmail.split("@")[0]+"/Rating/Total");
+                    interestRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String message;
+                            if (dataSnapshot.getValue() == null)
+                                message = "";
+                            else
+                                message = dataSnapshot.getValue().toString();
+
+                            Double rating =  Math.round((Double.parseDouble(message)/count) * 2) / 2.0;
+                            currentCardRating = String.valueOf(rating);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            System.out.println("The read failed: " + databaseError.getCode());
+                        }
+                    });
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
     public void alerV() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("About Me");
@@ -459,6 +506,12 @@ public class TinderActivity extends AppCompatActivity {
         interest_text.setTextSize(15);
         interest_text.setPadding(10,10,0,0);
         layout.addView(interest_text);
+
+        TextView rating_text = new TextView(this );
+        rating_text.setText("Rating: "+currentCardRating);
+        rating_text.setTextSize(15);
+        rating_text.setPadding(10, 10,0,0);
+        layout.addView(rating_text);
 
         builder.setView(layout);
 
