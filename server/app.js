@@ -182,7 +182,7 @@ var processRegister = function (data,sock) {
                 var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/LikedUsers");
                 ref.set("");
                 var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Gender");
-                //initialize the rating and count for the group creater
+                //initialize the rating and count
                 var rateTotal = firebase.database().ref("Login/" + email.toString().split("@")[0]+"/Rating/Total");
                 var rateCount = firebase.database().ref("Login/" + email.toString().split("@")[0]+"/Rating/Count");
                 rateTotal.set("0");
@@ -885,7 +885,7 @@ var sendLocation = function (data,sock) {
 var updateRoommateRating = function(data,sock){
     var useremail = data.toString().split(";")[1];
     var rateemail = data.toString().split(";")[2];
-    var newrate = parseInt(data.toString().split(";")[3]);
+    var newrate = parseFloat(data.toString().split(";")[3]);
     var ref1 = firebase.database().ref("Login/" + useremail.split("@")[0]+ "/gRating/" + rateemail.split("@")[0] + "/");
     var oldrate;
     var bool;
@@ -909,14 +909,14 @@ var updateRoommateRating = function(data,sock){
 
     setTimeout(function () {
       if (bool === "f") {
-          var num = parseInt(snapshot.val().toString());
           num = num + 1;
           numRef.set(num);
       }
 
       var finalrate = newrate - oldrate;
       var setrating = rating + finalrate;
-      totalRef.set(setrating + ";t");
+      totalRef.set(setrating);
+      ref1.set(newrate + ";t");
 
       sock.write('UPDATE_ROOMMATE_RATING SUCCESS\n');
   }, 300);
@@ -1011,7 +1011,7 @@ var leaveGroup = function(data,sock) {
     refGroups.on("value", function (snapshot) {
         groupMap.set(group, snapshot);
     });
-    sock.write("LEAVE_GROUP SUCCESS\n");
+      sock.write("LEAVE_GROUP SUCCESS\n");
 }
 
 /*

@@ -57,7 +57,7 @@ public class RoommateRatingActivity extends AppCompatActivity {
                     message = dataSnapshot.getValue().toString();
                 members = message.split(";");
                 for(int i = 0; i < members.length - 1; i++) {
-                  if (members[i] != email) {
+                  if (!members[i].equals(email)) {
                       final int x = i;
                       FirebaseDatabase storage = FirebaseDatabase.getInstance();
                       DatabaseReference storageRef = storage.getReference("Login/" + email.split("@")[0] + "/gRating/" + members[i].split("@")[0]);
@@ -72,7 +72,7 @@ public class RoommateRatingActivity extends AppCompatActivity {
                                   message = dataSnapshot.getValue().toString();
                               Log.e("rating", members[x]+":"+message);
                               mNames.add(members[x]);
-                              mRating.add(message);
+                              mRating.add(message.split(";")[0]);
                               mRatingComments.add("Roommate Rating");
                               if(x == members.length-1) {
                                  init();

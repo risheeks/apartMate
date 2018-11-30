@@ -9,24 +9,24 @@ public class Test {
         //System.out.printf("This is a test\n");
         ip = "localhost";
         port = 9910;
-        test1_1();
-        test1_2();
-        test1_3();
-        Thread.sleep(4000);
-        test2_1();
-        test2_2();
-        test2_3();
-        Thread.sleep(1500);
-        test3();
-        Thread.sleep(1500);
-        test4_1();
-        test4_2();
-        Thread.sleep(1500);
-        test5();
-        Thread.sleep(1500);
-        //testCommand("irettig@purdue.edu", "12345", "ADD_GROUP;corruptsoul13@gmail.com;a");
-        prepTest6();
-        test6();
+//        test1_1();
+//        test1_2();
+//        test1_3();
+//        Thread.sleep(4000);
+//        test2_1();
+//        test2_2();
+//        test2_3();
+//        Thread.sleep(1500);
+//        test3();
+//        Thread.sleep(1500);
+//        test4_1();
+//        test4_2();
+//        Thread.sleep(1500);
+//        test5();
+//        Thread.sleep(1500);
+        testCommand("irettig@purdue.edu", "12345", "ADD_GROUP;corruptsoul13@gmail.com;a");
+        //prepTest6();
+        //test6();
     }
 
     //Adds user patel716
