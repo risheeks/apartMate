@@ -14,7 +14,7 @@ var app = firebase.initializeApp(    {databaseURL: "https://apartmate-3.firebase
 );
 var admin = require("firebase-admin");
 
-var serviceAccount = require("./apartmate-3-firebase-adminsdk-l73jh-8c59b5f699.json");
+var serviceAccount = require("C:\\Users\\Adrian Gerard Raj\\WebstormProjects\\ApartMate_Server\\apartmate-3-firebase-adminsdk-l73jh-8c59b5f699.json");
 var regToken = 'zzu@88fdbc9';
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -139,18 +139,17 @@ var processRegister = function (data,sock) {
     setTimeout(function () {
 
         var mailOptions = {
-            /*from: 'apartmate123@gmail.com',
+            from: 'apartmate123@gmail.com',
              to: email.toString(),
              subject: 'Welcome to ApartMate!',
-             text: 'Your account has been verified!\nEnjoy using our app!'*/
+             text: 'Your account has been verified!\nEnjoy using our app!'
         };
         transporter.sendMail(mailOptions, function(error, info){
             if (error) {
-                //console.log(error);
+                console.log(error);
             } else {
                 console.log('Email sent: ' + info.response);
             }setTimeout(function () {
-
                 var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Email");
                 ref.set(email);
                 var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Password");
@@ -171,6 +170,8 @@ var processRegister = function (data,sock) {
                 ref.set("0");
                 var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Birthday");
                 ref.set("0000-00-00");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/LeaseDate");
+                ref.set("0000-00-00");
                 var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Drink");
                 ref.set("No");
                 var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Major");
@@ -181,13 +182,16 @@ var processRegister = function (data,sock) {
                 ref.set("No");
                 var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/LikedUsers");
                 ref.set("");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/City");
+                ref.set("");
+                var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Events");
+                ref.set("");
                 var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Gender");
                 //initialize the rating and count for the group creater
                 var rateTotal = firebase.database().ref("Login/" + email.toString().split("@")[0]+"/Rating/Total");
                 var rateCount = firebase.database().ref("Login/" + email.toString().split("@")[0]+"/Rating/Count");
                 rateTotal.set("0");
                 rateCount.set("0");
-
                 sock.write('REGISTER SUCCESS\n');
                 const dbLoginRef = firebase.database().ref("Login").orderByKey();
                 dbLoginRef.once("value")
@@ -355,9 +359,9 @@ var editProfile = function (data,sock) {
     var gender = data.toString().split(";")[7];
     var major = data.toString().split(";")[8];
     var age = data.toString().split(";")[9];
-
-
-
+    var city = data.toString().split(";")[10];
+    var leaseDate = data.toString().split(";")[11];
+    var interests = data.toString().split(";")[12];
 
     setTimeout(function () {
         var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/FirstName");
@@ -377,7 +381,12 @@ var editProfile = function (data,sock) {
         ref.set(major);
         var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Age");
         ref.set(age);
-
+        var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/City");
+        ref.set(city);
+        var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/LeaseDate");
+        ref.set(leaseDate);
+        var ref = firebase.database().ref("Login/" + email.toString().split("@")[0] + "/Interests");
+        ref.set(interests);
     },200)
 }
 /*
@@ -468,9 +477,6 @@ var createGroup = function(data,sock){
             ref.set(email+":911;");
             var ref = firebase.database().ref("Login/" + email.split("@")[0] + "/Group");
             ref.set(groupName);
-
-
-
             sock.write('CREATE_GROUP SUCCESS\n');
             dbGroupRef.once("value")
                 .then(function (snapshot) {
@@ -509,7 +515,8 @@ var addToGroup = function(data,sock){
         ids = snapshot.val();
     });
     setTimeout(function () {
-        ref1.set(ids+email+";");
+        var r =  firebase.database().ref("Groups/" + groupName + "/Members");
+        r.set(ids+email+";");
         var ref2 = firebase.database().ref("Login/" + email.split("@")[0] + "/Group");
         ref2.set(groupName);
         dbGroupRef.once("value")
@@ -522,21 +529,6 @@ var addToGroup = function(data,sock){
             });
 
     },300);
-
-    setTimeout(function () {
-      ref1.on("value", function (snapshot) {
-        var gMembers = snapshot.val().toString().split(";");
-        var i;
-        for (i = 0; i < gMembers.length - 1; i++) {
-          if (!(email === gMembers[i])) {
-            var gRating = firebase.database().ref("Login/" + email.split("@")[0]+"/gRating/"+gMembers[i].split("@")[0]);
-            gRating.set("0");
-            var gRating2 = firebase.database().ref("Login/" + gMembers[i].split("@")[0]+"/gRating/"+email.split("@")[0]);
-            gRating2.set("0");
-          }
-        }
-      })
-    }, 500)
 
 
     sock.write('ADD_GROUP SUCCESS\n')
@@ -882,12 +874,45 @@ var sendLocation = function (data,sock) {
  *==================================================================================================================
  */
 
-var updateRoommateRating = function(data,sock){
-    var email = data.toString().split(";")[1];
-    var rating = data.toString().split(";")[2];
-    var ref1 = firebase.database().ref("Login/" + email.toString().split("@")[0]+ "/Rating");
-    ref1.set(rating);
-    sock.write('UPDATE_ROOMMATE_RATING SUCCESS\n');
+var updateRoommateRating = function(data,sock)
+{
+        var useremail = data.toString().split(";")[1];
+        var rateemail = data.toString().split(";")[2];
+        var newrate = parseFloat(data.toString().split(";")[3]);
+        var ref1 = firebase.database().ref("Login/" + useremail.split("@")[0]+ "/gRating/" + rateemail.split("@")[0] + "/");
+        var oldrate;
+        var bool;
+        var num;
+        var rating;
+
+        ref1.on("value", function(snapshot) {
+            oldrate = parseInt(snapshot.val().toString().split(";")[0]);
+            bool = snapshot.val().toString().split(";")[1];
+        });
+
+        var numRef = firebase.database().ref("Login/" + rateemail.split("@")[0] + "/Rating/Count");
+        numRef.on("value", function(snapshot) {
+            num = parseInt(snapshot.val().toString());
+        });
+
+        var totalRef = firebase.database().ref("Login/" + rateemail.split("@")[0] + "/Rating/Total");
+        totalRef.on("value", function(snapshot) {
+            rating = parseInt(snapshot.val().toString());
+        });
+
+        setTimeout(function () {
+            if (bool === "f") {
+                num = num + 1;
+                numRef.set(num);
+            }
+
+            var finalrate = newrate - oldrate;
+            var setrating = rating + finalrate;
+            totalRef.set(setrating);
+            ref1.set(newrate+";t");
+            sock.write('UPDATE_ROOMMATE_RATING SUCCESS\n');
+        }, 300);
+
 }
 
 /*
@@ -941,6 +966,17 @@ var leaveGroup = function(data,sock) {
         var regex1 = new RegExp(replace1, "g");
         var regex2 = new RegExp(replace2, "g");
         Members = Members.toString().replace(regex1, "");
+        var i;
+        var
+            m = Members.split(";");
+        for (i = 0; i < m.length - 1; i++) {
+            console.log("looping "+ m[i])
+            var gRateRef = firebase.database().ref("Login/" + m[i].split("@")[0] + "/gRating/");// + email.split("@")[0]);
+            gRateRef.child(email.split("@")[0]).remove();
+            //gRateRef.remove();
+        }
+        var usergRating = firebase.database().ref("Login/" + email.split("@")[0] + "/gRating");
+        usergRating.remove();
         refMembers.set(Members);
         if (Interests !== null) {
             Interests = Interests.toString().replace(regex2, "");
@@ -958,7 +994,7 @@ var leaveGroup = function(data,sock) {
             Unshare = Unshare.toString().replace(regex2, "");
             refUnshare.set(Unshare);
         }
-    }, 300);
+    }, 700);
 
     //adjust the group map with the firebase data
     var refGroups = firebase.database().ref("Groups/" + group);
@@ -1082,6 +1118,50 @@ var addRegToken = function(data,sock)
     regTokenMap.set(email,token);
 }
 
+var updateDialog = function(data,sock)
+{
+    var email = data.toString().split(";")[1];
+    var refSmoke = firebase.database().ref("Login/" + email.split("@")[0] + "/Smoke");
+    var refDrink = firebase.database().ref("Login/" + email.split("@")[0] + "/Drink");
+    var refInterests = firebase.database().ref("Login/" + email.split("@")[0] + "/Interests");
+
+    var smoke;
+    var drink;
+    var interests;
+
+    refSmoke.on("value", function (snapshot) {
+        smoke = snapshot.val();
+    });
+    refDrink.on("value", function (snapshot) {
+        drink = snapshot.val();
+    });
+    refInterests.on("value", function (snapshot) {
+        interests = snapshot.val();
+    });
+
+  //  setTimeout(function () {
+        if(smoke == null)
+            smoke = "";
+        if(drink == null)
+            drink = "";
+        if(interests == null)
+            interests = "";
+        sock.write("UPDATE_DIALOG_SUCCESS;"+smoke+";"+drink+";"+interests);
+ //   },100);
+
+}
+
+var updateGroceryReminder = function(data,sock)
+{
+    var groupName = data.toString().split(";")[1];
+    var day = data.toString().split(";")[2];
+    var time = data.toString().split(";")[3];
+    var refDay = firebase.database().ref("Groups/" + groupName + "/GroceryReminderDay");
+    var refTime = firebase.database().ref("Groups/" + groupName + "/GroceryReminderTime");
+    refDay.set(day);
+    refTime.set(time)
+}
+
 /*
  *==================================================================================================================
  *  Starts the server with sockets listening for different input commands
@@ -1189,6 +1269,14 @@ var svr = net.createServer(function(sock) {
         else if (command2 == "ADD_REG_TOKEN"){
             addRegToken(data,sock);
         }
+        else if(command2 == "UPDATE_DIALOG")
+        {
+            updateDialog(data,sock);
+        }
+        else if(command2 == "UPDATE_GROCERY_REMINDER")
+        {
+            updateGroceryReminder(data,sock);
+        }
 
     }
     console.log('Connected: ' + sock.remoteAddress + ':' + sock.remotePort);
@@ -1223,7 +1311,7 @@ var svr = net.createServer(function(sock) {
     });
 });
 
-var svraddr = '10.186.103.251';
+var svraddr = '192.168.43.85';
 var svrport = 9910;
 
 svr.listen(svrport, svraddr);
