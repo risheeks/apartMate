@@ -77,6 +77,14 @@
             android:layout_gravity="center"
             android:hint="@string/register_birthday"
             android:padding="10dp"/>
+    <EditText
+        android:id="@+id/et_city"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_gravity="center"
+        android:hint="@string/location"
+        android:padding="10dp"/>
 
         <Button
             android:id="@+id/bt_profileEdit"

@@ -37,15 +37,29 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
-            android:text="@string/zip" />
+            android:text="@string/location" />
 
         <EditText
             android:id="@+id/zip"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.75"
+            android:ems="10" />
+        <TextView
+            android:id="@+id/genderL"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="@string/register_gender" />
+
+        <EditText
+            android:id="@+id/gender"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.75"
             android:ems="10"
-            android:inputType="phone" />
+            android:inputType="text" />
+
     </LinearLayout>
 
     <LinearLayout
