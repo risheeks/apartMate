@@ -87,6 +87,14 @@ public class MessageAdapter extends ArrayAdapter<ChatBubble> {
         public ViewHolder(View v) {
             sdr = (TextView) v.findViewById(R.id.txt_sdr);
             msg = (TextView) v.findViewById(R.id.txt_msg);
+            if (ChatActivity.s.equals("dark")) {
+                sdr.setTextColor(Color.YELLOW);
+                msg.setTextColor(Color.WHITE);
+
+            } else {
+                sdr.setTextColor(Color.BLUE);
+                msg.setTextColor(Color.BLACK);
+            }
         }
     }
 }

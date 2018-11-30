@@ -63,7 +63,7 @@ public class ChatActivity extends AppCompatActivity {
     //String groupName;
     String email;
     String myEmail;
-
+    static String s;
 
     @Override
     public void onBackPressed() {
@@ -84,7 +84,7 @@ public class ChatActivity extends AppCompatActivity {
 //        optionsButton = (ImageView) findViewById(R.id.iv_menuOptions);
         LinearLayout ll = (LinearLayout) findViewById(R.id.filterll);
         // The following code is used for theme preferences.
-        String s = preferences.getString("theme", "");
+        s = preferences.getString("theme", "");
         if (s.equals("dark")) {
             listView.setBackgroundColor(Color.DKGRAY);
             interests.setTextColor(Color.WHITE);
