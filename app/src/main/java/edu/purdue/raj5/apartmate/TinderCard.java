@@ -25,24 +25,29 @@ import com.mindorks.placeholderview.annotations.swipe.SwipeOut;
 import com.mindorks.placeholderview.annotations.swipe.SwipeOutState;
 
 import java.io.ByteArrayOutputStream;
-
+/*
+* The potential roommate card which contains all the information about the roommate
+*/
 @Layout(R.layout.tinder_car_view)
 public class TinderCard {
 
+    //ImageView to display the potential roommate's image
     @View(R.id.profileImageView)
     private ImageView profileImageView;
-
+    //TextView to display the potential roommate's name and age
     @View(R.id.nameAgeTxt)
     private TextView nameAgeTxt;
-
+    //TextView to display the potential roommate's location
     @View(R.id.locationNameTxt)
     private TextView locationNameTxt;
+    //Bitmap for setting the image
     private Bitmap bmp;
     private Profile mProfile;
     private Context mContext;
     private SwipePlaceHolderView mSwipeView;
 
     private String email;
+    //Set the image, and profile details
     public TinderCard(Context context, Profile profile, SwipePlaceHolderView swipeView, Bitmap bmp) {
         mContext = context;
         mProfile = profile;
@@ -50,7 +55,9 @@ public class TinderCard {
         this.bmp = bmp;
       //  profileImageView.setImageBitmap(bmp);
     }
-
+    /*
+    * Method to set the information on the card - Image, Name, Age, and Location
+    */
     @Resolve
     private void onResolved(){
       // Glide.with(mContext).load(mProfile.getImageUrl()).into(profileImageView);
@@ -60,6 +67,7 @@ public class TinderCard {
     }
 
     @SwipeOut
+    //Swipe out (reject) event
     private void onSwipedOut(){
         Log.d("EVENT", "onSwipedOut");
         mSwipeView.addView(this);
@@ -71,6 +79,7 @@ public class TinderCard {
     }
 
     @SwipeIn
+    //Swipe in (accept) event
     private void onSwipeIn(){
         Log.d("EVENT", "onSwipedIn");
         Log.d("Name:",this.mProfile.getName());
@@ -80,6 +89,7 @@ public class TinderCard {
     }
 
     @SwipeInState
+    //Card currently tapped
     private void onSwipeInState(){
         Log.d("EVENT", "onSwipeInState");
         TinderActivity.currentCardEmail = this.mProfile.getEmail();

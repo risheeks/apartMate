@@ -29,6 +29,11 @@ import com.google.firebase.storage.StorageReference;
 import com.mindorks.placeholderview.SwipeDecor;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 
+/*
+* Active for searching potential roommates
+* Roommate search is based on a filter by Major, Age, location etc.
+*/
+
 public class TinderActivity extends AppCompatActivity {
     final FirebaseDatabase dbStorage = FirebaseDatabase.getInstance();
     private SwipePlaceHolderView mSwipeView;
@@ -65,6 +70,7 @@ public class TinderActivity extends AppCompatActivity {
                         .setSwipeInMsgLayoutId(R.layout.tinder_swipe_in_msg_view)
                         .setSwipeOutMsgLayoutId(R.layout.tinder_swipe_out_msg_view));
 
+        //FireBase call to get the list of Users (Potential roommates)
         DatabaseReference storageRef = dbStorage.getReference("Users");
         storageRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -160,6 +166,7 @@ public class TinderActivity extends AppCompatActivity {
                     });
 
                 }
+                //If no potential roommates found
                 if(mSwipeView.getChildCount() == 0)
                 {
                     Toast.makeText(getApplicationContext(),"No users with current filters",Toast.LENGTH_SHORT).show();
@@ -168,28 +175,35 @@ public class TinderActivity extends AppCompatActivity {
 
 
             }
-
+            //FireBase error
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
 
-
+        /*
+        * set the onClick for reject button
+        */
         findViewById(R.id.rejectBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mSwipeView.doSwipe(false);
             }
         });
-
+        /*
+        * set the onClick for accept button
+        */
         findViewById(R.id.acceptBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mSwipeView.doSwipe(true);
             }
         });
-
+        /*
+        * set the onClick for info button
+        * The info button will display an alert containint the potential user's age, major and various other preferences
+        */
         findViewById(R.id.infoBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,7 +211,9 @@ public class TinderActivity extends AppCompatActivity {
             }
         });
     }
-
+    /*
+    * Apply filters to the potential roommate search
+    */
     private boolean applyFilters(final Profile profile) {
         boolean age=false;
         if((filterAgeMin<= profile.getAge() &&  profile.getAge() <=filterAgeMax))
@@ -232,14 +248,17 @@ public class TinderActivity extends AppCompatActivity {
         else
             return false;
     }
-
+    /*
+    * Alert to display the various details about the potential roommate
+    * Bool smoke, Bool drink, and Interests
+    */
     public void alerV() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("About Me");
 
         final LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
-
+        //Get if the potential roommate smokes or not
         DatabaseReference smokeRef = dbStorage.getReference("Login/"+currentCardEmail.split("@")[0]+"/Smoke");
         smokeRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -261,7 +280,7 @@ public class TinderActivity extends AppCompatActivity {
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
-
+        //Get if the potential roommate drink or not
         DatabaseReference drinkRef = dbStorage.getReference("Login/"+currentCardEmail.split("@")[0]+"/Drink");
         drinkRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -283,7 +302,7 @@ public class TinderActivity extends AppCompatActivity {
                 System.out.println("The read failed: " + databaseError.getCode());
             }
         });
-
+        //Get the interests of the potential roommate
         DatabaseReference interestRef = dbStorage.getReference("Login/"+currentCardEmail.split("@")[0]+"/Interests");
         interestRef.addValueEventListener(new ValueEventListener() {
             @Override
