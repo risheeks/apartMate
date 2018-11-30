@@ -30,6 +30,14 @@ public class ReceiptActivity extends AppCompatActivity {
     String email;
 
     @Override
+    public void onBackPressed() {
+        Intent i = new Intent(ReceiptActivity.this, GroupTabsActivity.class);
+        i.putExtra("Email",email);
+        i.putExtra("GroupName",groupName);
+        startActivity(i);
+
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receipt);

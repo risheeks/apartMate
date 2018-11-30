@@ -2,6 +2,7 @@ package edu.purdue.raj5.apartmate;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -51,8 +52,8 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.ViewHold
             super(itemView);
             match = (TextView) itemView.findViewById(R.id.tv_matchesName);
             ll_matches = (LinearLayout) itemView.findViewById(R.id.ll_matches);
-            String s = preferences.getString("theme", "");
-            if (s.equals("dark")) {
+
+            if (MenuActivity.s.equals("dark")) {
                 ll_matches.setBackgroundColor(Color.DKGRAY);
                 match.setTextColor(Color.WHITE);
             } else {

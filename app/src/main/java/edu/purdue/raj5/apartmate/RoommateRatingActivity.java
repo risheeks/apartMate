@@ -31,11 +31,13 @@ public class RoommateRatingActivity extends AppCompatActivity {
     private ArrayList<String> mRatingComments = new ArrayList<>();
     String groupName;
     String[] members;
+    String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         groupName = getIntent().getExtras().getString("GroupName");
+        email = getIntent().getExtras().getString("Email");
         setContentView(R.layout.activity_roommate_rating);
         initializeRecyclerView();
 
@@ -54,33 +56,40 @@ public class RoommateRatingActivity extends AppCompatActivity {
                 else
                     message = dataSnapshot.getValue().toString();
                 members = message.split(";");
+                mNames.clear();
+                mRatingComments.clear();
+                mRating.clear();
                 for(int i = 0; i < members.length; i++) {
-                    final int x = i;
-                    FirebaseDatabase storage = FirebaseDatabase.getInstance();
-                    DatabaseReference storageRef = storage.getReference("Login/" + members[i].split("@")[0] + "/Rating");
-                    storageRef.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Log.e("in","rating");
-                            String message;
-                            if (dataSnapshot.getValue() == null)
-                                message = "";
-                            else
-                                message = dataSnapshot.getValue().toString();
-                            Log.e("rating", members[x]+":"+message);
-                            mNames.add(members[x]);
-                            mRating.add(message);
-                            mRatingComments.add("Roommate Rating");
-                            if(x == members.length-1) {
-                               init();
-                            }
-                        }
+                    Log.e("test",members[i]+"  " +email);
+                    if (!members[i].equals(email) && !members[i].isEmpty() && members[i] != null) {
+                        final int x = i;
+                        FirebaseDatabase storage = FirebaseDatabase.getInstance();
+                        DatabaseReference storageRef = storage.getReference("Login/" + email.split("@")[0] + "/gRating/" + members[i].split("@")[0]);
+                        storageRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Log.e("in","rating");
+                                String message;
+                                if (dataSnapshot.getValue() == null)
+                                    message = "";
+                                else
+                                    message = dataSnapshot.getValue().toString();
+                                Log.e("rating", members[x]+":"+message);
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            System.out.println("The read failed: " + databaseError.getCode());
-                        }
-                    });
+                                mNames.add(members[x]);
+                                mRating.add(message.split(";")[0]);
+                                mRatingComments.add("Roommate Rating");
+                                if(x == members.length-1) {
+                                    init();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                System.out.println("The read failed: " + databaseError.getCode());
+                            }
+                        });
+                    }
                 }
 
             }
@@ -95,7 +104,7 @@ public class RoommateRatingActivity extends AppCompatActivity {
     }
     void init()
     {
-        RoommateRatingAdapter adaptor = new RoommateRatingAdapter(RoommateRatingActivity.this, mNames, mRating, mRatingComments, groupName);
+        RoommateRatingAdapter adaptor = new RoommateRatingAdapter(RoommateRatingActivity.this, mNames, mRating, mRatingComments, groupName, email);
         rv_roommateRatings.setAdapter(adaptor);
         rv_roommateRatings.setLayoutManager(new LinearLayoutManager(RoommateRatingActivity.this));
     }

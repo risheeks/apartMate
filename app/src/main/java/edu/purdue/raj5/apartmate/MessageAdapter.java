@@ -1,6 +1,7 @@
 package edu.purdue.raj5.apartmate;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,7 +88,7 @@ public class MessageAdapter extends ArrayAdapter<ChatBubble> {
         public ViewHolder(View v) {
             sdr = (TextView) v.findViewById(R.id.txt_sdr);
             msg = (TextView) v.findViewById(R.id.txt_msg);
-            if (ChatActivity.s.equals("dark")) {
+            if (MenuActivity.s.equals("dark")) {
                 sdr.setTextColor(Color.YELLOW);
                 msg.setTextColor(Color.WHITE);
 

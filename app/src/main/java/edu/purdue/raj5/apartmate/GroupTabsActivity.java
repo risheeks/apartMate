@@ -1,7 +1,12 @@
 package edu.purdue.raj5.apartmate;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -13,6 +18,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,8 +26,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 public class GroupTabsActivity extends AppCompatActivity {
 
@@ -121,17 +132,20 @@ public class GroupTabsActivity extends AppCompatActivity {
             dialog.show();
         }
         if (id == R.id.action_leave_group) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+            AlertDialog.Builder builder = new AlertDialog.Builder(GroupTabsActivity.this);
 
             builder.setTitle("Confirm");
-            builder.setMessage("Are you sure you want to leave group?");
+            LinearLayout layout = new LinearLayout(this);
+            TextView tv = new TextView(GroupTabsActivity.this);
+            tv.setText("Are you sure you want to leave group?");
+            layout.addView(tv);//"Are you sure you want to leave group?"));
 
+            builder.setView(layout);
             builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
                 public void onClick(DialogInterface dialog, int which) {
                     //server call to leave group. switch intent
                     LoginActivity.sock.send("LEAVE_GROUP;" + groupName + ";" + email);
-
                     Intent i = new Intent(getApplicationContext(), MenuActivity.class);
                     i.putExtra("Email",email);
                     startActivity(i);
@@ -148,8 +162,41 @@ public class GroupTabsActivity extends AppCompatActivity {
                 }
             });
 
-            AlertDialog alert = builder.create();
-            alert.show();
+            builder.show();
+        }
+        if (item.getTitle().toString().equals("Share Location")) {
+            LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+
+            @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location != null) {
+                double latitude=location.getLatitude();
+                double longitude=location.getLongitude();
+                Log.e("GPS","lat :  "+latitude);
+                Log.e("GPS","long :  "+longitude);
+                Geocoder geocoder;
+                List<Address> addresses = null;
+                geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+
+                try {
+                    addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                String city = addresses.get(0).getLocality();
+                String state = addresses.get(0).getAdminArea();
+                String country = addresses.get(0).getCountryName();
+                String postalCode = addresses.get(0).getPostalCode();
+                String knownName = addresses.get(0).getFeatureName();
+                String fullAddress =  address+", "+city+", "+state+", "+country+" "+postalCode;
+                Toast.makeText(
+                        GroupTabsActivity.this, "Address: "+fullAddress,
+                        Toast.LENGTH_SHORT
+                ).show();
+                LoginActivity.sock.send("SEND_LOCATION;" +email+";"+groupName+";"+fullAddress);
+
+            }
         }
         return super.onOptionsItemSelected(item);
     }

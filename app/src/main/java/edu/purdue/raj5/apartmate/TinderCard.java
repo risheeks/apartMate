@@ -86,6 +86,7 @@ public class TinderCard {
         TinderActivity.updateSmoke();
         TinderActivity.updateDrink();
         TinderActivity.updateInterests();
+        TinderActivity.updateRating();
     }
 
     @SwipeOutState

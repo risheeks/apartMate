@@ -42,6 +42,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.w3c.dom.Text;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -84,6 +86,8 @@ public class ProfileActivity extends AppCompatActivity {
     TextView tv_major;
     TextView tv_birthday;
     TextView tv_city;
+    TextView tv_leaseDate;
+    TextView tv_interests;
 
 
 
@@ -115,6 +119,8 @@ public class ProfileActivity extends AppCompatActivity {
             tv_firstName = (TextView)findViewById(R.id.tv_profile_firstName);
             tv_lastName = (TextView)findViewById(R.id.tv_profile_lastName);
             tv_email = (TextView)findViewById(R.id.tv_profile_email);
+            tv_interests = (TextView) findViewById(R.id.tv_interests) ;
+            tv_birthday = (TextView) findViewById(R.id.tv_birthday);
             tv_LatestAachievement = (TextView)findViewById(R.id.tv_latestAchievement);
             tv_GreatestAchievement = (TextView)findViewById(R.id.tv_greatestAchievement);
             tv_changePassword = (TextView)findViewById(R.id.tv_changePassword);
@@ -128,11 +134,16 @@ public class ProfileActivity extends AppCompatActivity {
             tv_gender.setTextColor(Color.WHITE);
             tv_major.setTextColor(Color.WHITE);
             tv_city.setTextColor(Color.WHITE);
+            tv_leaseDate.setTextColor(Color.WHITE);
+            tv_interests.setTextColor(Color.WHITE);
+            tv_birthday.setTextColor(Color.WHITE);
         }else {
             RelativeLayout rl = (RelativeLayout)findViewById(R.id.rl);
             rl.setBackgroundColor(Color.WHITE);
             tv_firstName = (TextView)findViewById(R.id.tv_profile_firstName);
+            tv_birthday = (TextView) findViewById(R.id.tv_birthday);
             tv_lastName = (TextView)findViewById(R.id.tv_profile_lastName);
+            tv_interests = (TextView) findViewById(R.id.tv_interests) ;
             tv_email = (TextView)findViewById(R.id.tv_profile_email);
             tv_LatestAachievement = (TextView)findViewById(R.id.tv_latestAchievement);
             tv_GreatestAchievement = (TextView)findViewById(R.id.tv_greatestAchievement);
@@ -147,6 +158,9 @@ public class ProfileActivity extends AppCompatActivity {
             tv_gender.setTextColor(Color.BLACK);
             tv_major.setTextColor(Color.BLACK);
             tv_city.setTextColor(Color.BLACK);
+            tv_leaseDate.setTextColor(Color.BLACK);
+            tv_interests.setTextColor(Color.BLACK);
+            tv_birthday.setTextColor(Color.WHITE);
 
         }
 
@@ -318,8 +332,8 @@ public class ProfileActivity extends AppCompatActivity {
                 final EditText et_major = (EditText) view.findViewById(R.id.et_major);
                 final EditText et_birthday = (EditText) view.findViewById(R.id.et_birthday);
                 final EditText et_city = (EditText) view.findViewById(R.id.et_city);
-
-
+                final EditText et_leaseDate = (EditText) view.findViewById(R.id.et_leas);
+                final EditText et_interests = (EditText) view.findViewById(R.id.et_interests);
                 final Button bt_applyChanges = (Button) view.findViewById(R.id.bt_profileEdit);
                 builder.setView(view);
                 final AlertDialog dialog = builder.create();
@@ -335,6 +349,8 @@ public class ProfileActivity extends AppCompatActivity {
                         String major = et_major.getText().toString();
                         String birthday = et_birthday.getText().toString();
                         String city = et_city.getText().toString();
+                        String leaseDate = et_leaseDate.getText().toString();
+                        String interests = et_interests.getText().toString();
                         if(fName.isEmpty())
                             fName = tv_firstName.getText().toString();
                         else
@@ -371,7 +387,16 @@ public class ProfileActivity extends AppCompatActivity {
                             city = tv_city.getText().toString();
                         else
                             tv_city.setText(city);
-                        socket.send("EDIT_PROFILE;"+email+";"+fName+";"+lName+";"+lAchievement+";"+gAchievement+";"+birthday+";"+gender+";"+major+";"+age+";"+city);
+                        if(leaseDate.isEmpty())
+                            leaseDate = tv_leaseDate.getText().toString();
+                        else
+                            tv_leaseDate.setText(leaseDate);
+                        if(interests.isEmpty())
+                            interests = tv_interests.getText().toString();
+                        else
+                            tv_interests.setText(interests);
+
+                        socket.send("EDIT_PROFILE;"+email+";"+fName+";"+lName+";"+lAchievement+";"+gAchievement+";"+birthday+";"+gender+";"+major+";"+age+";"+city+";"+leaseDate+";"+interests);
                         dialog.dismiss();
 
                     }
@@ -412,12 +437,14 @@ public class ProfileActivity extends AppCompatActivity {
         displayAge();
         displayGender();
         displayEmail();
+        displayInterests();
         displaylatestAchievement();
         displayGreatestAchievement();
         displayMajor();
         displayPicture();
         displayBirthday();
         displayCity();
+        displayLeaseDate();
     }
 
     private void displayBirthday() {
@@ -441,8 +468,28 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    private void displayInterests() {
+
+        DatabaseReference storageRef = dbStorage.getReference("Login/" + email.split("@")[0] + "/Interests");
+        storageRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                if (dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                tv_interests.setText(message);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
     private void displayPicture() {
-        StorageReference islandRef = storageRef.child("profile"+tv_email.getText().toString()+".jpg");
+        StorageReference islandRef = storageRef.child("profile"+email+".jpg");
 
         final long ONE_MEGABYTE = 1024 * 1024;
         islandRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -648,6 +695,27 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    private void displayLeaseDate()
+    {
+        DatabaseReference storageRef = dbStorage.getReference("Login/" + email.split("@")[0] + "/LeaseDate");
+        storageRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String message;
+                if (dataSnapshot.getValue() == null)
+                    message = "";
+                else
+                    message = dataSnapshot.getValue().toString();
+                tv_leaseDate.setText(message);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
 
 /*
 *
@@ -670,6 +738,7 @@ public class ProfileActivity extends AppCompatActivity {
         tv_gender = (TextView) findViewById(R.id.tv_gender);
         tv_major = (TextView) findViewById(R.id.tv_Major);
         tv_birthday = (TextView) findViewById(R.id.tv_birthday);
+        tv_leaseDate = (TextView) findViewById(R.id.tv_leaseDate);
     }
     private void takePhoto(){
         ib_camera_profile = (ImageButton)findViewById(R.id.ib_profilePhotoCamera);

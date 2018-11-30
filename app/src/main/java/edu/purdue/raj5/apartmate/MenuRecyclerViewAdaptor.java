@@ -2,6 +2,7 @@ package edu.purdue.raj5.apartmate;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -83,6 +84,7 @@ public class MenuRecyclerViewAdaptor extends RecyclerView.Adapter<MenuRecyclerVi
                 llMenuGroup.setBackgroundColor(Color.WHITE);
                 groupName.setTextColor(Color.BLACK);
             }
+
         }
     }
 }

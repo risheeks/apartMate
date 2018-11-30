@@ -2,8 +2,10 @@ package edu.purdue.raj5.apartmate;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -56,6 +59,7 @@ public class ChatActivity extends AppCompatActivity {
     boolean myMessage = true;
     private List<ChatBubble> ChatBubbles;
     private ArrayAdapter<ChatBubble> adapter;
+    static String s;
 
     //FileOutputStream outputStream;
     BufferedWriter bw;
@@ -63,13 +67,30 @@ public class ChatActivity extends AppCompatActivity {
     //String groupName;
     String email;
     String myEmail;
-    static String s;
+
 
     @Override
     public void onBackPressed() {
         Intent i = new Intent(getApplicationContext(), MenuActivity.class);
         i.putExtra("Email",myEmail);
         startActivity(i);
+    }
+    private void initializeTheme() {
+        String theme = "";
+        try {
+            FileInputStream fis = openFileInput("theme");
+            Scanner scanner = new Scanner(fis);
+            theme = scanner.next();
+            scanner.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (theme.contains("dark"))
+            getAppTheme("dark");
+
+        else
+            getAppTheme("light");
     }
 
     public void getAppTheme(String theme) { //theme is "light" or "dark"
@@ -82,39 +103,24 @@ public class ChatActivity extends AppCompatActivity {
 //        interests = (EditText) findViewById(R.id.Interests);
 //        et_chatSearch = (TextView) findViewById(R.id.et_chatSearch);
 //        optionsButton = (ImageView) findViewById(R.id.iv_menuOptions);
-        LinearLayout ll = (LinearLayout) findViewById(R.id.filterll);
+        LinearLayout ll = (LinearLayout) findViewById(R.id.ll_chat);
         // The following code is used for theme preferences.
         s = preferences.getString("theme", "");
         if (s.equals("dark")) {
+            ll.setBackgroundColor(Color.DKGRAY);
             listView.setBackgroundColor(Color.DKGRAY);
-            interests.setTextColor(Color.WHITE);
-            zip.setTextColor(Color.WHITE);
-            dispage.setTextColor(Color.WHITE);
-            majorSpinner.setBackgroundColor(Color.GRAY);
-            //age.setBackgroundColor(Color.WHITE);
-            interestL.setTextColor(Color.WHITE);
-            dispageL.setTextColor(Color.WHITE);
-            majorL.setTextColor(Color.WHITE);
-            zipL.setTextColor(Color.WHITE);
-            age.setBackgroundColor(Color.DKGRAY);
-
+            editText.setBackgroundColor(Color.DKGRAY);
+            editText.setHintTextColor(Color.WHITE);
+            editText.setTextColor(Color.WHITE);
         } else {
             ll.setBackgroundColor(Color.WHITE);
-            interests.setTextColor(Color.BLACK);
-            zip.setTextColor(Color.BLACK);
-            dispage.setTextColor(Color.BLACK);
-            majorSpinner.setBackgroundColor(Color.WHITE);
-            //age.setBackgroundColor(Color.WHITE);
-            interestL.setTextColor(Color.BLACK);
-            dispageL.setTextColor(Color.BLACK);
-            majorL.setTextColor(Color.BLACK);
-            zipL.setTextColor(Color.BLACK);
-            age.setBackgroundColor(Color.WHITE);
+            listView.setBackgroundColor(Color.WHITE);
+            editText.setBackgroundColor(Color.WHITE);
+            editText.setTextColor(Color.BLACK);
         }
 
 
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,6 +135,7 @@ public class ChatActivity extends AppCompatActivity {
         //set ListView adapter first
         adapter = new MessageAdapter(this, R.layout.left_chat_bubble, ChatBubbles);
         listView.setAdapter(adapter);
+        initializeTheme();
         FileInputStream fis = null;
         try {
             fis = openFileInput(email);
@@ -141,8 +148,8 @@ public class ChatActivity extends AppCompatActivity {
             String sender;
             String mess;
             while (scanner.hasNext()) {
-                sender = scanner.next().split("@")[0];
-                mess = scanner.nextLine().split(";")[1];
+                sender = scanner.next();
+                mess = scanner.nextLine();
                 chatBubble = new ChatBubble(sender, mess);
                 ChatBubbles.add(chatBubble);
             }
@@ -176,8 +183,8 @@ public class ChatActivity extends AppCompatActivity {
                     String sender;
                     String mess;
                     while (scanner.hasNext()) {
-                        sender = scanner.next().split("@")[0];
-                        mess = scanner.nextLine().split(";")[1];
+                        sender = scanner.next();
+                        mess = scanner.nextLine();
                         chatBubble = new ChatBubble(sender, mess);
                         ChatBubbles.add(chatBubble);}
                     adapter.notifyDataSetChanged();
@@ -219,8 +226,8 @@ public class ChatActivity extends AppCompatActivity {
                     String sender;
                     String mess;
                     while (scanner.hasNext()) {
-                        sender = scanner.next().split("@")[0];
-                        mess = scanner.nextLine().split(";")[1];
+                        sender = scanner.next();
+                        mess = scanner.nextLine();
                         chatBubble = new ChatBubble(sender, mess);
                         ChatBubbles.add(chatBubble);}
                     adapter.notifyDataSetChanged();

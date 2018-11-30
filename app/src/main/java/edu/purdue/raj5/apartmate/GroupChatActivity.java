@@ -2,6 +2,8 @@ package edu.purdue.raj5.apartmate;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.os. Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -39,6 +42,7 @@ public class GroupChatActivity extends AppCompatActivity {
     private List<ChatBubble> ChatBubbles;
     private ArrayAdapter<ChatBubble> adapter;
     private String sdefault = "Hey! How's Life?";
+    static String s;
     //FileOutputStream outputStream;
     BufferedWriter bw;
     FileWriter fw;
@@ -47,6 +51,51 @@ public class GroupChatActivity extends AppCompatActivity {
     GroupTabsActivity groupTabsActivity;
     String friend1 = "friend1";
     String friend2 = "friend2";
+    public void getAppTheme(String theme) { //theme is "light" or "dark"
+
+        //call this inside every activity
+        SharedPreferences preferences = this.getSharedPreferences("MyTheme", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("theme", theme);
+        editor.commit();
+//        interests = (EditText) findViewById(R.id.Interests);
+//        et_chatSearch = (TextView) findViewById(R.id.et_chatSearch);
+//        optionsButton = (ImageView) findViewById(R.id.iv_menuOptions);
+        LinearLayout ll = (LinearLayout) findViewById(R.id.ll_groupchat);
+        // The following code is used for theme preferences.
+        s = preferences.getString("theme", "");
+        if (s.equals("dark")) {
+            ll.setBackgroundColor(Color.DKGRAY);
+            listView.setBackgroundColor(Color.DKGRAY);
+            editText.setBackgroundColor(Color.DKGRAY);
+            editText.setHintTextColor(Color.WHITE);
+            editText.setTextColor(Color.WHITE);
+        } else {
+            ll.setBackgroundColor(Color.WHITE);
+            listView.setBackgroundColor(Color.WHITE);
+            editText.setBackgroundColor(Color.DKGRAY);
+            editText.setTextColor(Color.BLACK);
+        }
+
+    }
+
+    private void initializeTheme() {
+        String theme = "";
+        try {
+            FileInputStream fis = openFileInput("theme");
+            Scanner scanner = new Scanner(fis);
+            theme = scanner.next();
+            scanner.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (theme.contains("dark"))
+            getAppTheme("dark");
+
+        else
+            getAppTheme("light");
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,10 +106,11 @@ public class GroupChatActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.list_msg);
         btnSend = findViewById(R.id.btn_chat_send);
         editText = (EditText) findViewById(R.id.msg_type);
-
         //set ListView adapter first
         adapter = new MessageAdapter(this, R.layout.left_chat_bubble, ChatBubbles);
         listView.setAdapter(adapter);
+
+        initializeTheme();
         LoginActivity.sock.setClientCallback(new Client.ClientCallback(){
 
             @Override
