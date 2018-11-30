@@ -98,8 +98,8 @@ public class ChatActivity extends AppCompatActivity {
             String sender;
             String mess;
             while (scanner.hasNext()) {
-                sender = scanner.next();
-                mess = scanner.nextLine();
+                sender = scanner.next().split("@")[0];
+                mess = scanner.nextLine().split(";")[1];
                 chatBubble = new ChatBubble(sender, mess);
                 ChatBubbles.add(chatBubble);
             }
@@ -133,8 +133,8 @@ public class ChatActivity extends AppCompatActivity {
                     String sender;
                     String mess;
                     while (scanner.hasNext()) {
-                        sender = scanner.next();
-                        mess = scanner.nextLine();
+                        sender = scanner.next().split("@")[0];
+                        mess = scanner.nextLine().split(";")[1];
                         chatBubble = new ChatBubble(sender, mess);
                         ChatBubbles.add(chatBubble);}
                     adapter.notifyDataSetChanged();
@@ -176,8 +176,8 @@ public class ChatActivity extends AppCompatActivity {
                     String sender;
                     String mess;
                     while (scanner.hasNext()) {
-                        sender = scanner.next();
-                        mess = scanner.nextLine();
+                        sender = scanner.next().split("@")[0];
+                        mess = scanner.nextLine().split(";")[1];
                         chatBubble = new ChatBubble(sender, mess);
                         ChatBubbles.add(chatBubble);}
                     adapter.notifyDataSetChanged();
