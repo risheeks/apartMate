@@ -974,6 +974,16 @@ var leaveGroup = function(data,sock) {
         var regex2 = new RegExp(replace2, "g");
         Members = Members.toString().replace(regex1, "");
         refMembers.set(Members);
+
+        //must remove the leaving user from the other group member's gRating
+        var i;
+        var m = Members.split(";");
+        for (i = 0; i < m.length - 1; i++) {
+          var gRateRef = firebase.database().ref("Login/" + m[i].split("@")[0] + "/gRating/" + email.split("@")[0]);
+          gRateRef.remove();
+        }
+
+
         if (Interests !== null) {
             Interests = Interests.toString().replace(regex2, "");
             refInterests.set(Interests);
@@ -991,6 +1001,7 @@ var leaveGroup = function(data,sock) {
             refUnshare.set(Unshare);
         }
     }, 300);
+
 
     //adjust the group map with the firebase data
     var refGroups = firebase.database().ref("Groups/" + group);
@@ -1255,7 +1266,7 @@ var svr = net.createServer(function(sock) {
     });
 });
 
-var svraddr = '10.186.103.251';
+var svraddr = 'localhost';
 var svrport = 9910;
 
 svr.listen(svrport, svraddr);

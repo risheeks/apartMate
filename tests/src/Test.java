@@ -7,7 +7,7 @@ public class Test {
     private static String ip;
     public static void main(String[] args)  throws InterruptedException{
         //System.out.printf("This is a test\n");
-        ip = "10.186.183.200";
+        ip = "localhost";
         port = 9910;
         /*test1_1();
         test1_2();
@@ -24,9 +24,9 @@ public class Test {
         Thread.sleep(1500);
         //test5();
         //Thread.sleep(1500);
-        //testCommand("irettig@purdue.edu", "12345", "GET_GROUPMEMBERS;test group 1");
-        //prepTest6();
-        //test6();
+        testCommand("irettig@purdue.edu", "12345", "ADD_GROUP;corruptsoul13@gmail.com;a");
+        prepTest6();
+        test6();
     }
 
     //Adds user patel716
